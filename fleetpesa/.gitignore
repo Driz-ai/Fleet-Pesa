@@ -1,0 +1,67 @@
+# === Python / Flask (server/) ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+.venv/
+venv/
+env/
+.Python
+build/
+dist/
+
+# Pipenv
+Pipfile.lock
+
+# Flask
+instance/
+.webassets-cache
+
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# Migrations cache (keep versions/, ignore cache only if any)
+# migrations/  -- keep tracked, do not ignore
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+
+# === Node / React / Vite (client/) ===
+node_modules/
+dist/
+dist-ssr/
+build/
+.vite/
+*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# === Environment variables ===
+.env
+.env.local
+.env.*.local
+server/.env
+client/.env
+
+# === Editor / OS ===
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# === Misc ===
+*.log
+.cache/
