@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Phone, Truck } from "lucide-react";
 
 export default function Driver(){
     const [amount,setAmount] = useState("")
@@ -28,64 +29,126 @@ export default function Driver(){
 }
 if (status === "success") {
   return (
-    <main>
-      <h2>Payment Received!</h2>
-      <p>Successfully remitted</p>
-      <h1>KES {Number(amount).toLocaleString()}</h1>
-      <div>
-        <p>Reference: FP-2025-001847</p>
-        <p>M-Pesa Code: QHF72JK48N</p>
-        <p>Vehicle: KDG 567M</p>
-      </div>
-      <button
-        type="button"
-        onClick={handleSubmitAnother}
-      >
-        Submit Another
-      </button>
+    <main className="success-shell">
+      <section className="success-card" aria-labelledby="success-title">
+        <div className="success-icon" aria-hidden="true">✓</div>
+        <h1 className="success-title" id="success-title">Payment Received!</h1>
+        <p className="success-copy">Successfully remitted</p>
+        <p className="success-amount">KES {Number(amount).toLocaleString()}</p>
+        <div className="receipt-details">
+          <div className="receipt-row">
+            <span>Reference</span>
+            <strong>FP-2025-001847</strong>
+          </div>
+          <div className="receipt-row">
+            <span>M-Pesa Code</span>
+            <strong>QHF72JK48N</strong>
+          </div>
+          <div className="receipt-row">
+            <span>Vehicle</span>
+            <strong>KDG 567M</strong>
+          </div>
+        </div>
+        <button
+          className="submit-another-button"
+          type="button"
+          onClick={handleSubmitAnother}
+        >
+          Submit Another
+        </button>
+      </section>
     </main>
   );
 }
     return(
-        <>
-        <main>
-      <h1>Daily Remittance</h1>
+      <div className="driver-page">
+        <header className="driver-header">
+          <div className="driver-header-inner">
+            <div className="driver-brand-row">
+              <div className="driver-brand">
+                <span className="driver-brand-icon" aria-hidden="true">
+                  <Truck size={17} strokeWidth={2.25} />
+                </span>
+                <span>FleetPesa</span>
+              </div>
+              {/* <button className="driver-signout" type="button">Sign out</button> */}
+            </div>
+            <div className="driver-profile">
+              <p className="driver-label">Daily remittance for</p>
+              <div className="driver-profile-row">
+                <span className="driver-avatar" aria-hidden="true">PO</span>
+                <div>
+                  <h1 className="driver-name">Peter Omondi</h1>
+                  <p className="driver-vehicle">KDG 567M · Matatu</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
 
-      <label htmlFor="amount">Amount To Submit</label>
-      <input
-        id="amount"
-        type="number"
-        value={amount}
-        onChange={handleAmountChange}
-        placeholder="Enter amount"
-      />
-         <p>Current amount: {amount}</p>
-         <div>
-        <p>Quick Select</p>
+        <main className="driver-content">
+          <section className="amount-card">
+            <label className="driver-label" htmlFor="amount">Amount to submit</label>
+            <div className="amount-input-row">
+              <span className="currency-prefix">KES</span>
+              <input
+                className="amount-input"
+                id="amount"
+                type="number"
+                value={amount}
+                onChange={handleAmountChange}
+                placeholder="0"
+              />
+            </div>
+            <div className="expected-row">
+              <span>Expected today</span>
+              <strong className="expected-amount">KES 4,500</strong>
+            </div>
+          </section>
 
-        {quickAmounts.map((value) => (
+          <section className="quick-section" aria-labelledby="quick-select-title">
+            <h2 className="driver-label" id="quick-select-title">Quick select</h2>
+            <div className="quick-grid">
+              {quickAmounts.map((value) => (
+                <button
+                  className={`quick-button ${Number(amount) === value ? "quick-button-active" : ""}`}
+                  key={value}
+                  type="button"
+                  aria-pressed={Number(amount) === value}
+                  onClick={() => handleQuickSelect(value)}
+                >
+                  {value.toLocaleString()}
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <section className="payment-card" aria-label="Payment method">
+            <div className="payment-details">
+              <span className="payment-icon" aria-hidden="true">
+                <Phone size={18} strokeWidth={2} />
+              </span>
+              <div>
+                <h2 className="payment-name">M-Pesa</h2>
+                <p className="payment-phone">+254 734 567 890</p>
+              </div>
+            </div>
+            <span className="ready-badge">Ready</span>
+          </section>
+
           <button
-            key={value}
+            className={`submit-button ${status === "processing" ? "submit-button-processing" : ""}`}
             type="button"
-            onClick={() => handleQuickSelect(value)}
+            onClick={handleSubmit}
+            disabled={!isAmountValid || status === "processing"}
           >
-            {value}
+            {status === "processing"
+              ? "Processing..."
+              :isAmountValid
+              ?`Submit KES ${Number(amount).toLocaleString()}`
+              : "Enter an amount"}
           </button>
-        ))}
+        </main>
       </div>
-            <button
-        type="button"
-        onClick={handleSubmit}
-        disabled={!isAmountValid || status === "processing"}
-      >
-        {status == "processing"
-          ? "Processing..."
-          :isAmountValid
-          ?`Submit KES ${Number(amount).toLocaleString()}`
-          : "Enter an amount"}
-      </button>
-    
-    </main>
-        </>
     )
 }

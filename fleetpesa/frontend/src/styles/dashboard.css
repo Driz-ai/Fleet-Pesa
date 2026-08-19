@@ -1,0 +1,195 @@
+@layer components {
+  .driver-page {
+    @apply min-h-screen bg-[#f2f6fa] text-[#102844];
+  }
+
+  .driver-header {
+    @apply bg-[#102844] px-5 pb-8 pt-10 text-white;
+  }
+
+  .driver-header-inner,
+  .driver-content {
+    @apply mx-auto w-full max-w-[1120px];
+  }
+
+  .driver-brand-row {
+    @apply flex items-center justify-between;
+  }
+
+  .driver-brand {
+    @apply flex items-center gap-2 text-[15px] font-bold;
+  }
+
+  .driver-brand-icon {
+    @apply grid size-8 place-items-center rounded-[10px] bg-[#12b75b];
+  }
+
+  .driver-signout {
+    @apply border-0 bg-transparent p-1 text-xs font-semibold text-slate-400 transition hover:text-white;
+  }
+
+  .driver-label {
+    @apply m-0 text-[11px] font-bold uppercase tracking-[0.045em] text-[#b8c6d9];
+  }
+
+  .driver-profile {
+    @apply mt-8;
+  }
+
+  .driver-profile-row {
+    @apply mt-3.5 flex items-center gap-3;
+  }
+
+  .driver-avatar {
+    @apply grid size-9 shrink-0 place-items-center rounded-full bg-[#244568] text-xs font-bold text-white;
+  }
+
+  .driver-name {
+    @apply m-0 text-base font-bold leading-tight;
+  }
+
+  .driver-vehicle {
+    @apply m-0 mt-1 font-mono text-[11px] font-semibold tracking-wide text-[#91a5bd];
+  }
+
+  .driver-content {
+    @apply space-y-4 px-5 py-6;
+  }
+
+  .amount-card,
+  .payment-card,
+  .success-card {
+    @apply rounded-[17px] border border-[#dfe6ed] bg-white shadow-[0_1px_2px_rgba(16,40,68,0.12)];
+  }
+
+  .amount-card {
+    @apply px-5 pb-5 pt-5;
+  }
+
+  .amount-input-row {
+    @apply flex min-h-[82px] items-center gap-4 border-b border-[#edf1f4];
+  }
+
+  .currency-prefix {
+    @apply text-lg font-bold text-[#c7d3e1];
+  }
+
+  .amount-input {
+    @apply min-w-0 flex-1 border-0 bg-transparent text-4xl font-bold text-[#102844] outline-none placeholder:text-[#8795a8] focus:ring-0 sm:text-[44px];
+  }
+
+  .expected-row {
+    @apply flex items-center justify-between pt-4 text-sm font-medium text-[#8498b3];
+  }
+
+  .expected-amount {
+    @apply font-mono text-[13px] font-bold tracking-wide text-[#102844];
+  }
+
+  .quick-section {
+    @apply space-y-3;
+  }
+
+  .quick-grid {
+    @apply grid grid-cols-3 gap-2.5;
+  }
+
+  .quick-button {
+    @apply min-w-0 rounded-[14px] border border-[#dce4ec] bg-white px-2 py-3 font-mono text-sm font-bold tracking-wide text-[#41536c] transition hover:border-[#12b75b] hover:bg-emerald-50 hover:text-emerald-700;
+  }
+
+  .quick-button-active {
+    @apply border-[#12b75b] bg-emerald-50 text-emerald-700 ring-1 ring-[#12b75b]/20;
+  }
+
+  .payment-card {
+    @apply flex items-center justify-between px-4 py-3.5;
+  }
+
+  .payment-details {
+    @apply flex items-center gap-3;
+  }
+
+  .payment-icon {
+    @apply grid size-9 place-items-center rounded-xl bg-emerald-50 text-[#0aa84f];
+  }
+
+  .payment-name {
+    @apply m-0 text-sm font-bold;
+  }
+
+  .payment-phone {
+    @apply m-0 mt-0.5 font-mono text-[11px] tracking-wider text-[#8197b4];
+  }
+
+  .ready-badge {
+    @apply rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[9px] font-bold uppercase text-emerald-700;
+  }
+
+  .submit-button,
+  .submit-another-button {
+    @apply w-full rounded-2xl border-0 bg-[#12b75b] px-5 py-4 text-base font-bold text-white transition hover:bg-[#0e9d4e] focus:outline-none focus:ring-4 focus:ring-emerald-500/20 disabled:cursor-not-allowed disabled:bg-[#dfe7f1] disabled:text-[#8fa3bd];
+  }
+
+  .submit-button-processing {
+    @apply cursor-wait bg-[#0e9d4e] text-white disabled:bg-[#0e9d4e] disabled:text-white;
+  }
+
+  .success-shell {
+    @apply grid min-h-screen place-items-center bg-[#f2f6fa] px-5 py-10;
+  }
+
+  .success-card {
+    @apply w-full max-w-[520px] px-6 py-8 text-center sm:px-10;
+  }
+
+  .success-icon {
+    @apply mx-auto grid size-16 place-items-center rounded-full bg-emerald-50 text-3xl font-bold text-[#12b75b];
+  }
+
+  .success-title {
+    @apply mb-0 mt-5 text-2xl font-bold text-[#102844];
+  }
+
+  .success-copy {
+    @apply mb-1 mt-2 text-sm text-[#8498b3];
+  }
+
+  .success-amount {
+    @apply m-0 text-3xl font-bold text-[#102844] sm:text-4xl;
+  }
+
+  .receipt-details {
+    @apply my-7 divide-y divide-[#edf1f4] rounded-xl border border-[#e2e8ee] bg-[#f8fafc] px-4 text-left;
+  }
+
+  .receipt-row {
+    @apply flex items-center justify-between gap-4 py-3 text-sm;
+  }
+
+  .receipt-row span {
+    @apply text-[#8498b3];
+  }
+
+  .receipt-row strong {
+    @apply text-right font-mono text-xs font-bold text-[#102844] sm:text-sm;
+  }
+
+  @media (max-width: 480px) {
+    .driver-header {
+      @apply pb-7 pt-6;
+    }
+
+    .driver-content {
+      @apply px-4 py-4;
+    }
+
+    .amount-card {
+      @apply px-4;
+    }
+
+    .quick-button {
+      @apply text-xs;
+    }
+  }
+}
