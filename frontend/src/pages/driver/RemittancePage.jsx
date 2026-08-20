@@ -1,4 +1,4 @@
-import Driver from "../../components/Dashboard /Driver";
+import Driver from "../../components/Dashboard/Driver";
 export default function RemmitancePage(){
 
     return(

@@ -3,7 +3,7 @@ import { useAuth, AuthProvider } from "./context/AuthContext.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import { AppShell } from "./components/layout/AppShell.jsx";
-import Driver from "./components/Dashboard/Driver.jsx";
+import RemmitancePage from "./pages/driver/RemittancePage.jsx";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -23,7 +23,7 @@ export default function App() {
           />
           <Route
             path="/driver/remittance"
-            element={<ProtectedRoute><Driver /></ProtectedRoute>}
+            element={<ProtectedRoute><RemmitancePage /></ProtectedRoute>}
           />
           <Route path="/dashboard" element={<Navigate to="/owner/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
