@@ -1,6 +1,6 @@
 # FleetPesa
 
-A fleet remittance and shortfall-tracking platform built for owners running small fleets (10–15 boda bodas / matatus) in Kenya.
+A fleet remittance and shortfall-tracking platform built for owners running small fleets (10–15 matatus) in Kenya.
 
 ## Problem
 
