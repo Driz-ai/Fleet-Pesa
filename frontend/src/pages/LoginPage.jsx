@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Truck, Eye, EyeOff, Loader2 } from "lucide-react";
-import { login } from "../lib/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
 export function normalizePhone(value) {
@@ -22,8 +21,8 @@ export default function LoginPage() {
 
   const validate = () => {
     const cleanPhone = normalizePhone(phone);
-    if (!/^\+254\d{9}$/.test(cleanPhone)) {
-      return "Enter a valid phone number, e.g. +254 712 345 678";
+    if (!/^07\d{8}$/.test(cleanPhone)) {
+      return "Enter a valid phone number, e.g. 0708419329";
     }
     if (password.length < 6) {
       return "Password must be at least 6 characters";
@@ -41,13 +40,19 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      // Expected API response: { token, user: { role, ... } }.
-      const data = await login({ role, phone: normalizePhone(phone), password });
-      if (!data?.token || !data?.user?.role) {
-        throw new Error("Sign in response was incomplete. Please try again.");
-      }
-      setAuth({ token: data.token, user: data.user });
-      navigate(data.user.role === "driver" ? "/driver/remittance" : "/owner/dashboard", { replace: true });
+      // Mock sign-in keeps the frontend demo usable before backend auth is ready.
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const mockUser = {
+        id: role === "driver" ? "mock-driver-1" : "mock-owner-1",
+        name: role === "driver" ? "Peter Omondi" : "Martin Otieno",
+        phone: normalizePhone(phone),
+        role,
+      };
+      setAuth({ token: `mock-token-${role}`, user: mockUser });
+      const destination = role === "driver"
+        ? "/driver/remittance"
+        : "/owner/dashboard";
+      navigate(destination, { replace: true });
     } catch (err) {
       setError(err?.message || "Sign in failed. Check your details and try again.");
     } finally {
@@ -112,7 +117,7 @@ export default function LoginPage() {
               autoComplete="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="+254 712 345 678"
+              placeholder="0712345678"
               className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-900"
             />
           </div>
