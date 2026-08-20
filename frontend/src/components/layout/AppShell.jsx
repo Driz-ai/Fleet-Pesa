@@ -20,7 +20,7 @@ export function AppShell() {
 							<Bell size={20} strokeWidth={1.8} />
 							<span />
 						</button>
-						<div className="topbar-avatar">MO</div>
+						<div className="topbar-avatar">JD</div>
 					</div>
 				</header>
 				<section className="dashboard-content" aria-label="Fleet dashboard">
