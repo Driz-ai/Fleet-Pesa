@@ -1,9 +1,8 @@
-import { CarFront, Grid2X2, LogOut, Settings, Wrench } from 'lucide-react'
+import { CarFront, Grid2X2, LogOut, Settings } from 'lucide-react'
 
 const navigation = [
 	{ label: 'Dashboard', icon: Grid2X2, active: true },
 	{ label: 'Fleet', icon: CarFront },
-	{ label: 'Maintenance', icon: Wrench, badge: 3 },
 ]
 
 export function Sidebar() {
