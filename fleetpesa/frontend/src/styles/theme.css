@@ -1,0 +1,10 @@
+:root {
+	font-family: 'DM Sans', 'Segoe UI', sans-serif;
+	color: #182d4a;
+	background: #f3f6f9;
+	font-synthesis: none;
+	--navy: #102947;
+	--navy-soft: #294361;
+	--muted: #91a4bf;
+	--canvas: #f3f6f9;
+}

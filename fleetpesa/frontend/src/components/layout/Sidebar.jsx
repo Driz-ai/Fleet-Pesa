@@ -1,0 +1,41 @@
+import { CarFront, Grid2X2, LogOut, Settings, Wrench } from 'lucide-react'
+
+const navigation = [
+	{ label: 'Dashboard', icon: Grid2X2, active: true },
+	{ label: 'Fleet', icon: CarFront },
+	{ label: 'Maintenance', icon: Wrench, badge: 3 },
+]
+
+export function Sidebar() {
+	return (
+		<aside className="sidebar">
+			<div className="brand">
+				<div className="brand-mark"><CarFront size={19} strokeWidth={2.1} /></div>
+				<span>FleetPesa</span>
+			</div>
+
+			<div className="owner-profile">
+				<div className="owner-avatar">MO</div>
+				<div>
+					<strong>Martin Otieno</strong>
+					<span>Fleet Owner</span>
+				</div>
+			</div>
+
+			<nav className="sidebar-nav" aria-label="Main navigation">
+				{navigation.map(({ label, icon: Icon, active, badge }) => (
+					<a className={`nav-item${active ? ' active' : ''}`} href={`#${label.toLowerCase()}`} key={label}>
+						<Icon size={18} strokeWidth={1.8} />
+						<span>{label}</span>
+						{badge && <b>{badge}</b>}
+					</a>
+				))}
+			</nav>
+
+			<div className="sidebar-footer">
+				<a className="nav-item" href="#settings"><Settings size={18} strokeWidth={1.8} /><span>Settings</span></a>
+				<a className="nav-item" href="#sign-out"><LogOut size={18} strokeWidth={1.8} /><span>Sign Out</span></a>
+			</div>
+		</aside>
+	)
+}
