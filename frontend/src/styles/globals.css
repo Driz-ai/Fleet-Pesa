@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
-@import "./dashboard.css" 
 @theme {
   --font-sans: "Inter", "Segoe UI", sans-serif;
   --color-fleet-navy: #102844;
