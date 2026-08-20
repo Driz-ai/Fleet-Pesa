@@ -1,15 +1,5 @@
-import Driver from "./components/Dashboard /Driver";
-
-export default function App(){
-
-    return(
-        <>
-        <Driver/>
-        </>
-    )
-}
-import { AppShell } from './components/layout/AppShell'
+import LoginPage from "./pages/LoginPage.jsx";
 
 export default function App() {
-	return <AppShell />
+  return <LoginPage />;
 }
