@@ -1,4 +1,4 @@
-                                                                                                                                                                                                                                                                                                import {
+ import {
 	CartesianGrid,
 	Line,
 	LineChart,
