@@ -14,7 +14,9 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -25,11 +27,14 @@ export default function SignupPage() {
     if (!name.trim()) {
       return "Enter your full name";
     }
-    if (!/^\+254\d{9}$/.test(normalizePhone(phone))) {
-      return "Enter a valid phone number, e.g. +254 712 345 678";
+    if (!/^07\d{8}$/.test(normalizePhone(phone))) {
+      return "Enter a valid phone number, e.g. 0708419329";
     }
     if (password.length < 6) {
       return "Password must be at least 6 characters";
+    }
+    if (password !== confirmPassword) {
+      return "Passwords do not match";
     }
     return "";
   };
@@ -142,7 +147,7 @@ export default function SignupPage() {
               autoComplete="tel"
               value={phone}
               onChange={(event) => setPhone(event.target.value)}
-              placeholder="+254 712 345 678"
+              placeholder="0798765432"
               className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-900"
             />
           </div>
@@ -167,6 +172,30 @@ export default function SignupPage() {
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-2">
+            <label htmlFor="confirm-password" className="block text-xs font-semibold text-slate-500 tracking-wide uppercase mb-1.5">
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                id="confirm-password"
+                type={showConfirmPassword ? "text" : "password"}
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                className="w-full border border-slate-200 rounded-lg px-4 py-2.5 pr-11 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-900"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword((visible) => !visible)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600"
+                aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+              >
+                {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>
