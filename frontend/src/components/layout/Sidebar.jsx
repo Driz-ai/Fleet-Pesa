@@ -1,4 +1,6 @@
 import { CarFront, Grid2X2, LogOut, Settings } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext.jsx'
 
 const navigation = [
 	{ label: 'Dashboard', icon: Grid2X2, active: true },
@@ -6,6 +8,14 @@ const navigation = [
 ]
 
 export function Sidebar() {
+	const navigate = useNavigate()
+	const { logout } = useAuth()
+
+	function handleSignOut() {
+		logout()
+		navigate('/login', { replace: true })
+	}
+
 	return (
 		<aside className="sidebar">
 			<div className="brand">
@@ -33,7 +43,7 @@ export function Sidebar() {
 
 			<div className="sidebar-footer">
 				<a className="nav-item" href="#settings"><Settings size={18} strokeWidth={1.8} /><span>Settings</span></a>
-				<a className="nav-item" href="#sign-out"><LogOut size={18} strokeWidth={1.8} /><span>Sign Out</span></a>
+				<button className="nav-item" type="button" onClick={handleSignOut}><LogOut size={18} strokeWidth={1.8} /><span>Sign Out</span></button>
 			</div>
 		</aside>
 	)
