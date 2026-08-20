@@ -55,7 +55,7 @@ if (status === "success") {
         <button
           className="submit-another-button"
           type="button"
-          onClick={handleSubmitAnother}
+          onClick={handleSubmitAnother}                                                                                                                                                                                                                                                                                                                                                              
         >
           Submit Another
         </button>
