@@ -1,3 +1,5 @@
+@reference "./globals.css";
+
 @layer components {
   .driver-page {
     @apply min-h-screen bg-[#f2f6fa] text-[#102844];

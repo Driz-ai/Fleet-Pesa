@@ -52,8 +52,10 @@ export default function LoginPage({ onLogin, onNavigateToSignup }) {
       </div>
 
       <div className="w-full max-w-md bg-white rounded-2xl shadow-sm p-8">
-        <h1 className="text-2xl font-bold text-slate-900 mb-1">Welcome back</h1>
-        <p className="text-slate-500 mb-6">Sign in to your fleet dashboard</p>
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-slate-900 mb-1">Welcome back</h1>
+          <p className="text-slate-500 mb-6">Sign in to your fleet dashboard</p>
+        </div>
 
         <div className="flex bg-slate-100 rounded-lg p-1 mb-6" role="tablist">
           <button
