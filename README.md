@@ -37,7 +37,7 @@ Fleet-Pesa/
 ├── .gitignore
 ├── backend/     # Flask backend + PostgreSQL
 ├── frontend/    # React frontend (Vite, JSX)
-└── docs/        # ERD, project pitch
+└── docs/        # ERD, project pitch, git-flow and other relevant project documents-
 ```
 
 See `STRUCTURE.md` for the full file-by-file breakdown and task ownership, and `GIT_FLOW.md` for our branching and PR workflow.
