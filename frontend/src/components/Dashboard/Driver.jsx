@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Phone, Truck } from "lucide-react";
-
+import { StatCard } from "../shared/StatCard";
 export default function Driver(){
   // tracks remmitance amount and the current submission state
     const [amount,setAmount] = useState("")
@@ -104,10 +104,8 @@ if (status === "success") {
                 placeholder="0"
               />
             </div>
-            <div className="expected-row">
-              <span>Expected today</span>
-              <strong className="expected-amount">KES 4,500</strong>
-            </div>
+            <StatCard label="Expected today"
+            value="KES 4500"/>
           </section>
 
           <section className="quick-section" aria-labelledby="quick-select-title">
