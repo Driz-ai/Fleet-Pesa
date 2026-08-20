@@ -62,4 +62,66 @@ export default function DriverRemittance() {
     setSubmitted(true);
   }
 
+  if (submitted) {
+    return (
+      <main className="driver-remittance-page">
+        <section className="remittance-success">
+          <div className="success-icon">
+            <CheckCircle2 size={34} />
+          </div>
+
+          <p className="eyebrow">REMITTANCE SUBMITTED</p>
+
+          <h1>KES {parsedAmount.toLocaleString()}</h1>
+
+          <p className="success-copy">
+            Your remittance for <strong>KDG 482P</strong> has been recorded.
+          </p>
+
+          <div className="success-details">
+            <div>
+              <span>Vehicle</span>
+              <strong>KDG 482P</strong>
+            </div>
+
+            <div>
+              <span>Payment method</span>
+              <strong>
+                {
+                  paymentMethods.find(
+                    (item) => item.id === paymentMethod
+                  )?.label
+                }
+              </strong>
+            </div>
+
+            <div>
+              <span>Status</span>
+              <strong className={`status-text ${status}`}>
+                {status === "paid"
+                  ? "Paid in full"
+                  : status === "short"
+                    ? "Short remittance"
+                    : "Above target"}
+              </strong>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className="primary-button"
+            onClick={() => {
+              setSubmitted(false);
+              setAmount("");
+              setReference("");
+              setNotes("");
+            }}
+          >
+            Enter another remittance
+          </button>
+        </section>
+      </main>
+    );
+  }
+
 }
