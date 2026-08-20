@@ -1,3 +1,37 @@
+@import "tailwindcss";
+@import "./dashboard.css";
+
+@theme {
+  --font-sans: "Inter", "Segoe UI", sans-serif;
+  --color-fleet-navy: #102844;
+  --color-fleet-green: #12b75b;
+  --color-fleet-canvas: #f2f6fa;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    min-width: 320px;
+    background: var(--color-fleet-canvas);
+  }
+
+  body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    background: var(--color-fleet-canvas);
+    color: var(--color-fleet-navy);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
 * { box-sizing: border-box; }
