@@ -1,5 +1,5 @@
 import { Bell, CircleHelp } from 'lucide-react'
-import { Owner } from '../Dashboard/Owner'
+import { Owner } from "../Dashboard/Owner.jsx";
 import { Sidebar } from './Sidebar'
 
 export function AppShell() {
