@@ -1,4 +1,5 @@
 import { Bell, CircleHelp } from 'lucide-react'
+import { Owner } from '../Dashboard/Owner'
 import { Sidebar } from './Sidebar'
 
 export function AppShell() {
@@ -23,9 +24,7 @@ export function AppShell() {
 					</div>
 				</header>
 				<section className="dashboard-content" aria-label="Fleet dashboard">
-					<div className="empty-dashboard">
-						<p>Dashboard overview</p>
-					</div>
+					<Owner />
 				</section>
 			</main>
 		</div>
