@@ -1,16 +1,27 @@
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Truck, Eye, EyeOff, Loader2 } from "lucide-react";
+import { login } from "../lib/api.js";
+import { useAuth } from "../context/AuthContext.jsx";
 
-export default function LoginPage({ onLogin, onNavigateToSignup }) {
+export function normalizePhone(value) {
+  return value.replace(/\s/g, "");
+}
+
+export default function LoginPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { setAuth } = useAuth();
   const [role, setRole] = useState("owner");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(location.state?.success || "");
 
   const validate = () => {
-    const cleanPhone = phone.replace(/\s/g, "");
+    const cleanPhone = normalizePhone(phone);
     if (!/^\+254\d{9}$/.test(cleanPhone)) {
       return "Enter a valid phone number, e.g. +254 712 345 678";
     }
@@ -30,11 +41,13 @@ export default function LoginPage({ onLogin, onNavigateToSignup }) {
     setError("");
     setLoading(true);
     try {
-      if (onLogin) {
-        await onLogin({ role, phone: phone.replace(/\s/g, ""), password });
-      } else {
-        await new Promise((resolve) => setTimeout(resolve, 700));
+      // Expected API response: { token, user: { role, ... } }.
+      const data = await login({ role, phone: normalizePhone(phone), password });
+      if (!data?.token || !data?.user?.role) {
+        throw new Error("Sign in response was incomplete. Please try again.");
       }
+      setAuth({ token: data.token, user: data.user });
+      navigate(data.user.role === "driver" ? "/driver/remittance" : "/owner/dashboard", { replace: true });
     } catch (err) {
       setError(err?.message || "Sign in failed. Check your details and try again.");
     } finally {
@@ -56,6 +69,8 @@ export default function LoginPage({ onLogin, onNavigateToSignup }) {
           <h1 className="text-2xl font-bold text-slate-900 mb-1">Welcome back</h1>
           <p className="text-slate-500 mb-6">Sign in to your fleet dashboard</p>
         </div>
+
+        {success && <p className="text-sm text-emerald-600 mb-4" role="status">{success}</p>}
 
         <div className="flex bg-slate-100 rounded-lg p-1 mb-6" role="tablist">
           <button
@@ -150,7 +165,7 @@ export default function LoginPage({ onLogin, onNavigateToSignup }) {
           No account yet?{" "}
           <button
             type="button"
-            onClick={onNavigateToSignup}
+            onClick={() => navigate("/signup")}
             className="font-semibold text-slate-900 hover:underline"
           >
             Sign up
