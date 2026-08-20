@@ -19,7 +19,7 @@ FleetPesa gives owners one dashboard to see fleet health at a glance, and gives 
 | Frontend | React (JSX, Vite), React Router |
 | Backend | Flask, Flask-JWT-Extended, Flask-Bcrypt |
 | ORM / Serialization | SQLAlchemy, Marshmallow |
-| Database | SQLite |
+| Database | PostgreSQL |
 | Styling | Tailwind CSS + shadcn/ui components |
 
 ## Project Structure
