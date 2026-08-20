@@ -1,24 +1,29 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Phone, Truck } from "lucide-react";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 export default function Driver(){
-  // tracks remmitance amount and the current submission state
+    const navigate = useNavigate()
+    const { user, logout } = useAuth()
     const [amount,setAmount] = useState("")
     const [status,setStatus] = useState("idle")
+    const [paymentPhone, setPaymentPhone] = useState(user?.phone || "0712345678")
     const quickAmounts = [1500,3000,4500]
 
     function handleAmountChange(event){
-      const newAmount = event.target.value 
+      const newAmount = event.target.value.replace(/\D/g, "")
       setAmount(newAmount)
     
     }
     function handleQuickSelect(value){
        setAmount(value)
     } 
-    const isAmountValid = Number(amount )> 0
+    const isAmountValid = /^\d+$/.test(amount) && Number(amount) > 0
     function handleSubmit(){
+      if (!/^07\d{8}$/.test(paymentPhone.replace(/\s/g, ""))) return
       setStatus("processing")
-      console.log("Submitting amount:",amount)
+      console.log("Submitting amount:", amount, "to:", paymentPhone)
       // simulates mpesa payment untill backend m-pesa Api is connected
       setTimeout(()=>{
         setStatus("success")
@@ -29,6 +34,10 @@ export default function Driver(){
   setStatus("idle");
   
 }
+    function handleSignOut() {
+      logout()
+      navigate("/login", { replace: true })
+    }
 // displays the receipt after successfull remmitance 
 if (status === "success") {
   return (
@@ -46,6 +55,10 @@ if (status === "success") {
           <div className="receipt-row">
             <span>M-Pesa Code</span>
             <strong>QHF72JK48N</strong>
+          </div>
+          <div className="receipt-row">
+            <span>Payment Number</span>
+            <strong>{paymentPhone}</strong>
           </div>
           <div className="receipt-row">
             <span>Vehicle</span>
@@ -74,7 +87,7 @@ if (status === "success") {
                 </span>
                 <span>FleetPesa</span>
               </div>
-              {/* <button className="driver-signout" type="button">Sign out</button> */}
+                  <button className="driver-signout" type="button" onClick={handleSignOut}>Sign out</button>
             </div>
             {/* Driver details are mock data until authentication/API intergration */}
             <div className="driver-profile">
@@ -99,15 +112,20 @@ if (status === "success") {
                 className="amount-input"
                 id="amount"
                 type="number"
+                min="1"
+                step="1"
+                inputMode="numeric"
                 value={amount}
                 onChange={handleAmountChange}
                 placeholder="0"
+                aria-describedby="amount-help"
               />
             </div>
             <div className="expected-row">
               <span>Expected today</span>
               <strong className="expected-amount">KES 4,500</strong>
             </div>
+            <p className="amount-help" id="amount-help">Enter the amount you are remitting in Kenyan shillings.</p>
           </section>
 
           <section className="quick-section" aria-labelledby="quick-select-title">
@@ -126,7 +144,6 @@ if (status === "success") {
               ))}
             </div>
           </section>
-          {/* currently static will later come from the users data */}
           <section className="payment-card" aria-label="Payment method">
             <div className="payment-details">
               <span className="payment-icon" aria-hidden="true">
@@ -134,7 +151,16 @@ if (status === "success") {
               </span>
               <div>
                 <h2 className="payment-name">M-Pesa</h2>
-                <p className="payment-phone">+254 734 567 890</p>
+                <label className="payment-phone-label" htmlFor="payment-phone">Payment number</label>
+                <input
+                  className="payment-phone-input"
+                  id="payment-phone"
+                  type="tel"
+                  inputMode="tel"
+                  value={paymentPhone}
+                  onChange={(event) => setPaymentPhone(event.target.value)}
+                  aria-label="M-Pesa payment number"
+                />
               </div>
             </div>
             <span className="ready-badge">Ready</span>
@@ -144,7 +170,7 @@ if (status === "success") {
             className={`submit-button ${status === "processing" ? "submit-button-processing" : ""}`}
             type="button"
             onClick={handleSubmit}
-            disabled={!isAmountValid || status === "processing"}
+            disabled={!isAmountValid || !/^07\d{8}$/.test(paymentPhone.replace(/\s/g, "")) || status === "processing"}
           >
             {status === "processing"
               ? "Processing..."
