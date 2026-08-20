@@ -124,6 +124,14 @@
     @apply m-0 mt-0.5 font-mono text-[11px] tracking-wider text-[#8197b4];
   }
 
+  .payment-phone-label {
+    @apply mt-1 block text-[10px] font-semibold uppercase tracking-wide text-[#8197b4];
+  }
+
+  .payment-phone-input {
+    @apply mt-0.5 w-full border-0 bg-transparent p-0 font-mono text-[11px] tracking-wider text-[#102844] outline-none focus:ring-0;
+  }
+
   .ready-badge {
     @apply rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[9px] font-bold uppercase text-emerald-700;
   }

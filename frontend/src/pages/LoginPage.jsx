@@ -1,18 +1,28 @@
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Truck, Eye, EyeOff, Loader2 } from "lucide-react";
+import { useAuth } from "../context/AuthContext.jsx";
 
-export default function LoginPage({ onLogin, onNavigateToSignup }) {
+export function normalizePhone(value) {
+  return value.replace(/\s/g, "");
+}
+
+export default function LoginPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { setAuth } = useAuth();
   const [role, setRole] = useState("owner");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(location.state?.success || "");
 
   const validate = () => {
-    const cleanPhone = phone.replace(/\s/g, "");
-    if (!/^\+254\d{9}$/.test(cleanPhone)) {
-      return "Enter a valid phone number, e.g. +254 712 345 678";
+    const cleanPhone = normalizePhone(phone);
+    if (!/^07\d{8}$/.test(cleanPhone)) {
+      return "Enter a valid phone number, e.g. 0708419329";
     }
     if (password.length < 6) {
       return "Password must be at least 6 characters";
@@ -30,11 +40,19 @@ export default function LoginPage({ onLogin, onNavigateToSignup }) {
     setError("");
     setLoading(true);
     try {
-      if (onLogin) {
-        await onLogin({ role, phone: phone.replace(/\s/g, ""), password });
-      } else {
-        await new Promise((resolve) => setTimeout(resolve, 700));
-      }
+      // Mock sign-in keeps the frontend demo usable before backend auth is ready.
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const mockUser = {
+        id: role === "driver" ? "mock-driver-1" : "mock-owner-1",
+        name: role === "driver" ? "Peter Omondi" : "Martin Otieno",
+        phone: normalizePhone(phone),
+        role,
+      };
+      setAuth({ token: `mock-token-${role}`, user: mockUser });
+      const destination = role === "driver"
+        ? "/driver/remittance"
+        : "/owner/dashboard";
+      navigate(destination, { replace: true });
     } catch (err) {
       setError(err?.message || "Sign in failed. Check your details and try again.");
     } finally {
@@ -56,6 +74,8 @@ export default function LoginPage({ onLogin, onNavigateToSignup }) {
           <h1 className="text-2xl font-bold text-slate-900 mb-1">Welcome back</h1>
           <p className="text-slate-500 mb-6">Sign in to your fleet dashboard</p>
         </div>
+
+        {success && <p className="text-sm text-emerald-600 mb-4" role="status">{success}</p>}
 
         <div className="flex bg-slate-100 rounded-lg p-1 mb-6" role="tablist">
           <button
@@ -97,7 +117,7 @@ export default function LoginPage({ onLogin, onNavigateToSignup }) {
               autoComplete="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="+254 712 345 678"
+              placeholder="0712345678"
               className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-900"
             />
           </div>
@@ -150,7 +170,7 @@ export default function LoginPage({ onLogin, onNavigateToSignup }) {
           No account yet?{" "}
           <button
             type="button"
-            onClick={onNavigateToSignup}
+            onClick={() => navigate("/signup")}
             className="font-semibold text-slate-900 hover:underline"
           >
             Sign up
