@@ -1,16 +1,20 @@
 # FleetPesa
 
-A fleet remittance and vehicle management platform built for owners running small fleets (10–15 boda bodas / matatus) in Kenya.
+A fleet remittance and shortfall-tracking platform built for owners running small fleets (10–15 boda bodas / matatus) in Kenya.
 
 ## Problem
 
-Fleet owners managing 10–15 vehicles typically track daily remittances and driver performance across notebooks, M-Pesa statements, and WhatsApp messages. There's no single place to see who paid or who's short — until money goes missing.
+Fleet owners managing 10–15 vehicles typically collect daily remittances from drivers by cash hand-off, with no digital record and no verification. Short payments and forgotten ones go unnoticed for weeks — quiet losses that eat into profit.
 
-FleetPesa gives owners one dashboard to see fleet health at a glance, and gives drivers a fast, one-tap way to log their daily remittance from a phone.
+FleetPesa replaces the notebook with a digital remittance system: drivers submit payments directly through the platform, payments are instantly matched to driver and vehicle, and shortfalls are flagged the moment they happen — not weeks later.
 
 **Target users**
-- **Fleet owners** — desktop-first. Need to see revenue and outstanding balances in under 5 seconds.
-- **Drivers** — mobile-first. Need to submit a remittance in as few taps as possible.
+- **Fleet owners** — need to see revenue, outstanding balances, and remittance status in under 5 seconds, whether they're at a desk or checking from their phone.
+- **Drivers** — need to submit a remittance in as few taps as possible, almost always from a phone.
+
+Both roles can use FleetPesa on mobile or desktop — the UI is responsive across the whole app. Since owners and drivers alike mostly check the app on their phones between trips or on the go, the design is **mobile-first**: every screen is built and tested for mobile first, then scaled up for larger screens.
+
+**Scope note:** vehicle maintenance tracking and automated tax remittance were part of our original concept but have been descoped for this build to keep the project focused, per instructor guidance. Both are noted as future work — see [Known Issues / Future Work](#known-issues--future-work).
 
 ## Tech Stack
 
@@ -21,32 +25,38 @@ FleetPesa gives owners one dashboard to see fleet health at a glance, and gives 
 | ORM / Serialization | SQLAlchemy, Marshmallow |
 | Database | PostgreSQL |
 | Styling | Tailwind CSS + shadcn/ui components |
+| Backend dependency management | Pipenv |
 
 ## Project Structure
 
 ```
-fleetpesa/
-├── client/     # React frontend
-├── server/     # Flask backend + SQLite
-└── docs/       # ERD, project pitch
+Fleet-Pesa/
+├── README.md
+├── GIT_FLOW.md
+├── STRUCTURE.md
+├── .gitignore
+├── backend/     # Flask backend + PostgreSQL
+├── frontend/    # React frontend (Vite, JSX)
+└── docs/        # ERD, project pitch
 ```
 
-See `client/` and `server/` for their own internal structure.
+See `STRUCTURE.md` for the full file-by-file breakdown and task ownership, and `GIT_FLOW.md` for our branching and PR workflow.
 
 ## Features
 
 - Role-based login (Owner / Driver)
-- Owner dashboard: fleet revenue, outstanding balances, vehicles due for service, active drivers, fleet performance chart, driver remittance table
-- Vehicle detail view: profile and remittance history
-- Driver remittance entry: large numeric input, one-tap submit, confirmation state
+- Owner dashboard: fleet revenue, outstanding balances, active drivers, fleet performance chart, driver remittance table
+- Vehicle detail view: profile, remittance history
+- Driver remittance entry: numeric input, one-tap submit, confirmation state
 - Shortfall detail modal: expected vs. actual comparison, "Flag for Follow-up"
-- CRUD across related resources: **Vehicles** ↔ **Remittances**
+- Full CRUD across two related resources: **Vehicles** ↔ **Remittances**
 
 ## Data Model (summary)
 
 - **User** — id, name, phone, role (`owner` / `driver`), password_hash
 - **Vehicle** — id, plate_number, type, owner_id (FK → User), driver_id (FK → User)
-- **Remittance** — id, vehicle_id (FK), driver_id (FK), expected_amount, actual_amount, status (`paid`/`late`/`short`), timestamp
+- **Remittance** — id, vehicle_id (FK), driver_id (FK), expected_amount, actual_amount, status (`paid`/`late`/`short`), timestamp, flagged_for_followup (bool)
+
 Full ERD: see `docs/ERD.png`.
 
 ## API Endpoints
@@ -65,27 +75,42 @@ Base URL: `http://localhost:5000/api`
 | GET | `/remittances` | List remittances (filterable by vehicle/driver) |
 | POST | `/remittances` | Submit a new remittance |
 | PATCH | `/remittances/<id>` | Update a remittance (e.g. flag for follow-up) |
+
 All protected routes require an `Authorization: Bearer <token>` header.
 
 ## Setup Instructions
 
-### Backend (Flask)
+### Backend (Flask + Pipenv + PostgreSQL)
+
+Requires a local PostgreSQL server running. Create a database and user before starting:
 
 ```bash
-cd server
-python -m venv venv
-source venv/bin/activate      # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env
-flask db upgrade               # create/migrate SQLite DB
+createdb fleetpesa
+```
+
+Then:
+
+```bash
+cd backend
+pipenv install --dev
+pipenv shell
+cp .env.example .env           # set DATABASE_URL=postgresql://<user>:<password>@localhost:5432/fleetpesa
+flask db upgrade               # create/migrate the PostgreSQL schema
 python seed.py                 # optional: load sample data
 flask run                      # runs on http://localhost:5000
 ```
 
+Run tests:
+```bash
+pipenv run pytest
+```
+
+**Note:** the backend now uses PostgreSQL (via `psycopg2-binary`) instead of SQLite — make sure `psycopg2-binary` is listed in the `Pipfile` and that `DATABASE_URL` in `.env` points to a real PostgreSQL instance before running the app or migrations.
+
 ### Frontend (React)
 
 ```bash
-cd client
+cd frontend
 npm install
 cp .env.example .env           # set VITE_API_URL=http://localhost:5000/api
 npm run dev                    # runs on http://localhost:5173
@@ -93,12 +118,22 @@ npm run dev                    # runs on http://localhost:5173
 
 Open `http://localhost:5173` in your browser. Use the role toggle on the login screen to sign in as an Owner or a Driver.
 
-## Known Issues / Challenges
+## Contributing
 
+See `GIT_FLOW.md` for our full branching workflow. Summary: clone from `dev` (default branch), create a `ft-<feature>` branch for your task, commit incrementally, open a PR into `dev`, and wait for QA review before merge. Never push directly to `dev` or `main`.
+
+## Known Issues / Future Work
+
+- **Maintenance tracking** — descoped from this build. Planned as a future addition: mileage-based service due dates, maintenance alerts, and a "Mark as Serviced" action.
+- **Automated tax remittance** — descoped from this build. Originally planned as a one-click M-Pesa-to-KRA remittance using Safaricom's API; kept as a future roadmap item rather than built now, to keep the current scope manageable.
 - Remittance status thresholds (what counts as "short" vs "late") are currently hardcoded and not yet configurable per owner.
 - No real-time updates — the dashboard requires a refresh to reflect a driver's newly submitted remittance.
 - Image upload for vehicle photos is not yet implemented (placeholder image used).
 
-## Author
+## Team
 
-Fredrick 
+| Area | Members |
+|---|---|
+| Frontend | Munira Hassan, Jared Kiprop, Simon Hiuhu |
+| Backend | Vincent Maina, Bright Mahonga, Gabriel Mutavi |
+| QA | Fredrick Nyamweya |
