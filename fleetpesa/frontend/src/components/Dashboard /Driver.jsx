@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Phone, Truck } from "lucide-react";
 
 export default function Driver(){
+  // tracks remmitance amount and the current submission state
     const [amount,setAmount] = useState("")
     const [status,setStatus] = useState("idle")
     const quickAmounts = [1500,3000,4500]
@@ -18,6 +19,7 @@ export default function Driver(){
     function handleSubmit(){
       setStatus("processing")
       console.log("Submitting amount:",amount)
+      // simulates mpesa payment untill backend m-pesa Api is connected
       setTimeout(()=>{
         setStatus("success")
       },3000)
@@ -27,6 +29,7 @@ export default function Driver(){
   setStatus("idle");
   
 }
+// displays the receipt after successfull remmitance 
 if (status === "success") {
   return (
     <main className="success-shell">
@@ -73,6 +76,7 @@ if (status === "success") {
               </div>
               {/* <button className="driver-signout" type="button">Sign out</button> */}
             </div>
+            {/* Driver details are mock data until authentication/API intergration */}
             <div className="driver-profile">
               <p className="driver-label">Daily remittance for</p>
               <div className="driver-profile-row">
@@ -122,7 +126,7 @@ if (status === "success") {
               ))}
             </div>
           </section>
-
+          {/* currently static will later come from the users data */}
           <section className="payment-card" aria-label="Payment method">
             <div className="payment-details">
               <span className="payment-icon" aria-hidden="true">
