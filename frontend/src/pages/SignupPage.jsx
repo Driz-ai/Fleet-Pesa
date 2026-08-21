@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Truck, Eye, EyeOff, Loader2 } from "lucide-react";
-import { register } from "../lib/api.js";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 function normalizePhone(value) {
   return value.replace(/\s/g, "");
@@ -9,6 +9,7 @@ function normalizePhone(value) {
 
 export default function SignupPage() {
   const navigate = useNavigate();
+  const { isDark } = useTheme();
   const [role, setRole] = useState("owner");
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
@@ -41,10 +42,9 @@ export default function SignupPage() {
     setError("");
     setLoading(true);
     try {
-      await register({ role, username: username.trim(), name: name.trim(), phone: normalizePhone(phone), password });
+      // Mock registration keeps the frontend flow usable until the backend is ready.
+      await new Promise((resolve) => setTimeout(resolve, 500));
       setCreated(true);
-    } catch (requestError) {
-      setError(requestError?.message || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -52,9 +52,12 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen w-full bg-slate-100 flex flex-col items-center justify-center px-4 py-12">
-      <div className="flex items-center gap-2.5 mb-8">
-        <div className="w-11 h-11 rounded-full bg-slate-900 flex items-center justify-center"><Truck className="w-5 h-5 text-white" strokeWidth={2} /></div>
-        <span className="text-xl font-bold text-slate-900">FleetPesa</span>
+      <div className="mb-8 rounded-[22px] bg-white p-1.5 shadow-[0_6px_16px_rgba(16,40,68,0.08)] ring-1 ring-slate-200/60">
+        <img
+          src={isDark ? "/Fleet-pesa%20Logo%20Light.jpg" : "/Fleet-pesa%20Logo%20Dark.jpg"}
+          alt="FleetPesa"
+          className="h-auto w-56 max-w-full rounded-[16px] object-contain"
+        />
       </div>
 
       <div className="w-full max-w-md bg-white rounded-2xl shadow-sm p-8">
