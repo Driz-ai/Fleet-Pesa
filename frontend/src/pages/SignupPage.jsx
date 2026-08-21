@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Truck, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext.jsx";
 
 function normalizePhone(value) {
@@ -72,7 +72,9 @@ export default function SignupPage() {
           <>
             <div className="text-center">
               <h1 className="text-2xl font-bold text-slate-900 mb-1">Create your account</h1>
-              <p className="text-slate-500 mb-6">Register to manage your fleet</p>
+              <p className="text-slate-500 mb-6">
+                {role === "driver" ? "Register to account your daily remittance" : "Register to manage your fleet"}
+              </p>
             </div>
 
             <div className="flex bg-slate-100 rounded-lg p-1 mb-6" role="tablist">
@@ -91,7 +93,7 @@ export default function SignupPage() {
               {error && <p className="text-sm text-red-600 mt-2" role="alert">{error}</p>}
               <button type="submit" disabled={loading} className="w-full mt-6 bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">{loading && <Loader2 className="w-4 h-4 animate-spin" />}{loading ? "Creating account..." : "Create Account"}</button>
               <div
-                className="mt-4 flex items-center justify-center gap-2 text-center text-[12px] font-medium text-slate-900"
+                className="trust-line mt-4 flex items-center justify-center gap-2 text-center font-medium text-slate-900"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
                 <span className="flex items-center gap-1.5 whitespace-nowrap">

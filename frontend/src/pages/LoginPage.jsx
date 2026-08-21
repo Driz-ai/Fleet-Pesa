@@ -75,7 +75,9 @@ export default function LoginPage() {
       <div className="login-card w-full max-w-md rounded-2xl shadow-sm p-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-slate-900 mb-1">Welcome back</h1>
-          <p className="text-slate-500 mb-6">Sign in to your fleet dashboard</p>
+          <p className="text-slate-500 mb-6">
+            {role === "driver" ? "Sign in to your remittance dashboard" : "Sign in to your fleet dashboard"}
+          </p>
         </div>
 
         {success && <p className="text-sm text-emerald-600 mb-4" role="status">{success}</p>}
@@ -177,7 +179,7 @@ export default function LoginPage() {
           </button>
 
           <div
-            className="mt-4 flex items-center justify-center gap-2 text-center text-[12px] font-medium text-slate-900"
+            className="trust-line mt-4 flex items-center justify-center gap-2 text-center font-medium text-slate-900"
             style={{ fontFamily: "Inter, sans-serif" }}
           >
             <span className="flex items-center gap-1.5 whitespace-nowrap">
