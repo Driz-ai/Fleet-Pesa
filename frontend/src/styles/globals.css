@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
 
 @theme {
   --font-sans: "Inter", "Segoe UI", sans-serif;
@@ -30,6 +30,9 @@ body {
 .login-page {
   background: var(--canvas);
   color: var(--foreground);
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
   transition: background-color 180ms ease, color 180ms ease;
 }
 
@@ -59,7 +62,39 @@ body {
   background: transparent;
   border: 0;
   font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
+}
+
+.login-card h1 {
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+.login-card > div:first-child p,
+.login-card > p {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.login-card label {
+  font-size: 0.8125rem;
+  line-height: 1.25;
+}
+
+.login-card input {
+  min-height: 2.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.login-card [role="tab"] {
+  font-size: 0.9375rem;
+}
+
+.login-card .trust-line {
+  font-size: 0.75rem;
+  line-height: 1.25rem;
 }
 
 .forgot-password:hover {

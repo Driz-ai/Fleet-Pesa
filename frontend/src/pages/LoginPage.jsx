@@ -175,6 +175,14 @@ export default function LoginPage() {
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             {loading ? "Signing in..." : "Sign In"}
           </button>
+
+          <div className="trust-line mt-4 flex flex-wrap items-center justify-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-center text-xs font-medium text-slate-400">
+            <span className="flex items-center gap-1 whitespace-nowrap"><i className="h-2 w-2 rounded-full bg-green-600" />Secure</span>
+            <span aria-hidden="true">•</span>
+            <span className="flex items-center gap-1 whitespace-nowrap"><i className="h-2 w-2 rounded-full bg-green-600" />Instant M-Pesa</span>
+            <span aria-hidden="true">•</span>
+            <span className="flex items-center gap-1 whitespace-nowrap"><i className="h-2 w-2 rounded-full bg-green-600" />Built for Kenyan fleets</span>
+          </div>
         </form>
 
         <p className="text-center text-sm text-slate-500 mt-6">
