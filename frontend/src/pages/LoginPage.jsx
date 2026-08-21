@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 export function normalizePhone(value) {
   return value.replace(/\s/g, "");
@@ -11,6 +12,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuth();
+  const { isDark } = useTheme();
   const [role, setRole] = useState("owner");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -64,7 +66,7 @@ export default function LoginPage() {
     <div className="login-page min-h-screen w-full flex flex-col items-center justify-center px-4 py-12">
       <div className="mb-8 rounded-[22px] bg-white p-1.5 shadow-[0_6px_16px_rgba(16,40,68,0.08)] ring-1 ring-slate-200/60">
         <img
-          src="/Fleet-pesa%20Logo%20Dark.jpg"
+          src={isDark ? "/Fleet-pesa%20Logo%20Light.jpg" : "/Fleet-pesa%20Logo%20Dark.jpg"}
           alt="FleetPesa"
           className="h-auto w-56 max-w-full rounded-[16px] object-contain"
         />
