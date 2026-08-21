@@ -47,9 +47,32 @@ function RevenueTooltip({ active, payload, label }) {
 export function Owner() {
 	const [showShortfall, setShowShortfall] = useState(true)
 	const [isResolved, setIsResolved] = useState(false)
+	const hasShortfall = !isResolved && true
 
 	return (
 		<div className="owner-dashboard">
+			{hasShortfall && (
+				<section className={`${isResolved ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-amber-50'} mt-0 mb-6 rounded-2xl p-4 shadow-sm`}>
+					<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+						<div>
+							<p className={`text-xs font-semibold uppercase tracking-[0.12em] ${isResolved ? 'text-emerald-700' : 'text-amber-700'}`}>
+								{isResolved ? 'Resolved shortfall' : 'Shortfall alert'}
+							</p>
+							<h3 className="mt-1 text-lg font-bold text-slate-900">
+								{isResolved ? 'Peter Omondi remittance has been resolved' : 'Peter Omondi has a remittance gap'}
+							</h3>
+						</div>
+						<button
+							type="button"
+							onClick={() => setShowShortfall(true)}
+							className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+						>
+							{isResolved ? 'View resolved record' : 'View details'}
+						</button>
+					</div>
+				</section>
+			)}
+
 			<section className="revenue-card" aria-labelledby="weekly-revenue-title">
 				<div className="card-heading">
 					<div>
@@ -78,26 +101,6 @@ export function Owner() {
 							<Line type="monotone" dataKey="revenue" stroke="#203f68" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: '#0ca653', strokeWidth: 0 }} />
 						</LineChart>
 					</ResponsiveContainer>
-				</div>
-			</section>
-
-			<section className={`${isResolved ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-amber-50'} mt-6 rounded-2xl p-4 shadow-sm`}>
-				<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-					<div>
-						<p className={`text-xs font-semibold uppercase tracking-[0.12em] ${isResolved ? 'text-emerald-700' : 'text-amber-700'}`}>
-							{isResolved ? 'Resolved shortfall' : 'Shortfall alert'}
-						</p>
-						<h3 className="mt-1 text-lg font-bold text-slate-900">
-							{isResolved ? 'Peter Omondi remittance has been resolved' : 'Peter Omondi has a remittance gap'}
-						</h3>
-					</div>
-					<button
-						type="button"
-						onClick={() => setShowShortfall(true)}
-						className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
-					>
-						{isResolved ? 'View resolved record' : 'View details'}
-					</button>
 				</div>
 			</section>
 
