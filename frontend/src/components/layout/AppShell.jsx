@@ -1,10 +1,15 @@
 import { Bell, CircleHelp, Moon, Sun } from 'lucide-react'
+import { useMemo } from 'react'
 import { Owner } from '../Dashboard/Owner'
 import { Sidebar } from './Sidebar'
 import { useTheme } from '../../context/ThemeContext.jsx'
 
 export function AppShell() {
 	const { isDark, toggleTheme } = useTheme()
+	const todayLabel = useMemo(
+		() => new Intl.DateTimeFormat('en-KE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date()),
+		[]
+	)
 
 	return (
 		<div className="app-shell">
@@ -13,7 +18,7 @@ export function AppShell() {
 				<header className="topbar">
 					<div>
 						<h1>Dashboard</h1>
-						<p>Thursday, 20 August 2026</p>
+						<p>{todayLabel}</p>
 					</div>
 					<div className="topbar-actions">
 						<button className="icon-button theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`} title={`Switch to ${isDark ? 'light' : 'dark'} mode`}>

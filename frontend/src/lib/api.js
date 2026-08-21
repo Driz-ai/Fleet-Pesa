@@ -84,10 +84,25 @@ export function resetPassword({ phone, resetToken, password }) {
   });
 }
 
+// Frontend-only mock for remittance shortfall updates until the backend exposes this endpoint.
+export function updateRemittance(remittanceId, updates = {}) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        id: remittanceId,
+        ...updates,
+        updated_at: new Date().toISOString(),
+        status: "resolved",
+      });
+    }, 400);
+  });
+}
+
 export default {
   login,
   register,
   requestPasswordOtp,
   verifyPasswordOtp,
   resetPassword,
+  updateRemittance,
 };

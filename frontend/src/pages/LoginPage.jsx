@@ -75,7 +75,9 @@ export default function LoginPage() {
       <div className="login-card w-full max-w-md rounded-2xl shadow-sm p-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-slate-900 mb-1">Welcome back</h1>
-          <p className="text-slate-500 mb-6">Sign in to your fleet dashboard</p>
+          <p className="text-slate-500 mb-6">
+            {role === "driver" ? "Sign in to your remittance dashboard" : "Sign in to your fleet dashboard"}
+          </p>
         </div>
 
         {success && <p className="text-sm text-emerald-600 mb-4" role="status">{success}</p>}
@@ -176,7 +178,7 @@ export default function LoginPage() {
             {loading ? "Signing in..." : "Sign In"}
           </button>
 
-          <div className="trust-line mt-4 flex flex-wrap items-center justify-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-center text-xs font-medium text-slate-400">
+          <div className="trust-line mt-4 flex flex-wrap items-center justify-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-center text-xs font-large text-slate-900">
             <span className="flex items-center gap-1 whitespace-nowrap"><i className="h-2 w-2 rounded-full bg-green-600" />Secure</span>
             <span aria-hidden="true">•</span>
             <span className="flex items-center gap-1 whitespace-nowrap"><i className="h-2 w-2 rounded-full bg-green-600" />Instant M-Pesa</span>
