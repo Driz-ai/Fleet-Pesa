@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Phone, Truck } from "lucide-react";
 import { useAuth } from "../../context/AuthContext.jsx";
 
+import { StatCard } from "../shared/StatCard";
 export default function Driver(){
     const navigate = useNavigate()
     const { user, logout } = useAuth()
@@ -68,7 +69,7 @@ if (status === "success") {
         <button
           className="submit-another-button"
           type="button"
-          onClick={handleSubmitAnother}
+          onClick={handleSubmitAnother}                                                                                                                                                                                                                                                                                                                                                              
         >
           Submit Another
         </button>
@@ -126,6 +127,8 @@ if (status === "success") {
               <strong className="expected-amount">KES 4,500</strong>
             </div>
             <p className="amount-help" id="amount-help">Enter the amount you are remitting in Kenyan shillings.</p>
+            <StatCard label="Expected today"
+            value="KES 4500"/>
           </section>
 
           <section className="quick-section" aria-labelledby="quick-select-title">
