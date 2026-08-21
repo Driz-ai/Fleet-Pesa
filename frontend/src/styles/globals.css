@@ -1,5 +1,6 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
+
 @theme {
   --font-sans: "Inter", "Segoe UI", sans-serif;
   --color-fleet-navy: #102844;
@@ -13,17 +14,169 @@
 
 html {
   min-width: 320px;
-  background: var(--color-fleet-canvas);
+  background: var(--canvas);
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: var(--color-fleet-canvas);
-  color: var(--color-fleet-navy);
+  background: var(--canvas);
+  color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+.login-page {
+  background: var(--canvas);
+  color: var(--foreground);
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.login-card {
+  background: var(--background);
+  color: var(--foreground);
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.auth-success {
+  margin: 16px;
+  padding: 10px 16px;
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+:root[data-theme="dark"] .auth-success {
+  color: #bbf7d0;
+  background: #14532d;
+  border-color: #22c55e;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.forgot-password {
+  display: block;
+  margin: 8px 0 0 auto;
+  padding: 0;
+  color: #64748b;
+  background: transparent;
+  border: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.login-card h1 {
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+.login-card > div:first-child p,
+.login-card > p {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.login-card label {
+  font-size: 0.8125rem;
+  line-height: 1.25;
+}
+
+.login-card input {
+  min-height: 2.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.login-card [role="tab"] {
+  font-size: 0.9375rem;
+}
+
+.login-card .trust-line {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.forgot-password:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.theme-toggle:hover {
+  border-color: var(--primary);
+}
+
+:root[data-theme="dark"] .login-card .text-slate-900,
+:root[data-theme="dark"] .login-card .text-slate-500,
+:root[data-theme="dark"] .login-card .text-slate-400 {
+  color: var(--foreground);
+}
+
+:root[data-theme="dark"] .login-card .bg-white {
+  background: #1b2d43;
+}
+
+:root[data-theme="dark"] .login-card .bg-slate-100 {
+  background: #20364f;
+}
+
+:root[data-theme="dark"] .login-card input {
+  color: var(--foreground);
+  background: #16283d;
+  border-color: #38536f;
+}
+
+:root[data-theme="dark"] .login-card input::placeholder {
+  color: #9eb0c5;
+}
+
+:root[data-theme="dark"] .login-card .text-red-600 {
+  color: #ff9ca5;
+}
+
+:root[data-theme="dark"] .login-card .text-emerald-600 {
+  color: #72e2a0;
+}
+
+:root[data-theme="dark"] .topbar {
+  background: var(--background);
+  border-color: #2d435b;
+}
+
+:root[data-theme="dark"] .topbar h1,
+:root[data-theme="dark"] .card-heading h2 {
+  color: #edf4fb;
+}
+
+:root[data-theme="dark"] .topbar p,
+:root[data-theme="dark"] .card-heading p,
+:root[data-theme="dark"] .chart-legend,
+:root[data-theme="dark"] .topbar-actions {
+  color: #b6c7d9;
+}
+
+:root[data-theme="dark"] .revenue-card,
+:root[data-theme="dark"] .remittances-card {
+  background: #14263a;
+  border-color: #2d435b;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 button,

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Truck, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 export function normalizePhone(value) {
   return value.replace(/\s/g, "");
@@ -11,6 +12,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuth();
+  const { isDark } = useTheme();
   const [role, setRole] = useState("owner");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -19,10 +21,16 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(location.state?.success || "");
 
+  useEffect(() => {
+    if (!success) return undefined;
+    const timeoutId = window.setTimeout(() => setSuccess(""), 5000);
+    return () => window.clearTimeout(timeoutId);
+  }, [success]);
+
   const validate = () => {
     const cleanPhone = normalizePhone(phone);
     if (!/^07\d{8}$/.test(cleanPhone)) {
-      return "Enter a valid phone number, e.g. 0708419329";
+      return "Enter a valid phone number, e.g. 0712345678";
     }
     if (password.length < 6) {
       return "Password must be at least 6 characters";
@@ -52,7 +60,10 @@ export default function LoginPage() {
       const destination = role === "driver"
         ? "/driver/remittance"
         : "/owner/dashboard";
-      navigate(destination, { replace: true });
+      navigate(destination, {
+        replace: true,
+        state: { success: "Successfully signed in." },
+      });
     } catch (err) {
       setError(err?.message || "Sign in failed. Check your details and try again.");
     } finally {
@@ -61,18 +72,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-100 flex flex-col items-center justify-center px-4 py-12">
-      <div className="flex items-center gap-2.5 mb-8">
-        <div className="w-11 h-11 rounded-full bg-slate-900 flex items-center justify-center">
-          <Truck className="w-5 h-5 text-white" strokeWidth={2} />
-        </div>
-        <span className="text-xl font-bold text-slate-900">FleetPesa</span>
+    <div className="login-page min-h-screen w-full flex flex-col items-center justify-center px-4 py-12">
+      <div className="mb-8 rounded-[22px] bg-white p-1.5 shadow-[0_6px_16px_rgba(16,40,68,0.08)] ring-1 ring-slate-200/60">
+        <img
+          src={isDark ? "/Fleet-pesa%20Logo%20Light.jpg" : "/Fleet-pesa%20Logo%20Dark.jpg"}
+          alt="FleetPesa"
+          className="h-auto w-56 max-w-full rounded-[16px] object-contain"
+        />
       </div>
 
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm p-8">
+      <div className="login-card w-full max-w-md rounded-2xl shadow-sm p-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-slate-900 mb-1">Welcome back</h1>
-          <p className="text-slate-500 mb-6">Sign in to your fleet dashboard</p>
+          <p className="text-slate-500 mb-6">
+            {role === "driver" ? "Sign in to your remittance dashboard" : "Sign in to your fleet dashboard"}
+          </p>
         </div>
 
         {success && <p className="text-sm text-emerald-600 mb-4" role="status">{success}</p>}
@@ -150,6 +164,14 @@ export default function LoginPage() {
             </div>
           </div>
 
+          <button
+            type="button"
+            className="forgot-password"
+            onClick={() => navigate("/forgot-password")}
+          >
+            Forgot password?
+          </button>
+
           {error && (
             <p className="text-sm text-red-600 mt-2" role="alert">
               {error}
@@ -164,6 +186,42 @@ export default function LoginPage() {
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             {loading ? "Signing in..." : "Sign In"}
           </button>
+
+          <div
+            className="trust-line mt-4 flex items-center justify-center gap-2 text-center font-medium text-slate-900"
+            style={{ fontFamily: "Inter, sans-serif" }}
+          >
+            <span className="flex items-center gap-1.5 whitespace-nowrap">
+              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#16A34A] text-white">
+                <svg viewBox="0 0 20 20" className="h-2.5 w-2.5" fill="none" aria-hidden="true">
+                  <path d="M5.5 10.5L8.5 13.5L14.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              Secure
+            </span>
+
+            <span aria-hidden="true" className="text-slate-900">•</span>
+
+            <span className="flex items-center gap-1.5 whitespace-nowrap">
+              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#16A34A] text-white">
+                <svg viewBox="0 0 20 20" className="h-2.5 w-2.5" fill="none" aria-hidden="true">
+                  <path d="M5.5 10.5L8.5 13.5L14.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              Instant M-Pesa
+            </span>
+
+            <span aria-hidden="true" className="text-slate-900">•</span>
+
+            <span className="flex items-center gap-1.5 whitespace-nowrap">
+              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#16A34A] text-white">
+                <svg viewBox="0 0 20 20" className="h-2.5 w-2.5" fill="none" aria-hidden="true">
+                  <path d="M5.5 10.5L8.5 13.5L14.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              Built for Kenyan fleets
+            </span>
+          </div>
         </form>
 
         <p className="text-center text-sm text-slate-500 mt-6">
