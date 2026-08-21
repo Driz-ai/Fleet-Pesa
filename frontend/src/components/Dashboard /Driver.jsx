@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Moon, Phone, Sun, Truck } from "lucide-react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useTheme } from "../../context/ThemeContext.jsx";
+import FarePaymentModal from "../../features/paymentPrompt/FarePaymentModal.jsx";
 
 export default function Driver(){
   const location = useLocation()
@@ -13,6 +14,7 @@ export default function Driver(){
     const [amount,setAmount] = useState("")
     const [status,setStatus] = useState("idle")
     const [paymentPhone, setPaymentPhone] = useState(user?.phone || "0712345678")
+    const [showFarePaymentModal, setShowFarePaymentModal] = useState(false)
     const quickAmounts = [1500,3000,4500]
 
     useEffect(() => {
@@ -197,7 +199,21 @@ if (status === "success") {
               ?`Submit KES ${Number(amount).toLocaleString()}`
               : "Enter an amount"}
           </button>
+
+          <button
+            className="w-full rounded-2xl border-0 bg-[#16A34A] px-5 py-4 text-base font-bold text-white transition hover:bg-[#15803D] focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
+            type="button"
+            onClick={() => setShowFarePaymentModal(true)}
+          >
+            Prompt Fare Payment
+          </button>
         </main>
+        {showFarePaymentModal && (
+          <FarePaymentModal
+            defaultPhone={paymentPhone}
+            onClose={() => setShowFarePaymentModal(false)}
+          />
+        )}
       </div>
     )
 }

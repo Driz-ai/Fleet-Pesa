@@ -1,0 +1,211 @@
+import { Check, CircleAlert, Loader2, X } from "lucide-react";
+import { useState } from "react";
+
+const quickAmounts = [50, 100, 150, 200, 300];
+
+const initialPrompts = [
+  { id: 1, time: "10:42 AM", amount: 150, phone: "+254 712  ••  84", status: "Paid" },
+  { id: 2, time: "9:18 AM", amount: 100, phone: "+254 701  ••  26", status: "Pending" },
+];
+
+function formatAmount(value) {
+  return Number(value || 0).toLocaleString("en-KE");
+}
+
+function maskPhone(value) {
+  const digits = value.replace(/\D/g, "");
+  if (digits.length < 7) return value;
+  return `+254 ${digits.slice(-9, -6)}  ••  ${digits.slice(-2)}`;
+}
+
+function normalizePhone(value) {
+  const digits = value.replace(/\D/g, "");
+  if (digits.startsWith("254")) return digits.slice(3);
+  if (digits.startsWith("0")) return digits.slice(1);
+  return digits;
+}
+
+export default function FarePaymentModal({ onClose, defaultPhone = "" }) {
+  const [amount, setAmount] = useState("100");
+  const [phone, setPhone] = useState(normalizePhone(defaultPhone));
+  const [status, setStatus] = useState("idle");
+  const [prompts, setPrompts] = useState(initialPrompts);
+
+  const cleanPhone = phone.replace(/\D/g, "");
+  const isValid = Number(amount) > 0 && /^7\d{8}$/.test(cleanPhone);
+
+  const handleSendPrompt = async () => {
+    if (!isValid) return;
+
+    setStatus("loading");
+    try {
+      await new Promise((resolve) => window.setTimeout(resolve, 900));
+      setPrompts((current) => [
+        {
+          id: Date.now(),
+          time: new Intl.DateTimeFormat("en-KE", {
+            hour: "numeric",
+            minute: "2-digit",
+          }).format(new Date()),
+          amount: Number(amount),
+          phone: maskPhone(cleanPhone),
+          status: "Paid",
+        },
+        ...current,
+      ]);
+      setStatus("success");
+    } catch {
+      setStatus("failed");
+    }
+  };
+
+  const handleRetry = () => {
+    setStatus("idle");
+    handleSendPrompt();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#0F2440]/55 p-0 sm:items-center sm:p-5" role="presentation">
+      <div
+        className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="fare-payment-title"
+      >
+        <div className="flex items-start justify-between border-b border-black/[0.06] px-5 py-5 sm:px-6">
+          <div>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">M-Pesa collection</p>
+            <h2 id="fare-payment-title" className="text-xl font-bold text-[#0F2440]">Request Fare Payment</h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={status === "loading"}
+            className="grid size-9 place-items-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-[#0F2440] disabled:opacity-50"
+            aria-label="Close fare payment prompt"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="space-y-5 px-5 py-5 sm:px-6">
+          {status === "success" ? (
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-center" role="status">
+              <div className="mx-auto grid size-12 place-items-center rounded-full bg-[#16A34A] text-white">
+                <Check size={26} strokeWidth={2.5} />
+              </div>
+              <p className="mt-3 text-sm font-semibold text-emerald-800">
+                Payment received — KES {formatAmount(amount)} added to today's remittance
+              </p>
+              <button
+                type="button"
+                onClick={() => setStatus("idle")}
+                className="mt-4 text-sm font-bold text-[#1E3A5F] underline underline-offset-2"
+              >
+                Send another prompt
+              </button>
+            </div>
+          ) : status === "failed" ? (
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-5" role="alert">
+              <div className="flex items-start gap-3 text-red-700">
+                <CircleAlert className="mt-0.5 shrink-0" size={20} />
+                <div>
+                  <p className="font-semibold">Payment prompt failed</p>
+                  <p className="mt-1 text-sm">We couldn't reach the customer. Check the number and try again.</p>
+                  <button type="button" onClick={handleRetry} className="mt-3 text-sm font-bold underline underline-offset-2">
+                    Retry
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div>
+                <label htmlFor="fare-amount" className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-600">Fare amount</label>
+                <div className="flex items-center rounded-xl border border-slate-200 px-4 focus-within:ring-2 focus-within:ring-[#1E3A5F]">
+                  <span className="font-semibold text-slate-400">KES</span>
+                  <input
+                    id="fare-amount"
+                    type="number"
+                    min="1"
+                    inputMode="numeric"
+                    value={amount}
+                    onChange={(event) => setAmount(event.target.value)}
+                    className="w-full border-0 px-3 py-3 font-mono text-lg font-bold text-[#0F2440] outline-none focus:ring-0"
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="customer-phone" className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-600">Customer phone</label>
+                <div className="flex items-center rounded-xl border border-slate-200 px-4 focus-within:ring-2 focus-within:ring-[#1E3A5F]">
+                  <span className="font-mono font-semibold text-slate-400">+254</span>
+                  <input
+                    id="customer-phone"
+                    type="tel"
+                    inputMode="tel"
+                    value={phone}
+                    onChange={(event) => setPhone(event.target.value.replace(/\D/g, "").replace(/^254/, ""))}
+                    className="w-full border-0 px-3 py-3 font-mono text-base text-[#0F2440] outline-none focus:ring-0"
+                    placeholder="712345678"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-600">Quick amount</p>
+                <div className="flex flex-wrap gap-2">
+                  {quickAmounts.map((quickAmount) => (
+                    <button
+                      key={quickAmount}
+                      type="button"
+                      onClick={() => setAmount(String(quickAmount))}
+                      className={`rounded-xl border px-4 py-2 font-mono text-sm font-bold transition ${Number(amount) === quickAmount ? "border-[#16A34A] bg-[#16A34A] text-white" : "border-slate-200 bg-white text-slate-600 hover:border-[#16A34A] hover:text-[#16A34A]"}`}
+                      aria-pressed={Number(amount) === quickAmount}
+                    >
+                      KES {quickAmount}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="button"
+                  onClick={handleSendPrompt}
+                  disabled={!isValid || status === "loading"}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1E3A5F] px-4 py-3.5 font-semibold text-white transition hover:bg-[#0F2440] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {status === "loading" && <Loader2 size={18} className="animate-spin" />}
+                  {status === "loading" ? "Sending…" : "Send M-Pesa Prompt"}
+                </button>
+                <p className="mt-2 text-center text-xs text-slate-500">Customer will receive an STK push on their phone</p>
+              </div>
+            </>
+          )}
+
+          <section className="border-t border-black/[0.06] pt-5" aria-labelledby="recent-fare-prompts-title">
+            <div className="mb-3 flex items-center justify-between">
+              <h3 id="recent-fare-prompts-title" className="text-sm font-bold text-[#0F2440]">Recent Fare Prompts</h3>
+              <span className="text-xs text-slate-400">Today</span>
+            </div>
+            <div className="divide-y divide-slate-100">
+              {prompts.map((prompt) => (
+                <div key={prompt.id} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+                  <div className="min-w-0">
+                    <p className="font-mono text-sm font-bold text-[#0F2440]">KES {formatAmount(prompt.amount)}</p>
+                    <p className="mt-0.5 truncate text-xs text-slate-500">{prompt.time} · {prompt.phone}</p>
+                  </div>
+                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase ${prompt.status === "Paid" ? "bg-emerald-50 text-emerald-700" : prompt.status === "Pending" ? "bg-amber-50 text-amber-700" : "bg-red-50 text-red-700"}`}>
+                    {prompt.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  );
+}
