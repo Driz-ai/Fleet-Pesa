@@ -85,6 +85,37 @@ export function Owner() {
 					</ResponsiveContainer>
 				</div>
 			</section>
+
+			<section className="remittances-card" aria-labelledby="remittances-title">
+				<div className="table-heading">
+					<div>
+						<h2 id="remittances-title">Driver Remittances</h2>
+						<p>Today's collection status</p>
+					</div>
+					<button className="filter-button" type="button" aria-label="Filter remittances">Filter</button>
+				</div>
+				<div className="remittances-table-wrap">
+					<table className="remittances-table">
+						<thead>
+							<tr>
+								<th>Driver</th><th>Vehicle</th><th>Collected</th><th>Status</th><th>Time</th><th aria-label="Actions" />
+							</tr>
+						</thead>
+						<tbody>
+							{driverRemittances.map((driver) => (
+								<tr key={driver.vehicle}>
+									<td><div className="driver-cell"><span className="driver-table-avatar">{driver.initials}</span><span><strong>{driver.name}</strong><small>{driver.type}</small></span></div></td>
+									<td className="vehicle-cell">{driver.vehicle}</td>
+									<td><strong className="collected-amount">{formatAmount(driver.collected)}</strong><small className="expected-label">of {formatAmount(driver.expected)}</small></td>
+									<td><span className={statusClass(driver.status)}>{driver.status}</span></td>
+									<td className="time-cell">{driver.time}</td>
+									<td className="action-cell">{driver.action && <button className="review-button" type="button">{driver.action}</button>}</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			</section>
 		</div>
 	)
 }
