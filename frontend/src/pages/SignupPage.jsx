@@ -25,7 +25,7 @@ export default function SignupPage() {
   function validate() {
     if (username.trim().length < 3) return "Username must be at least 3 characters";
     if (!name.trim()) return "Enter your full name";
-    if (!/^07\d{8}$/.test(normalizePhone(phone))) return "Enter a valid phone number, e.g. 0708419329";
+    if (!/^07\d{8}$/.test(normalizePhone(phone))) return "Enter a valid phone number, e.g. 0712345678";
     if (password.length < 6) return "Password must be at least 6 characters";
     if (password !== confirmPassword) return "Passwords do not match";
     return "";
