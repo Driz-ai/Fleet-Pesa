@@ -67,16 +67,16 @@ export default function ShortfallModal({ remittance, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-      <div className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-[0_24px_60px_rgba(15,23,42,0.18)] ring-1 ring-slate-200">
-        <div className="flex items-start justify-between border-b border-slate-200 px-5 py-4">
-          <div className="flex items-center gap-3">
-            <Avatar name={remittance.driver_name || "Driver"} size="md" className="bg-slate-800" />
-            <div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-900/50 p-3 sm:p-4">
+      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white shadow-[0_24px_60px_rgba(15,23,42,0.18)] ring-1 ring-slate-200">
+        <div className="flex items-start justify-between gap-3 border-b border-slate-200 px-4 py-4 sm:px-5">
+          <div className="flex items-center gap-3 min-w-0">
+            <Avatar name={remittance.driver_name || "Driver"} size="md" className="bg-slate-800 shrink-0" />
+            <div className="min-w-0">
               <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
                 Driver Shortfall
               </p>
-              <h2 className="text-lg font-bold text-slate-900">{remittance.driver_name || "Driver"}</h2>
+              <h2 className="truncate text-lg font-bold text-slate-900">{remittance.driver_name || "Driver"}</h2>
             </div>
           </div>
 
@@ -84,13 +84,13 @@ export default function ShortfallModal({ remittance, onClose }) {
             type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+            className="shrink-0 rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
           >
             <span className="text-2xl leading-none">×</span>
           </button>
         </div>
 
-        <div className="space-y-5 p-5">
+        <div className="space-y-5 p-4 sm:p-5">
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge label="Pending review" tone="amber" />
             <UrgencyBadge label="Critical" tone="critical" />
@@ -164,7 +164,7 @@ export default function ShortfallModal({ remittance, onClose }) {
                 type="button"
                 onClick={handleFlagFollowUp}
                 disabled={isSubmitting}
-                className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
               >
                 {isSubmitting ? "Flagging..." : "Flag for Follow-up"}
               </button>
