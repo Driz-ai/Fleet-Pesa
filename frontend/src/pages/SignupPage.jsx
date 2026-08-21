@@ -124,7 +124,7 @@ export default function SignupPage() {
                       <path d="M5.5 10.5L8.5 13.5L14.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </span>
-                  Built for Kenyan fleets
+                  Built for Kenyan Fleets
                 </span>
               </div>
             </form>
