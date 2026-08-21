@@ -46,6 +46,7 @@ function RevenueTooltip({ active, payload, label }) {
 
 export function Owner() {
 	const [showShortfall, setShowShortfall] = useState(true)
+	const [isResolved, setIsResolved] = useState(false)
 
 	return (
 		<div className="owner-dashboard">
@@ -80,24 +81,32 @@ export function Owner() {
 				</div>
 			</section>
 
-			<section className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
+			<section className={`${isResolved ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-amber-50'} mt-6 rounded-2xl p-4 shadow-sm`}>
 				<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 					<div>
-						<p className="text-xs font-semibold uppercase tracking-[0.12em] text-amber-700">Shortfall alert</p>
-						<h3 className="mt-1 text-lg font-bold text-slate-900">Peter Omondi has a remittance gap</h3>
+						<p className={`text-xs font-semibold uppercase tracking-[0.12em] ${isResolved ? 'text-emerald-700' : 'text-amber-700'}`}>
+							{isResolved ? 'Resolved shortfall' : 'Shortfall alert'}
+						</p>
+						<h3 className="mt-1 text-lg font-bold text-slate-900">
+							{isResolved ? 'Peter Omondi remittance has been resolved' : 'Peter Omondi has a remittance gap'}
+						</h3>
 					</div>
 					<button
 						type="button"
 						onClick={() => setShowShortfall(true)}
 						className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
 					>
-						View details
+						{isResolved ? 'View resolved record' : 'View details'}
 					</button>
 				</div>
 			</section>
 
 			{showShortfall && (
-				<ShortfallModal remittance={sampleShortfall} onClose={() => setShowShortfall(false)} />
+				<ShortfallModal
+					remittance={sampleShortfall}
+					onClose={() => setShowShortfall(false)}
+					onResolved={() => setIsResolved(true)}
+				/>
 			)}
 		</div>
 	)

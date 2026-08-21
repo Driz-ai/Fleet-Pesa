@@ -22,7 +22,7 @@ const formatTimestamp = (timestamp) => {
   }).format(date);
 };
 
-export default function ShortfallModal({ remittance, onClose }) {
+export default function ShortfallModal({ remittance, onClose, onResolved }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const [resolved, setResolved] = useState(false);
@@ -53,6 +53,9 @@ export default function ShortfallModal({ remittance, onClose }) {
     try {
       await api.updateRemittance(remittance.id, { flagged_for_followup: false, resolved: true });
       setResolved(true);
+      if (typeof onResolved === "function") {
+        onResolved();
+      }
       setStatus({
         type: "success",
         message: "This shortfall has been marked as resolved.",
