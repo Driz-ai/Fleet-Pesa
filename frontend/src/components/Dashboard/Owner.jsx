@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
 	CartesianGrid,
 	Line,
@@ -7,6 +8,7 @@ import {
 	XAxis,
 	YAxis,
 } from 'recharts'
+import ShortfallModal from '../../features/shortfall/ShortfallModal.jsx'
 
 const weeklyRevenue = [
 	{ day: 'Mon', revenue: 38000 },
@@ -17,6 +19,15 @@ const weeklyRevenue = [
 	{ day: 'Sat', revenue: 62000 },
 	{ day: 'Sun', revenue: 48000 },
 ]
+
+const sampleShortfall = {
+	id: 'rem-1042',
+	driver_name: 'Peter Omondi',
+	vehicle: 'KCA 482Q',
+	expected_amount: 24000,
+	actual_amount: 14600,
+	timestamp: '2026-08-21T08:40:00Z',
+}
 
 function formatCurrency(value) {
 	return `KES ${value.toLocaleString('en-KE')}`
@@ -34,6 +45,8 @@ function RevenueTooltip({ active, payload, label }) {
 }
 
 export function Owner() {
+	const [showShortfall, setShowShortfall] = useState(true)
+
 	return (
 		<div className="owner-dashboard">
 			<section className="revenue-card" aria-labelledby="weekly-revenue-title">
@@ -66,6 +79,26 @@ export function Owner() {
 					</ResponsiveContainer>
 				</div>
 			</section>
+
+			<section className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
+				<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+					<div>
+						<p className="text-xs font-semibold uppercase tracking-[0.12em] text-amber-700">Shortfall alert</p>
+						<h3 className="mt-1 text-lg font-bold text-slate-900">Peter Omondi has a remittance gap</h3>
+					</div>
+					<button
+						type="button"
+						onClick={() => setShowShortfall(true)}
+						className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+					>
+						View details
+					</button>
+				</div>
+			</section>
+
+			{showShortfall && (
+				<ShortfallModal remittance={sampleShortfall} onClose={() => setShowShortfall(false)} />
+			)}
 		</div>
 	)
 }
