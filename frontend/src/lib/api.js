@@ -59,7 +59,35 @@ export function register({ role, username, name, phone, password }) {
   });
 }
 
+// Expected password recovery contract: the backend sends a six-digit OTP to phone.
+export function requestPasswordOtp({ phone }) {
+  return request("/auth/password/otp/request", {
+    method: "POST",
+    body: { phone },
+    auth: false,
+  });
+}
+
+export function verifyPasswordOtp({ phone, otp }) {
+  return request("/auth/password/otp/verify", {
+    method: "POST",
+    body: { phone, otp },
+    auth: false,
+  });
+}
+
+export function resetPassword({ phone, resetToken, password }) {
+  return request("/auth/password/reset", {
+    method: "POST",
+    body: { phone, reset_token: resetToken, password },
+    auth: false,
+  });
+}
+
 export default {
   login,
   register,
+  requestPasswordOtp,
+  verifyPasswordOtp,
+  resetPassword,
 };
