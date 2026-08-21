@@ -1,0 +1,27 @@
+.status-badge{
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.status-paid{
+    background-color: #3ee177;
+    color: #166534;
+}
+.status-short{
+    background-color: rgb(242, 242, 188);
+    color: rgb(171, 113, 42);
+
+}
+.status-late{
+    background-color:rgb(231, 133, 133);
+    color:rgb(119, 82, 37) ;
+}
+.status-overdue{
+    background-color: red;
+    color:#991b1b;
+}
+.status-ready{
+    background-color: #dcfce7;
+    color: #166534;
+}

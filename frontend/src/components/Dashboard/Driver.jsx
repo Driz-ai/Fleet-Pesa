@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Phone, Truck } from "lucide-react";
 import { useAuth } from "../../context/AuthContext.jsx";
-
+import { StatusBadge } from "../shared/StatusBadge.jsx";
 import { StatCard } from "../shared/StatCard";
 export default function Driver(){
     const navigate = useNavigate()
@@ -166,7 +166,7 @@ if (status === "success") {
                 />
               </div>
             </div>
-            <span className="ready-badge">Ready</span>
+            <StatusBadge status="Ready"/>
           </section>
 
           <button
