@@ -99,56 +99,70 @@ export default function ShortfallModal({ remittance, onClose, onResolved }) {
             <StatusBadge label={resolved ? "Completed" : "Pending review"} tone={resolved ? "green" : "amber"} />
           </div>
 
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <div className="grid gap-3 sm:grid-cols-2">
+          {resolved ? (
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+              <div className="mb-2 flex items-center gap-2 text-emerald-700">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-lg font-bold">✓</span>
+                <p className="text-sm font-semibold uppercase tracking-[0.12em]">Shortfall resolved</p>
+              </div>
+              <p className="text-sm text-emerald-800">
+                Payment has been confirmed and this shortfall has been marked resolved.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl border border-slate-200 bg-white p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                      Expected
+                    </p>
+                    <p className="mt-2 text-2xl font-bold text-slate-900">{formatCurrency(expectedAmount)}</p>
+                  </div>
+
+                  <div className="rounded-xl border border-red-200 bg-red-50 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-red-600">
+                      Actual
+                    </p>
+                    <p className="mt-2 text-2xl font-bold text-red-700">{formatCurrency(actualAmount)}</p>
+                  </div>
+                </div>
+
+                <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900">
+                  Shortfall: {formatCurrency(shortfall)}
+                </div>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-xl border border-slate-200 bg-white p-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                    Vehicle
+                  </p>
+                  <p className="mt-2 text-base font-semibold text-slate-900">
+                    {remittance.vehicle || "N/A"}
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 bg-white p-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                    Timestamp
+                  </p>
+                  <p className="mt-2 text-sm font-semibold text-slate-900">
+                    {formatTimestamp(remittance.timestamp)}
+                  </p>
+                </div>
+              </div>
+
               <div className="rounded-xl border border-slate-200 bg-white p-3">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                  Expected
+                  Reference
                 </p>
-                <p className="mt-2 text-2xl font-bold text-slate-900">{formatCurrency(expectedAmount)}</p>
-              </div>
-
-              <div className="rounded-xl border border-red-200 bg-red-50 p-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-red-600">
-                  Actual
+                <p className="mt-2 text-sm font-medium text-slate-700">
+                  {remittance.id || "Remittance record"}
                 </p>
-                <p className="mt-2 text-2xl font-bold text-red-700">{formatCurrency(actualAmount)}</p>
               </div>
-            </div>
-
-            <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900">
-              Shortfall: {formatCurrency(shortfall)}
-            </div>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-slate-200 bg-white p-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                Vehicle
-              </p>
-              <p className="mt-2 text-base font-semibold text-slate-900">
-                {remittance.vehicle || "N/A"}
-              </p>
-            </div>
-
-            <div className="rounded-xl border border-slate-200 bg-white p-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                Timestamp
-              </p>
-              <p className="mt-2 text-sm font-semibold text-slate-900">
-                {formatTimestamp(remittance.timestamp)}
-              </p>
-            </div>
-          </div>
-
-          <div className="rounded-xl border border-slate-200 bg-white p-3">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-              Reference
-            </p>
-            <p className="mt-2 text-sm font-medium text-slate-700">
-              {remittance.id || "Remittance record"}
-            </p>
-          </div>
+            </>
+          )}
 
           <div className="pt-1">
             {status.type !== "idle" && (
@@ -162,16 +176,18 @@ export default function ShortfallModal({ remittance, onClose, onResolved }) {
               </p>
             )}
 
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={handleMarkResolved}
-                disabled={isSubmitting || resolved}
-                className="inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-              >
-                {isSubmitting ? "Marking as resolved..." : resolved ? "Resolved" : "Mark as Resolved"}
-              </button>
-            </div>
+            {!resolved && (
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={handleMarkResolved}
+                  disabled={isSubmitting || resolved}
+                  className="inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                >
+                  {isSubmitting ? "Marking as resolved..." : "Mark as Resolved"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
