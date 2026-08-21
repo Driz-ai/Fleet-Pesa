@@ -331,6 +331,13 @@ a {
 .driver-cell strong, .collected-amount { color: #203552; font-size: 15px; }
 .driver-cell small, .expected-label { margin-top: 3px; color: #96a8c0; font-size: 12px; }
 .vehicle-cell, .time-cell { font-family: 'Space Mono', monospace; font-size: 13px !important; }
+.status-badge { display: inline-block; padding: 4px 13px; border: 1px solid; border-radius: 14px; font-size: 13px; font-weight: 600; }
+.status-paid { color: #069447; background: #effcf4; border-color: #b9efce; }
+.status-short { color: #c96b00; background: #fff9e9; border-color: #ffdb76; }
+.status-late { color: #ec5b16; background: #fff7ed; border-color: #ffd0a4; }
+.status-overdue { color: #e31725; background: #fff1f2; border-color: #ffc6ca; }
+.review-button { padding: 8px 16px; color: #f11d2b; background: #fff1f2; border-radius: 17px; font-size: 13px; }
+.action-cell { text-align: right; }
 
 
 @media (max-width: 700px) {
@@ -390,6 +397,10 @@ a {
   .revenue-chart {
     height: 205px;
     margin-top: 12px;
+  }
+
+  .table-heading {
+    padding: 21px 16px 17px;
   }
 
 }
