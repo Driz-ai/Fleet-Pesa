@@ -1,3 +1,5 @@
+import { useState } from "react";
+import * as api from "../../lib/api.js";
 import Avatar from "../../components/shared/Avatar.jsx";
 import StatusBadge from "../../components/shared/StatusBadge.jsx";
 import UrgencyBadge from "../../components/shared/UrgencyBadge.jsx";
@@ -22,11 +24,47 @@ const formatTimestamp = (timestamp) => {
 };
 
 export default function ShortfallModal({ remittance, onClose }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState({ type: "idle", message: "" });
+
   if (!remittance) return null;
 
   const expectedAmount = Number(remittance.expected_amount || 0);
   const actualAmount = Number(remittance.actual_amount || 0);
   const shortfall = Math.max(expectedAmount - actualAmount, 0);
+
+  const handleFlagFollowUp = async () => {
+    if (!remittance?.id) {
+      setStatus({ type: "error", message: "This shortfall record is missing an id, so it cannot be flagged." });
+      return;
+    }
+
+    if (typeof api.updateRemittance !== "function") {
+      setStatus({
+        type: "error",
+        message: "updateRemittance() is missing from lib/api.js. Please add the shared API method before using this action.",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setStatus({ type: "idle", message: "" });
+
+    try {
+      await api.updateRemittance(remittance.id, { flagged_for_followup: true });
+      setStatus({
+        type: "success",
+        message: "This shortfall has been flagged for follow-up.",
+      });
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message: error?.message || "Unable to flag this shortfall. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
@@ -109,13 +147,28 @@ export default function ShortfallModal({ remittance, onClose }) {
             </p>
           </div>
 
-          <div className="flex justify-end pt-1">
-            <button
-              type="button"
-              className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
-            >
-              Flag for Follow-up
-            </button>
+          <div className="pt-1">
+            {status.type !== "idle" && (
+              <p
+                className={`mb-3 text-sm ${
+                  status.type === "success" ? "text-emerald-600" : "text-red-600"
+                }`}
+                role={status.type === "error" ? "alert" : "status"}
+              >
+                {status.message}
+              </p>
+            )}
+
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={handleFlagFollowUp}
+                disabled={isSubmitting}
+                className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isSubmitting ? "Flagging..." : "Flag for Follow-up"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
