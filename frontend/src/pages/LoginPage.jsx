@@ -176,12 +176,40 @@ export default function LoginPage() {
             {loading ? "Signing in..." : "Sign In"}
           </button>
 
-          <div className="trust-line mt-4 flex flex-wrap items-center justify-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-center text-xs font-medium text-slate-400">
-            <span className="flex items-center gap-1 whitespace-nowrap"><i className="h-2 w-2 rounded-full bg-green-600" />Secure</span>
-            <span aria-hidden="true">•</span>
-            <span className="flex items-center gap-1 whitespace-nowrap"><i className="h-2 w-2 rounded-full bg-green-600" />Instant M-Pesa</span>
-            <span aria-hidden="true">•</span>
-            <span className="flex items-center gap-1 whitespace-nowrap"><i className="h-2 w-2 rounded-full bg-green-600" />Built for Kenyan fleets</span>
+          <div
+            className="mt-4 flex items-center justify-center gap-2 text-center text-[12px] font-medium text-slate-900"
+            style={{ fontFamily: "Inter, sans-serif" }}
+          >
+            <span className="flex items-center gap-1.5 whitespace-nowrap">
+              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#16A34A] text-white">
+                <svg viewBox="0 0 20 20" className="h-2.5 w-2.5" fill="none" aria-hidden="true">
+                  <path d="M5.5 10.5L8.5 13.5L14.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              Secure
+            </span>
+
+            <span aria-hidden="true" className="text-slate-900">•</span>
+
+            <span className="flex items-center gap-1.5 whitespace-nowrap">
+              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#16A34A] text-white">
+                <svg viewBox="0 0 20 20" className="h-2.5 w-2.5" fill="none" aria-hidden="true">
+                  <path d="M5.5 10.5L8.5 13.5L14.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              Instant M-Pesa
+            </span>
+
+            <span aria-hidden="true" className="text-slate-900">•</span>
+
+            <span className="flex items-center gap-1.5 whitespace-nowrap">
+              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#16A34A] text-white">
+                <svg viewBox="0 0 20 20" className="h-2.5 w-2.5" fill="none" aria-hidden="true">
+                  <path d="M5.5 10.5L8.5 13.5L14.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              Built for Kenyan fleets
+            </span>
           </div>
         </form>
 
