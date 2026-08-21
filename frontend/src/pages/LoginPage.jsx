@@ -156,7 +156,7 @@ export default function LoginPage() {
           <button
             type="button"
             className="forgot-password"
-            onClick={() => setError("Password recovery will be available soon.")}
+            onClick={() => navigate("/forgot-password")}
           >
             Forgot password?
           </button>
