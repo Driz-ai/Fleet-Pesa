@@ -44,6 +44,14 @@ function RevenueTooltip({ active, payload, label }) {
 	)
 }
 
+function formatAmount(value) {
+	return `KES ${value.toLocaleString('en-KE')}`
+}
+
+function statusClass(status) {
+	return `status-badge status-${status.toLowerCase()}`
+}
+
 export function Owner() {
 	return (
 		<div className="owner-dashboard">
