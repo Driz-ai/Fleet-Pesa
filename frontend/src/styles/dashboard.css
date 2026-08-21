@@ -210,4 +210,48 @@
       @apply text-xs;
     }
   }
+
+  :root[data-theme="dark"] .driver-page,
+  :root[data-theme="dark"] .success-shell {
+    background: #0d1827;
+    color: #e7eef7;
+  }
+
+  :root[data-theme="dark"] .amount-card,
+  :root[data-theme="dark"] .payment-card,
+  :root[data-theme="dark"] .success-card {
+    background: #14263a;
+    border-color: #2d435b;
+    color: #e7eef7;
+  }
+
+  :root[data-theme="dark"] .amount-input,
+  :root[data-theme="dark"] .payment-phone-input,
+  :root[data-theme="dark"] .payment-name,
+  :root[data-theme="dark"] .success-title,
+  :root[data-theme="dark"] .success-amount,
+  :root[data-theme="dark"] .receipt-row strong,
+  :root[data-theme="dark"] .expected-amount {
+    color: #edf4fb;
+  }
+
+  :root[data-theme="dark"] .amount-input::placeholder {
+    color: #9eb0c5;
+  }
+
+  :root[data-theme="dark"] .expected-row,
+  :root[data-theme="dark"] .payment-phone-label,
+  :root[data-theme="dark"] .success-copy,
+  :root[data-theme="dark"] .receipt-row span {
+    color: #b6c7d9;
+  }
+
+  :root[data-theme="dark"] .receipt-details {
+    background: #102135;
+    border-color: #2d435b;
+  }
+
+  :root[data-theme="dark"] .amount-input-row {
+    border-color: #2d435b;
+  }
 }

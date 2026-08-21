@@ -14,15 +14,15 @@
 
 html {
   min-width: 320px;
-  background: var(--color-fleet-canvas);
+  background: var(--canvas);
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: var(--color-fleet-canvas);
-  color: var(--color-fleet-navy);
+  background: var(--canvas);
+  color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
@@ -69,6 +69,62 @@ body {
 
 .theme-toggle:hover {
   border-color: var(--primary);
+}
+
+:root[data-theme="dark"] .login-card .text-slate-900,
+:root[data-theme="dark"] .login-card .text-slate-500,
+:root[data-theme="dark"] .login-card .text-slate-400 {
+  color: var(--foreground);
+}
+
+:root[data-theme="dark"] .login-card .bg-white {
+  background: #1b2d43;
+}
+
+:root[data-theme="dark"] .login-card .bg-slate-100 {
+  background: #20364f;
+}
+
+:root[data-theme="dark"] .login-card input {
+  color: var(--foreground);
+  background: #16283d;
+  border-color: #38536f;
+}
+
+:root[data-theme="dark"] .login-card input::placeholder {
+  color: #9eb0c5;
+}
+
+:root[data-theme="dark"] .login-card .text-red-600 {
+  color: #ff9ca5;
+}
+
+:root[data-theme="dark"] .login-card .text-emerald-600 {
+  color: #72e2a0;
+}
+
+:root[data-theme="dark"] .topbar {
+  background: var(--background);
+  border-color: #2d435b;
+}
+
+:root[data-theme="dark"] .topbar h1,
+:root[data-theme="dark"] .card-heading h2 {
+  color: #edf4fb;
+}
+
+:root[data-theme="dark"] .topbar p,
+:root[data-theme="dark"] .card-heading p,
+:root[data-theme="dark"] .chart-legend,
+:root[data-theme="dark"] .topbar-actions {
+  color: #b6c7d9;
+}
+
+:root[data-theme="dark"] .revenue-card,
+:root[data-theme="dark"] .remittances-card {
+  background: #14263a;
+  border-color: #2d435b;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 button,
