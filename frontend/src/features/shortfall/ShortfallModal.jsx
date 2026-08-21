@@ -1,0 +1,124 @@
+import Avatar from "../../components/shared/Avatar.jsx";
+import StatusBadge from "../../components/shared/StatusBadge.jsx";
+import UrgencyBadge from "../../components/shared/UrgencyBadge.jsx";
+
+const formatCurrency = (value) =>
+  new Intl.NumberFormat("en-KE", {
+    style: "currency",
+    currency: "KES",
+    maximumFractionDigits: 0,
+  }).format(Number(value || 0));
+
+const formatTimestamp = (timestamp) => {
+  if (!timestamp) return "Not available";
+
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) return timestamp;
+
+  return new Intl.DateTimeFormat("en-KE", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+};
+
+export default function ShortfallModal({ remittance, onClose }) {
+  if (!remittance) return null;
+
+  const expectedAmount = Number(remittance.expected_amount || 0);
+  const actualAmount = Number(remittance.actual_amount || 0);
+  const shortfall = Math.max(expectedAmount - actualAmount, 0);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
+      <div className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-[0_24px_60px_rgba(15,23,42,0.18)] ring-1 ring-slate-200">
+        <div className="flex items-start justify-between border-b border-slate-200 px-5 py-4">
+          <div className="flex items-center gap-3">
+            <Avatar name={remittance.driver_name || "Driver"} size="md" className="bg-slate-800" />
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                Driver Shortfall
+              </p>
+              <h2 className="text-lg font-bold text-slate-900">{remittance.driver_name || "Driver"}</h2>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close modal"
+            className="rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+          >
+            <span className="text-2xl leading-none">×</span>
+          </button>
+        </div>
+
+        <div className="space-y-5 p-5">
+          <div className="flex flex-wrap items-center gap-2">
+            <StatusBadge label="Pending review" tone="amber" />
+            <UrgencyBadge label="Critical" tone="critical" />
+          </div>
+
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-slate-200 bg-white p-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                  Expected
+                </p>
+                <p className="mt-2 text-2xl font-bold text-slate-900">{formatCurrency(expectedAmount)}</p>
+              </div>
+
+              <div className="rounded-xl border border-red-200 bg-red-50 p-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-red-600">
+                  Actual
+                </p>
+                <p className="mt-2 text-2xl font-bold text-red-700">{formatCurrency(actualAmount)}</p>
+              </div>
+            </div>
+
+            <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900">
+              Shortfall: {formatCurrency(shortfall)}
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-xl border border-slate-200 bg-white p-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                Vehicle
+              </p>
+              <p className="mt-2 text-base font-semibold text-slate-900">
+                {remittance.vehicle || "N/A"}
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-slate-200 bg-white p-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                Timestamp
+              </p>
+              <p className="mt-2 text-sm font-semibold text-slate-900">
+                {formatTimestamp(remittance.timestamp)}
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-slate-200 bg-white p-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+              Reference
+            </p>
+            <p className="mt-2 text-sm font-medium text-slate-700">
+              {remittance.id || "Remittance record"}
+            </p>
+          </div>
+
+          <div className="flex justify-end pt-1">
+            <button
+              type="button"
+              className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+            >
+              Flag for Follow-up
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
