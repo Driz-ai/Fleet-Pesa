@@ -58,6 +58,22 @@ body {
   margin: -14px 0 12px;
 }
 
+.forgot-password {
+  display: block;
+  margin: 8px 0 0 auto;
+  padding: 0;
+  color: #64748b;
+  background: transparent;
+  border: 0;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.forgot-password:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
 .theme-toggle:hover {
   border-color: var(--primary);
 }

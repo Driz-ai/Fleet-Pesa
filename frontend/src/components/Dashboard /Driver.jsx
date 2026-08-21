@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Phone, Truck } from "lucide-react";
+import { Moon, Phone, Sun, Truck } from "lucide-react";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { useTheme } from "../../context/ThemeContext.jsx";
 
 export default function Driver(){
     const navigate = useNavigate()
     const { user, logout } = useAuth()
+    const { isDark, toggleTheme } = useTheme()
     const [amount,setAmount] = useState("")
     const [status,setStatus] = useState("idle")
     const [paymentPhone, setPaymentPhone] = useState(user?.phone || "0712345678")
@@ -87,7 +89,12 @@ if (status === "success") {
                 </span>
                 <span>FleetPesa</span>
               </div>
-                  <button className="driver-signout" type="button" onClick={handleSignOut}>Sign out</button>
+                  <div className="driver-actions">
+                    <button className="driver-theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${isDark ? "light" : "dark"} mode`} title={`Switch to ${isDark ? "light" : "dark"} mode`}>
+                      {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                    </button>
+                    <button className="driver-signout" type="button" onClick={handleSignOut}>Sign out</button>
+                  </div>
             </div>
             {/* Driver details are mock data until authentication/API intergration */}
             <div className="driver-profile">

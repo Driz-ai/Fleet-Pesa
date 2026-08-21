@@ -30,6 +30,14 @@
     @apply border-0 bg-transparent p-1 text-xs font-semibold text-slate-400 transition hover:text-white;
   }
 
+  .driver-actions {
+    @apply flex items-center gap-3;
+  }
+
+  .driver-theme-toggle {
+    @apply grid size-8 place-items-center rounded-full border border-[#5e7691] bg-transparent p-0 text-[#b8c6d9] transition hover:border-white hover:text-white;
+  }
+
   .driver-label {
     @apply m-0 text-[11px] font-bold uppercase tracking-[0.045em] text-[#b8c6d9];
   }
