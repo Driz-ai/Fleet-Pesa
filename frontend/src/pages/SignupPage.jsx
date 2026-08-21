@@ -72,7 +72,9 @@ export default function SignupPage() {
           <>
             <div className="text-center">
               <h1 className="text-2xl font-bold text-slate-900 mb-1">Create your account</h1>
-              <p className="text-slate-500 mb-6">Register to manage your fleet</p>
+              <p className="text-slate-500 mb-6">
+                {role === "driver" ? "Register to account your daily remittance" : "Register to manage your fleet"}
+              </p>
             </div>
 
             <div className="flex bg-slate-100 rounded-lg p-1 mb-6" role="tablist">
