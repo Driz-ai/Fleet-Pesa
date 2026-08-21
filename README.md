@@ -132,8 +132,5 @@ See `GIT_FLOW.md` for our full branching workflow. Summary: clone from `dev` (de
 
 ## Team
 
-| Area | Members |
-|---|---|
-| Frontend | Munira Hassan, Jared Kiprop, Simon Hiuhu |
-| Backend | Vincent Maina, Bright Mahonga, Gabriel Mutavi |
-| QA | Fredrick Nyamweya |
+Members: Munira Hassan(Team Lead), Jared Kiprop, Simon Hiuhu, Vincent Maina, Bright Mahonga, Gabriel Mutavi, Fredrick Nyamweya.
+Technical Mentor: Sam Tomashi
