@@ -18,6 +18,17 @@ const weeklyRevenue = [
 	{ day: 'Sun', revenue: 48000 },
 ]
 
+const driverRemittances = [
+	{ initials: 'JK', name: 'Joseph Kamau', type: 'Matatu', vehicle: 'KBZ 234K', collected: 4500, expected: 4500, status: 'Paid', time: '08:42 AM' },
+	{ initials: 'GW', name: 'Grace Wanjiku', type: 'Boda Boda', vehicle: 'KCA 891B', collected: 1200, expected: 1500, status: 'Short', time: '09:15 AM', action: 'Review' },
+	{ initials: 'PO', name: 'Peter Omondi', type: 'Matatu', vehicle: 'KDG 567M', collected: 0, expected: 4500, status: 'Late', time: '—' },
+	{ initials: 'MA', name: 'Mary Achieng', type: 'Boda Boda', vehicle: 'KBF 112A', collected: 1500, expected: 1500, status: 'Paid', time: '07:55 AM' },
+	{ initials: 'DM', name: 'David Mwangi', type: 'Matatu', vehicle: 'KDD 789P', collected: 0, expected: 4500, status: 'Overdue', time: '—', action: 'Review' },
+	{ initials: 'FN', name: 'Faith Njeri', type: 'Boda Boda', vehicle: 'KCE 445T', collected: 1500, expected: 1500, status: 'Paid', time: '10:03 AM' },
+	{ initials: 'SK', name: 'Samuel Kipchoge', type: 'Matatu', vehicle: 'KBM 678G', collected: 4500, expected: 4500, status: 'Paid', time: '11:20 AM' },
+	{ initials: 'EN', name: 'Esther Nyambura', type: 'Boda Boda', vehicle: 'KCH 321R', collected: 900, expected: 1500, status: 'Short', time: '09:47 AM', action: 'Review' },
+]
+
 function formatCurrency(value) {
 	return `KES ${value.toLocaleString('en-KE')}`
 }
