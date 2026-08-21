@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, Moon, Sun } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 export function normalizePhone(value) {
   return value.replace(/\s/g, "");
@@ -11,6 +12,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const [role, setRole] = useState("owner");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -61,7 +63,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-100 flex flex-col items-center justify-center px-4 py-12">
+    <div className="login-page min-h-screen w-full flex flex-col items-center justify-center px-4 py-12">
+      <button
+        type="button"
+        className="theme-toggle"
+        onClick={toggleTheme}
+        aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+        title={`Switch to ${isDark ? "light" : "dark"} mode`}
+      >
+        {isDark ? <Sun size={17} /> : <Moon size={17} />}
+      </button>
       <div className="mb-8 rounded-[22px] bg-white p-1.5 shadow-[0_6px_16px_rgba(16,40,68,0.08)] ring-1 ring-slate-200/60">
         <img
           src="/Fleet-pesa%20Logo%20Dark.jpg"
@@ -70,7 +81,7 @@ export default function LoginPage() {
         />
       </div>
 
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm p-8">
+      <div className="login-card w-full max-w-md rounded-2xl shadow-sm p-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-slate-900 mb-1">Welcome back</h1>
           <p className="text-slate-500 mb-6">Sign in to your fleet dashboard</p>
