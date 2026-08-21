@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 776 1000">
+  <defs>
+    <clipPath id="oval">
+      <ellipse cx="388" cy="500" rx="350" ry="455" />
+    </clipPath>
+  </defs>
+  <image href="/FleetPesa%20FavIcon.jpg" width="776" height="1000" preserveAspectRatio="xMidYMid slice" clip-path="url(#oval)" />
+</svg>

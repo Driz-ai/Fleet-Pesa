@@ -1,10 +1,12 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Moon, Phone, Sun, Truck } from "lucide-react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useTheme } from "../../context/ThemeContext.jsx";
 
 export default function Driver(){
+  const location = useLocation()
+    const [successMessage, setSuccessMessage] = useState(location.state?.success || "")
     const navigate = useNavigate()
     const { user, logout } = useAuth()
     const { isDark, toggleTheme } = useTheme()
@@ -12,6 +14,12 @@ export default function Driver(){
     const [status,setStatus] = useState("idle")
     const [paymentPhone, setPaymentPhone] = useState(user?.phone || "0712345678")
     const quickAmounts = [1500,3000,4500]
+
+    useEffect(() => {
+      if (!successMessage) return undefined
+      const timeoutId = window.setTimeout(() => setSuccessMessage(""), 5000)
+      return () => window.clearTimeout(timeoutId)
+    }, [successMessage])
 
     function handleAmountChange(event){
       const newAmount = event.target.value.replace(/\D/g, "")
@@ -38,7 +46,10 @@ export default function Driver(){
 }
     function handleSignOut() {
       logout()
-      navigate("/login", { replace: true })
+      navigate("/login", {
+        replace: true,
+        state: { success: "Successfully signed out." },
+      })
     }
 // displays the receipt after successfull remmitance 
 if (status === "success") {
@@ -80,6 +91,7 @@ if (status === "success") {
 }
     return(
       <div className="driver-page">
+        {successMessage && <p className="auth-success" role="status">{successMessage}</p>}
         <header className="driver-header">
           <div className="driver-header-inner">
             <div className="driver-brand-row">

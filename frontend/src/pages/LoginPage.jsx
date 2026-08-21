@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -20,6 +20,12 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(location.state?.success || "");
+
+  useEffect(() => {
+    if (!success) return undefined;
+    const timeoutId = window.setTimeout(() => setSuccess(""), 5000);
+    return () => window.clearTimeout(timeoutId);
+  }, [success]);
 
   const validate = () => {
     const cleanPhone = normalizePhone(phone);
@@ -54,7 +60,10 @@ export default function LoginPage() {
       const destination = role === "driver"
         ? "/driver/remittance"
         : "/owner/dashboard";
-      navigate(destination, { replace: true });
+      navigate(destination, {
+        replace: true,
+        state: { success: "Successfully signed in." },
+      });
     } catch (err) {
       setError(err?.message || "Sign in failed. Check your details and try again.");
     } finally {

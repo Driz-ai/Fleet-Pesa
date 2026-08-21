@@ -1,11 +1,20 @@
 import { Bell, CircleHelp, Moon, Sun } from 'lucide-react'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Owner } from '../Dashboard/Owner'
 import { Sidebar } from './Sidebar'
 import { useTheme } from '../../context/ThemeContext.jsx'
 
 export function AppShell() {
+	const location = useLocation()
+	const [successMessage, setSuccessMessage] = useState(location.state?.success || '')
 	const { isDark, toggleTheme } = useTheme()
+
+	useEffect(() => {
+		if (!successMessage) return undefined
+		const timeoutId = window.setTimeout(() => setSuccessMessage(''), 5000)
+		return () => window.clearTimeout(timeoutId)
+	}, [successMessage])
 	const todayLabel = useMemo(
 		() => new Intl.DateTimeFormat('en-KE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date()),
 		[]
@@ -15,6 +24,7 @@ export function AppShell() {
 		<div className="app-shell">
 			<Sidebar />
 			<main className="main-content">
+				{successMessage && <p className="auth-success" role="status">{successMessage}</p>}
 				<header className="topbar">
 					<div>
 						<h1>Dashboard</h1>
