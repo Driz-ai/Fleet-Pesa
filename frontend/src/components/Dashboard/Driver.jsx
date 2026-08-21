@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { StatusBadge } from "../shared/StatusBadge.jsx";
 import { StatCard } from "../shared/StatCard";
 import Avatar from "../shared/Avatar.jsx";
+import AlertBanner from "../shared/AlertBanner.jsx";
 export default function Driver(){
     const navigate = useNavigate()
     const { user, logout } = useAuth()
@@ -106,6 +107,10 @@ if (status === "success") {
         </header>
 
         <main className="driver-content">
+          <AlertBanner title ="Remittance shortfall" 
+          message="You have KES 1500 remaining for todays target."
+          type="warning"/>
+          
           <section className="amount-card">
             <label className="driver-label" htmlFor="amount">Amount to submit</label>
             <div className="amount-input-row">

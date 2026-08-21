@@ -38,3 +38,28 @@ font-weight: 700;
 flex-shrink: 0;
 font-style: initial;
 }
+.alert-banner{
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+.alert-title{
+    display: block;
+    font-weight: 700;
+    margin-bottom:4px ;
+}
+.alert-message{
+    margin: 0;
+}
+.alert-warning{
+    background-color: #fef3c7;
+    color: #92400e;
+}
+.alert-error{
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+.alert-sucess{
+    background-color: #dcfce7;
+    color: #166534;
+}
