@@ -4,6 +4,7 @@ import { Phone, Truck } from "lucide-react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { StatusBadge } from "../shared/StatusBadge.jsx";
 import { StatCard } from "../shared/StatCard";
+import Avatar from "../shared/Avatar.jsx";
 export default function Driver(){
     const navigate = useNavigate()
     const { user, logout } = useAuth()
@@ -94,7 +95,7 @@ if (status === "success") {
             <div className="driver-profile">
               <p className="driver-label">Daily remittance for</p>
               <div className="driver-profile-row">
-                <span className="driver-avatar" aria-hidden="true">PO</span>
+                <Avatar name = "Peter Omondi"/>
                 <div>
                   <h1 className="driver-name">Peter Omondi</h1>
                   <p className="driver-vehicle">KDG 567M · Matatu</p>
