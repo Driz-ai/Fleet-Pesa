@@ -9,7 +9,7 @@ import {
 	YAxis,
 } from 'recharts'
 import ShortfallModal from '../../features/shortfall/ShortfallModal.jsx'
-
+import PaymentPromptModal from '../../features/paymentPrompt/PaymentPromptModal.jsx'
 const weeklyRevenue = [
 	{ day: 'Mon', revenue: 38000 },
 	{ day: 'Tue', revenue: 45000 },
@@ -47,6 +47,7 @@ function RevenueTooltip({ active, payload, label }) {
 export function Owner() {
 	const [showShortfall, setShowShortfall] = useState(true)
 	const [isResolved, setIsResolved] = useState(false)
+	const [selectedDriver, setSelectedDriver] = useState(null)
 	const hasShortfall = !isResolved && true
 
 	return (
@@ -69,6 +70,21 @@ export function Owner() {
 						>
 							{isResolved ? 'View resolved record' : 'View details'}
 						</button>
+
+						<button
+                            type="button"
+                            onClick={() =>
+                                      setSelectedDriver({
+                                          name: sampleShortfall.driver_name,
+                                          vehicle: sampleShortfall.vehicle,
+                                          expected: sampleShortfall.expected_amount,
+                                          collected: sampleShortfall.actual_amount,
+                                    })
+                            }
+                            className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                        >
+                            Prompt to Pay
+                        </button>
 					</div>
 				</section>
 			)}
@@ -111,6 +127,16 @@ export function Owner() {
 					onResolved={() => setIsResolved(true)}
 				/>
 			)}
+
+            {selectedDriver && (
+             <PaymentPromptModal
+                driver={selectedDriver}
+                onClose={() => setSelectedDriver(null)}
+                onSuccess={() => {
+                        console.log('Payment prompt sent successfully')
+                }}
+             />
+           )}
 		</div>
 	)
 }
