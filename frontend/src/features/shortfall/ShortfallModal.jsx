@@ -2,7 +2,6 @@ import { useState } from "react";
 import * as api from "../../lib/api.js";
 import Avatar from "../../components/shared/Avatar.jsx";
 import StatusBadge from "../../components/shared/StatusBadge.jsx";
-import UrgencyBadge from "../../components/shared/UrgencyBadge.jsx";
 
 const formatCurrency = (value) =>
   new Intl.NumberFormat("en-KE", {
@@ -26,6 +25,7 @@ const formatTimestamp = (timestamp) => {
 export default function ShortfallModal({ remittance, onClose }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState({ type: "idle", message: "" });
+  const [resolved, setResolved] = useState(false);
 
   if (!remittance) return null;
 
@@ -33,9 +33,9 @@ export default function ShortfallModal({ remittance, onClose }) {
   const actualAmount = Number(remittance.actual_amount || 0);
   const shortfall = Math.max(expectedAmount - actualAmount, 0);
 
-  const handleFlagFollowUp = async () => {
+  const handleMarkResolved = async () => {
     if (!remittance?.id) {
-      setStatus({ type: "error", message: "This shortfall record is missing an id, so it cannot be flagged." });
+      setStatus({ type: "error", message: "This shortfall record is missing an id, so it cannot be marked resolved." });
       return;
     }
 
@@ -51,15 +51,16 @@ export default function ShortfallModal({ remittance, onClose }) {
     setStatus({ type: "idle", message: "" });
 
     try {
-      await api.updateRemittance(remittance.id, { flagged_for_followup: true });
+      await api.updateRemittance(remittance.id, { flagged_for_followup: false, resolved: true });
+      setResolved(true);
       setStatus({
         type: "success",
-        message: "This shortfall has been flagged for follow-up.",
+        message: "This shortfall has been marked as resolved.",
       });
     } catch (error) {
       setStatus({
         type: "error",
-        message: error?.message || "Unable to flag this shortfall. Please try again.",
+        message: error?.message || "Unable to mark this shortfall as resolved. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -92,8 +93,7 @@ export default function ShortfallModal({ remittance, onClose }) {
 
         <div className="space-y-5 p-4 sm:p-5">
           <div className="flex flex-wrap items-center gap-2">
-            <StatusBadge label="Pending review" tone="amber" />
-            <UrgencyBadge label="Critical" tone="critical" />
+            <StatusBadge label={resolved ? "Completed" : "Pending review"} tone={resolved ? "green" : "amber"} />
           </div>
 
           <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -162,11 +162,11 @@ export default function ShortfallModal({ remittance, onClose }) {
             <div className="flex justify-end">
               <button
                 type="button"
-                onClick={handleFlagFollowUp}
-                disabled={isSubmitting}
-                className="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                onClick={handleMarkResolved}
+                disabled={isSubmitting || resolved}
+                className="inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
               >
-                {isSubmitting ? "Flagging..." : "Flag for Follow-up"}
+                {isSubmitting ? "Marking as resolved..." : resolved ? "Resolved" : "Mark as Resolved"}
               </button>
             </div>
           </div>
