@@ -1,7 +1,7 @@
 import { Bell, KeyRound, UserRound } from 'lucide-react'
 import { useState } from 'react'
 import { useAuth } from '../../context/AuthContext.jsx'
-import { updateProfile } from '../../lib/api.js'
+import { updatePassword, updateProfile } from '../../lib/api.js'
 
 const sections = [
 	{ id: 'profile', label: 'Profile details', icon: UserRound },
@@ -14,6 +14,8 @@ export default function SettingsPage() {
 	const [name, setName] = useState(user?.name || '')
 	const [phone, setPhone] = useState(user?.phone || '')
 	const [profileState, setProfileState] = useState({ loading: false, error: '', success: '' })
+	const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '', confirmation: '' })
+	const [passwordState, setPasswordState] = useState({ loading: false, error: '', success: '' })
 
 	async function handleProfileSubmit(event) {
 		event.preventDefault()
@@ -24,6 +26,22 @@ export default function SettingsPage() {
 			setProfileState({ loading: false, error: '', success: 'Profile updated successfully.' })
 		} catch (error) {
 			setProfileState({ loading: false, error: error.message, success: '' })
+		}
+	}
+
+	async function handlePasswordSubmit(event) {
+		event.preventDefault()
+		if (passwords.newPassword !== passwords.confirmation) {
+			setPasswordState({ loading: false, error: 'New passwords do not match.', success: '' })
+			return
+		}
+		setPasswordState({ loading: true, error: '', success: '' })
+		try {
+			await updatePassword(passwords)
+			setPasswords({ currentPassword: '', newPassword: '', confirmation: '' })
+			setPasswordState({ loading: false, error: '', success: 'Password updated successfully.' })
+		} catch (error) {
+			setPasswordState({ loading: false, error: error.message, success: '' })
 		}
 	}
 
@@ -65,7 +83,16 @@ export default function SettingsPage() {
 
 					<section className="settings-panel" id="password">
 						<h3>Change password</h3><p>Use a strong password you do not use elsewhere.</p>
-						<button className="settings-secondary" type="button">Update password</button>
+						<form onSubmit={handlePasswordSubmit} className="settings-form-grid">
+							<label>Current password<input type="password" autoComplete="current-password" value={passwords.currentPassword} onChange={(event) => setPasswords({ ...passwords, currentPassword: event.target.value })} required /></label>
+							<label>New password<input type="password" autoComplete="new-password" minLength={6} value={passwords.newPassword} onChange={(event) => setPasswords({ ...passwords, newPassword: event.target.value })} required /></label>
+							<label>Confirm new password<input type="password" autoComplete="new-password" minLength={6} value={passwords.confirmation} onChange={(event) => setPasswords({ ...passwords, confirmation: event.target.value })} required /></label>
+							<div>
+								{passwordState.error && <p className="settings-error" role="alert">{passwordState.error}</p>}
+								{passwordState.success && <p className="settings-success" role="status">{passwordState.success}</p>}
+								<button className="settings-secondary" type="submit" disabled={passwordState.loading}>{passwordState.loading ? 'Updating...' : 'Update password'}</button>
+							</div>
+						</form>
 					</section>
 
 					<section className="settings-panel" id="notifications">
