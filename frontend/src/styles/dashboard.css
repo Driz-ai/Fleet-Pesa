@@ -23,7 +23,7 @@
   }
 
   .driver-brand img {
-    @apply h-10 w-auto max-w-[150px] rounded-lg object-contain;
+    @apply size-10 rounded-lg object-contain;
   }
 
   .driver-brand-icon {

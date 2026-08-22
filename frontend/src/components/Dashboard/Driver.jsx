@@ -102,7 +102,7 @@ if (status === "success") {
           <div className="driver-header-inner">
             <div className="driver-brand-row">
               <div className="driver-brand">
-                <img src="/Fleet-pesa%20Logo%20Dark.jpg" alt="FleetPesa" />
+                <img src="/FleetPesa-FavIcon.svg" alt="FleetPesa" />
               </div>
                   <div className="driver-actions">
                     <button className="driver-theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${isDark ? "light" : "dark"} mode`} title={`Switch to ${isDark ? "light" : "dark"} mode`}>

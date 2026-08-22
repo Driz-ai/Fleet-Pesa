@@ -228,10 +228,9 @@ a {
 }
 
 .brand-logo {
-  width: 142px;
-  height: 52px;
+  width: 42px;
+  height: 42px;
   object-fit: contain;
-  border-radius: 8px;
 }
 
 .owner-profile {

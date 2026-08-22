@@ -140,7 +140,7 @@ export default function FleetPage() {
             <article key={vehicle.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 sm:p-5">
               <div className="flex items-start justify-between gap-3">
                 <Link to={`/owner/vehicles/${vehicle.id}`} className="flex min-w-0 items-center gap-3">
-                  <div className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-white"><img src="/FleetPesa%20FavIcon.jpg" alt="" className="h-full w-full object-cover" /></div>
+                  <div className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-white"><img src="/FleetPesa-FavIcon.svg" alt="" className="h-full w-full object-contain p-1" /></div>
                   <div className="min-w-0"><h2 className="truncate text-base font-bold text-slate-900">{vehicle.plate_number}</h2><p className="truncate text-sm text-slate-500">{vehicle.type}</p></div>
                 </Link>
                 <StatusBadge label={vehicle.status} tone={vehicle.status === "active" ? "green" : "amber"} />
