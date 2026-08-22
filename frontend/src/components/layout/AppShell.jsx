@@ -10,7 +10,7 @@ export function AppShell() {
 				<header className="topbar">
 					<div>
 						<h1>Dashboard</h1>
-						<p>Thursday, 20 August 2026</p>
+						<p>Sunday, 18 August 2025</p>
 					</div>
 					<div className="topbar-actions">
 						<button className="icon-button" aria-label="Help">
@@ -20,7 +20,7 @@ export function AppShell() {
 							<Bell size={20} strokeWidth={1.8} />
 							<span />
 						</button>
-						<div className="topbar-avatar">JD</div>
+						<div className="topbar-avatar">MO</div>
 					</div>
 				</header>
 				<section className="dashboard-content" aria-label="Fleet dashboard">

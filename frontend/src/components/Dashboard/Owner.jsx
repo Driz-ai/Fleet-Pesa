@@ -1,4 +1,11 @@
  import {
+	ArrowUpRight,
+	Clock3,
+	TrendingUp,
+	Wrench,
+	Users,
+} from 'lucide-react'
+import {
 	CartesianGrid,
 	Line,
 	LineChart,
@@ -52,9 +59,28 @@ function statusClass(status) {
 	return `status-badge status-${status.toLowerCase()}`
 }
 
+const summaryCards = [
+	{ label: 'Today\'s Revenue', value: 'KES 14,100', trend: '+ 14% vs yesterday', tone: 'success', icon: TrendingUp },
+	{ label: 'Outstanding', value: 'KES 9,900', trend: '4 drivers pending', tone: 'warning', icon: Clock3 },
+	{ label: 'Active Drivers', value: '6 / 8', trend: '1 offline today', tone: 'info', icon: Users },
+]
+
 export function Owner() {
 	return (
 		<div className="owner-dashboard">
+			<section className="summary-grid" aria-label="Owner summary metrics">
+				{summaryCards.map(({ label, value, trend, tone, icon: Icon }) => (
+					<div className={`summary-card ${tone}`} key={label}>
+						<div className="summary-icon-wrap">
+							<Icon size={18} strokeWidth={2} />
+						</div>
+						<div className="summary-metric">
+							<div className="summary-trend">{trend}</div>
+							<div className="summary-value">{value}</div>
+						</div>
+					</div>
+				))}
+			</section>
 			<section className="revenue-card" aria-labelledby="weekly-revenue-title">
 				<div className="card-heading">
 					<div>

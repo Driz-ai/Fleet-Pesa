@@ -24,9 +24,9 @@ export function Sidebar() {
 			</div>
 
 			<div className="owner-profile">
-				<div className="owner-avatar">JD</div>
+				<div className="owner-avatar">MO</div>
 				<div>
-					<strong>James David</strong>
+					<strong>Martin Otieno</strong>
 					<span>Fleet Owner</span>
 				</div>
 			</div>
