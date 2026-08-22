@@ -99,7 +99,7 @@ export function updateRemittance(remittanceId, updates = {}) {
 }
 
 export function getVehicle(vehicleId) {
-  return request(`/vehicles/${vehicleId}`);
+  return request(`/vehicles/${encodeURIComponent(vehicleId)}`);
 }
 
 export function listVehicles() {

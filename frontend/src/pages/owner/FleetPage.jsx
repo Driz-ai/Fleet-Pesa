@@ -1,10 +1,15 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Car, Loader2, TriangleAlert } from "lucide-react";
 import { useVehicles } from "../../hooks/useVehicles.js";
 
 export default function FleetPage() {
-  const { vehicles: fetchedVehicles, loading, error } = useVehicles();
+  const { vehicles: fetchedVehicles, loading, error, getVehicles } = useVehicles();
   const vehicles = Array.isArray(fetchedVehicles) ? fetchedVehicles : [];
+
+  useEffect(() => {
+    getVehicles().catch(() => {});
+  }, [getVehicles]);
 
   if (loading) {
     return (
