@@ -227,6 +227,17 @@ a {
   border-radius: 12px;
 }
 
+.brand-logo {
+  width: 48px;
+  height: 48px;
+  padding: 5px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 14px;
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.16);
+}
+
 .owner-profile {
   display: flex;
   align-items: center;

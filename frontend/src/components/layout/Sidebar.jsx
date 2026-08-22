@@ -22,8 +22,7 @@ export function Sidebar() {
 	return (
 		<aside className="sidebar">
 			<div className="brand">
-				<div className="brand-mark"><CarFront size={19} strokeWidth={2.1} /></div>
-				<span>FleetPesa</span>
+				<img className="brand-logo" src="/FleetPesa%20FavIcon.jpg" alt="FleetPesa" />
 			</div>
 
 			<div className="owner-profile">
