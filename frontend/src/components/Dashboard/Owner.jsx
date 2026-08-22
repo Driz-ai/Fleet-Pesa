@@ -59,6 +59,7 @@ function statusClass(status) {
 	return `status-badge status-${status.toLowerCase()}`
 }
 
+// Owner KPIs
 const summaryCards = [
 	{ label: 'Today\'s Revenue', value: 'KES 14,100', trend: '+ 14% vs yesterday', tone: 'success', icon: TrendingUp },
 	{ label: 'Outstanding', value: 'KES 9,900', trend: '4 drivers pending', tone: 'warning', icon: Clock3 },
