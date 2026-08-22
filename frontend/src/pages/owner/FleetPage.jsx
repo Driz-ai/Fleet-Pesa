@@ -9,6 +9,7 @@ const INITIAL_FORM = {
   type: "",
   driver_name: "",
   daily_expected_amount: "",
+  daily_due_time: "18:00",
 };
 
 const LEGACY_TYPE_MAP = {
@@ -29,18 +30,26 @@ const REMITTANCE_TONE = {
   short: "red",
 };
 
+function statusLabel(status) {
+  return status.charAt(0).toUpperCase() + status.slice(1);
+}
+
 function migrateVehicles(vehicles) {
   if (!Array.isArray(vehicles)) return MOCK_VEHICLES;
 
-  return vehicles.map((vehicle) => ({
-    ...vehicle,
-    plate_number: vehicle.plate_number
-      ?.replace(/^KDO\b/, "KDR")
-      .replace(/^KDM 746D$/, "KDM 745D"),
-    type: LEGACY_TYPE_MAP[vehicle.type] || vehicle.type,
-    status: LEGACY_STATUS_MAP[vehicle.status] || vehicle.status,
-    remittance_status: vehicle.remittance_status || "unpaid",
-  }));
+  return vehicles.map((vehicle) => {
+    const wasLegacyKdm = vehicle.plate_number === "KDM 746D";
+    return {
+      ...vehicle,
+      plate_number: vehicle.plate_number
+        ?.replace(/^KDO\b/, "KDR")
+        .replace(/^KDM 746D$/, "KDM 745D"),
+      type: LEGACY_TYPE_MAP[vehicle.type] || vehicle.type,
+      status: wasLegacyKdm ? "parked" : LEGACY_STATUS_MAP[vehicle.status] || vehicle.status,
+      remittance_status: vehicle.remittance_status || "unpaid",
+      daily_due_time: vehicle.daily_due_time || "18:00",
+    };
+  });
 }
 
 function getStoredVehicles() {
@@ -59,20 +68,44 @@ export default function FleetPage() {
   const [form, setForm] = useState(INITIAL_FORM);
   const [formError, setFormError] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
+  const [currentTime, setCurrentTime] = useState(() => new Date());
 
   useEffect(() => {
     localStorage.setItem("fleetpesa_mock_vehicles", JSON.stringify(vehicles));
   }, [vehicles]);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => setCurrentTime(new Date()), 30000);
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   const filteredVehicles = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
     if (!query) return vehicles;
 
     return vehicles.filter((vehicle) =>
-      [vehicle.plate_number, vehicle.type, vehicle.driver_name, vehicle.status]
+      [vehicle.plate_number, vehicle.type, vehicle.driver_name, vehicle.status, vehicle.remittance_status]
         .some((value) => value?.toLowerCase().includes(query))
     );
   }, [searchTerm, vehicles]);
+
+  const ownerAlerts = useMemo(() => {
+    const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
+
+    return vehicles.flatMap((vehicle) => {
+      const [hours, minutes] = (vehicle.daily_due_time || "18:00").split(":").map(Number);
+      const dueMinutes = hours * 60 + minutes;
+      const alerts = [];
+
+      if (vehicle.status === "active" && vehicle.remittance_status === "unpaid" && currentMinutes >= dueMinutes) {
+        alerts.push(`${vehicle.plate_number} has not remitted by ${vehicle.daily_due_time}.`);
+      }
+      if (vehicle.remittance_status === "short") {
+        alerts.push(`${vehicle.plate_number} sent a shortfall remittance. Review the payment.`);
+      }
+      return alerts;
+    });
+  }, [currentTime, vehicles]);
 
   const updateForm = (event) => {
     const { name, value } = event.target;
@@ -105,6 +138,7 @@ export default function FleetPage() {
       status: "parked",
       remittance_status: "unpaid",
       daily_expected_amount: Number(form.daily_expected_amount) || 0,
+      daily_due_time: form.daily_due_time || "18:00",
     };
 
     setVehicles((current) => [
@@ -145,17 +179,28 @@ export default function FleetPage() {
         </p>
       )}
 
+      {ownerAlerts.length > 0 && (
+        <section className="space-y-2" aria-label="Owner alerts">
+          {ownerAlerts.map((alert) => (
+            <p key={alert} className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800" role="alert">
+              {alert}
+            </p>
+          ))}
+        </section>
+      )}
+
       {isAddOpen && (
         <form onSubmit={addVehicle} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="mb-4">
             <h2 className="text-base font-bold text-slate-900">Add a vehicle</h2>
             <p className="mt-1 text-sm text-slate-500">Use a registration in the format KDJ 123A through KDZ 999Z.</p>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Registration<input required name="plate_number" value={form.plate_number} onChange={updateForm} placeholder="KDP 407G" className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm uppercase text-slate-900 outline-none focus:border-slate-900" /></label>
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Vehicle type<input required name="type" value={form.type} onChange={updateForm} placeholder="Toyota Hiace" className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-900" /></label>
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Driver<input name="driver_name" value={form.driver_name} onChange={updateForm} placeholder="Optional" className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-900" /></label>
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Daily target<input name="daily_expected_amount" type="number" min="0" value={form.daily_expected_amount} onChange={updateForm} placeholder="8500" className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-900" /></label>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Daily due payment<input required name="daily_due_time" type="time" value={form.daily_due_time} onChange={updateForm} className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-900" /></label>
           </div>
           {formError && <p className="mt-3 text-sm font-semibold text-red-600" role="alert">{formError}</p>}
           <button type="submit" className="mt-4 rounded-xl bg-[#12b75b] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#0e9d4e]">Save vehicle</button>
@@ -185,16 +230,17 @@ export default function FleetPage() {
                   <div className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-white"><img src="/FleetPesa%20FavIcon.jpg" alt="" className="h-full w-full object-contain p-1" /></div>
                   <div className="min-w-0"><h2 className="truncate text-base font-bold text-slate-900">{vehicle.plate_number}</h2><p className="truncate text-sm text-slate-500">{vehicle.type}</p></div>
                 </Link>
-                <div className="flex flex-wrap justify-end gap-2">
+                <div className="flex flex-col items-end gap-2">
                   <StatusBadge label={vehicle.status === "active" ? "Active" : "Parked"} tone={vehicle.status === "active" ? "green" : "slate"} />
                   <StatusBadge
-                    label={`Remittance ${vehicle.remittance_status || "unpaid"}`}
+                    label={`Remittance ${statusLabel(vehicle.remittance_status || "unpaid")}`}
                     tone={REMITTANCE_TONE[vehicle.remittance_status] || "amber"}
                   />
                 </div>
               </div>
               <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
                 <div className="flex min-w-0 items-center gap-2 text-sm text-slate-600"><UserRound className="h-4 w-4 shrink-0 text-slate-400" /><span className="truncate">{vehicle.driver_name}</span></div>
+                <span className="text-xs font-medium text-slate-500">Due {vehicle.daily_due_time || "18:00"}</span>
                 <button type="button" onClick={() => removeVehicle(vehicle)} aria-label={`Remove ${vehicle.plate_number}`} title="Remove vehicle" className="rounded-lg p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-600"><Trash2 className="h-4 w-4" /></button>
               </div>
             </article>
