@@ -182,7 +182,7 @@ export default function VehicleDetailPage() {
             </p>
           </div>
           {vehicle.driver_phone && (
-            
+            <a
               href={`tel:${vehicle.driver_phone}`}
               className="ml-auto inline-flex items-center gap-1.5 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
             >
@@ -204,7 +204,6 @@ export default function VehicleDetailPage() {
           </p>
         ) : (
           <>
-            {/* Mobile: stacked cards */}
             <div className="space-y-3 sm:hidden">
               {remittances.map((r) => (
                 <div key={r.id} className="rounded-xl border border-slate-200 p-3">
