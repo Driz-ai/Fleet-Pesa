@@ -196,6 +196,31 @@ a {
   background: var(--canvas);
 }
 
+.settings-page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 8px 0 40px;
+}
+
+.settings-heading h2 { margin: 0; color: var(--navy); font-size: 28px; }
+.settings-heading p { margin: 6px 0 0; color: #8193aa; }
+.settings-eyebrow { margin: 0 0 5px !important; color: var(--primary) !important; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.settings-layout { display: grid; grid-template-columns: 210px 1fr; gap: 24px; margin-top: 28px; }
+.settings-tabs { display: flex; flex-direction: column; gap: 5px; }
+.settings-tab { display: flex; align-items: center; gap: 10px; padding: 11px 13px; color: #8193aa; border-radius: 9px; font-size: 13px; font-weight: 600; }
+.settings-tab.active, .settings-tab:hover { color: var(--navy); background: #e5edf4; }
+.settings-panels { display: grid; gap: 16px; }
+.settings-panel { padding: 24px; background: var(--background); border: 1px solid #dfe7ee; border-radius: 12px; }
+.settings-panel h3 { margin: 0; color: var(--navy); font-size: 16px; }
+.settings-panel p { margin: 5px 0 20px; color: #8193aa; font-size: 13px; }
+.settings-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.settings-form-grid label { display: grid; gap: 7px; color: #61758d; font-size: 12px; font-weight: 700; }
+.settings-form-grid input { min-height: 42px; padding: 0 12px; color: var(--foreground); background: transparent; border: 1px solid #d5e0e9; border-radius: 8px; outline: none; }
+.settings-primary, .settings-secondary { min-height: 40px; margin-top: 20px; padding: 0 16px; border: 0; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.settings-primary { color: #fff; background: var(--primary); }
+.settings-secondary { color: var(--navy); background: #e8eff5; }
+@media (max-width: 720px) { .settings-page { padding: 0 0 28px; } .settings-layout { grid-template-columns: 1fr; gap: 16px; } .settings-tabs { flex-direction: row; overflow-x: auto; } .settings-tab { white-space: nowrap; } .settings-form-grid { grid-template-columns: 1fr; } }
+
 .sidebar {
   width: 256px;
   flex: 0 0 256px;

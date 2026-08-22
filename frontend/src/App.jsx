@@ -9,6 +9,7 @@ import DashboardPage from "./pages/owner/DashboardPage.jsx";
 import VehicleDetailPage from "./pages/owner/VehicleDetailPage.jsx";
 import FleetPage from "./pages/owner/FleetPage.jsx";
 import RemmitancePage from "./pages/driver/RemittancePage.jsx";
+import SettingsPage from "./pages/owner/SettingsPage.jsx";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -32,6 +33,7 @@ export default function App() {
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="fleet" element={<FleetPage />} />
               <Route path="vehicles/:id" element={<VehicleDetailPage />} />
+              <Route path="settings" element={<SettingsPage />} />
             </Route>
 
             <Route
