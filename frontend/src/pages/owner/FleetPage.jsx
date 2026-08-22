@@ -3,9 +3,10 @@ import { Car, Loader2, TriangleAlert } from "lucide-react";
 import { useVehicles } from "../../hooks/useVehicles.js";
 
 export default function FleetPage() {
-  const { vehicles, isLoading, error } = useVehicles();
+  const { vehicles: fetchedVehicles, loading, error } = useVehicles();
+  const vehicles = Array.isArray(fetchedVehicles) ? fetchedVehicles : [];
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-slate-500">
         <Loader2 className="h-6 w-6 animate-spin" />
