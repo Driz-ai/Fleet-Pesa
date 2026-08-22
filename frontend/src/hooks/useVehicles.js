@@ -28,7 +28,7 @@ function isValidObject(value) {
   );
 }
 
-export default function useVehicle() {
+function useVehicles() {
   const {
     data,
     loading,
@@ -154,3 +154,6 @@ export default function useVehicle() {
     reset,
   };
 }
+
+export { useVehicles };
+export default useVehicles;
