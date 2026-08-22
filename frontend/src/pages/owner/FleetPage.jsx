@@ -43,6 +43,8 @@ export default function FleetPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [form, setForm] = useState(INITIAL_FORM);
+  const [formError, setFormError] = useState("");
+  const [saveMessage, setSaveMessage] = useState("");
 
   useEffect(() => {
     localStorage.setItem("fleetpesa_mock_vehicles", JSON.stringify(vehicles));
@@ -61,25 +63,42 @@ export default function FleetPage() {
   const updateForm = (event) => {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
+    setFormError("");
   };
 
   const addVehicle = (event) => {
     event.preventDefault();
     const plateNumber = form.plate_number.trim().toUpperCase();
-    if (!/^KD[A-Z] \d{3}[A-Z]$/.test(plateNumber) || !form.type.trim()) return;
+    if (!/^KD[A-Z] \d{3}[A-Z]$/.test(plateNumber)) {
+      setFormError("Use a registration such as KDR 631F.");
+      return;
+    }
+    if (!form.type.trim()) {
+      setFormError("Enter the vehicle type.");
+      return;
+    }
+    if (vehicles.some((vehicle) => vehicle.plate_number === plateNumber)) {
+      setFormError("That registration is already in your fleet.");
+      return;
+    }
+
+    const newVehicle = {
+      id: `mock-${Date.now()}`,
+      plate_number: plateNumber,
+      type: form.type.trim(),
+      driver_name: form.driver_name.trim() || "Unassigned",
+      driver_phone: "",
+      status: "available",
+      daily_expected_amount: Number(form.daily_expected_amount) || 0,
+    };
 
     setVehicles((current) => [
-      {
-        id: `mock-${Date.now()}`,
-        plate_number: plateNumber,
-        type: form.type.trim(),
-        driver_name: form.driver_name.trim() || "Unassigned",
-        driver_phone: "",
-        status: "available",
-        daily_expected_amount: Number(form.daily_expected_amount) || 0,
-      },
+      newVehicle,
       ...current,
     ]);
+    setSearchTerm("");
+    setSaveMessage(`${plateNumber} was added to your fleet.`);
+    setFormError("");
     setForm(INITIAL_FORM);
     setIsAddOpen(false);
   };
@@ -87,6 +106,7 @@ export default function FleetPage() {
   const removeVehicle = (vehicle) => {
     if (window.confirm(`Remove ${vehicle.plate_number} from this fleet?`)) {
       setVehicles((current) => current.filter((item) => item.id !== vehicle.id));
+      setSaveMessage(`${vehicle.plate_number} was removed from your fleet.`);
     }
   };
 
@@ -104,6 +124,12 @@ export default function FleetPage() {
         </button>
       </div>
 
+      {saveMessage && (
+        <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700" role="status">
+          {saveMessage}
+        </p>
+      )}
+
       {isAddOpen && (
         <form onSubmit={addVehicle} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="mb-4">
@@ -116,6 +142,7 @@ export default function FleetPage() {
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Driver<input name="driver_name" value={form.driver_name} onChange={updateForm} placeholder="Optional" className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-900" /></label>
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Daily target<input name="daily_expected_amount" type="number" min="0" value={form.daily_expected_amount} onChange={updateForm} placeholder="8500" className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-900" /></label>
           </div>
+          {formError && <p className="mt-3 text-sm font-semibold text-red-600" role="alert">{formError}</p>}
           <button type="submit" className="mt-4 rounded-xl bg-[#12b75b] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#0e9d4e]">Save vehicle</button>
         </form>
       )}
