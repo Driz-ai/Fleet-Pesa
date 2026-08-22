@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Moon, Phone, Sun, Truck } from "lucide-react";
 import { useAuth } from "../../context/AuthContext.jsx";
+import  StatusBadge  from "../shared/StatusBadge.jsx";
+import { StatCard } from "../shared/StatCard";
+import Avatar from "../shared/Avatar.jsx";
+import AlertBanner from "../shared/AlertBanner.jsx";
 import { useTheme } from "../../context/ThemeContext.jsx";
 import FarePaymentModal from "../../features/paymentPrompt/FarePaymentModal.jsx";
 
@@ -83,7 +87,7 @@ if (status === "success") {
         <button
           className="submit-another-button"
           type="button"
-          onClick={handleSubmitAnother}
+          onClick={handleSubmitAnother}                                                                                                                                                                                                                                                                                                                                                              
         >
           Submit Another
         </button>
@@ -114,7 +118,7 @@ if (status === "success") {
             <div className="driver-profile">
               <p className="driver-label">Daily remittance for</p>
               <div className="driver-profile-row">
-                <span className="driver-avatar" aria-hidden="true">PO</span>
+                <Avatar name = "Peter Omondi"/>
                 <div>
                   <h1 className="driver-name">Peter Omondi</h1>
                   <p className="driver-vehicle">KDG 567M · Matatu</p>
@@ -125,6 +129,10 @@ if (status === "success") {
         </header>
 
         <main className="driver-content">
+          <AlertBanner title ="Remittance shortfall" 
+          message="You have KES 1500 remaining for todays target."
+          type="warning"/>
+          
           <section className="amount-card">
             <label className="driver-label" htmlFor="amount">Amount to submit</label>
             <div className="amount-input-row">
@@ -147,6 +155,8 @@ if (status === "success") {
               <strong className="expected-amount">KES 4,500</strong>
             </div>
             <p className="amount-help" id="amount-help">Enter the amount you are remitting in Kenyan shillings.</p>
+            <StatCard label="Expected today"
+            value="KES 4500"/>
           </section>
 
           <section className="quick-section" aria-labelledby="quick-select-title">
@@ -184,7 +194,7 @@ if (status === "success") {
                 />
               </div>
             </div>
-            <span className="ready-badge">Ready</span>
+            <StatusBadge status="Ready"/>
           </section>
 
           <button
