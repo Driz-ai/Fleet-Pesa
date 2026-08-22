@@ -6,6 +6,7 @@ export const MOCK_VEHICLES = [
     driver_name: "Peter Omondi",
     driver_phone: "0712345678",
     status: "active",
+    remittance_status: "paid",
     daily_expected_amount: 8500,
   },
   {
@@ -15,6 +16,7 @@ export const MOCK_VEHICLES = [
     driver_name: "Brian Kiptoo",
     driver_phone: "0723456789",
     status: "active",
+    remittance_status: "unpaid",
     daily_expected_amount: 7800,
   },
   {
@@ -24,15 +26,17 @@ export const MOCK_VEHICLES = [
     driver_name: "Mercy Wanjiku",
     driver_phone: "0734567890",
     status: "active",
+    remittance_status: "short",
     daily_expected_amount: 7200,
   },
   {
     id: "mock-4",
-    plate_number: "KDM 746D",
+    plate_number: "KDM 745D",
     type: "Isuzu NQR",
     driver_name: "David Mwangi",
     driver_phone: "0745678901",
-    status: "active",
+    status: "parked",
+    remittance_status: "unpaid",
     daily_expected_amount: 9200,
   },
   {
@@ -42,6 +46,7 @@ export const MOCK_VEHICLES = [
     driver_name: "Unassigned",
     driver_phone: "",
     status: "parked",
+    remittance_status: "paid",
     daily_expected_amount: 6500,
   },
   {
@@ -51,6 +56,7 @@ export const MOCK_VEHICLES = [
     driver_name: "Janet Achieng",
     driver_phone: "0756789012",
     status: "active",
+    remittance_status: "short",
     daily_expected_amount: 8900,
   },
 ];

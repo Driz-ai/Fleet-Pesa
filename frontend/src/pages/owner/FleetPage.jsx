@@ -23,14 +23,23 @@ const LEGACY_STATUS_MAP = {
   available: "parked",
 };
 
+const REMITTANCE_TONE = {
+  paid: "green",
+  unpaid: "amber",
+  short: "red",
+};
+
 function migrateVehicles(vehicles) {
   if (!Array.isArray(vehicles)) return MOCK_VEHICLES;
 
   return vehicles.map((vehicle) => ({
     ...vehicle,
-    plate_number: vehicle.plate_number?.replace(/^KDO\b/, "KDR"),
+    plate_number: vehicle.plate_number
+      ?.replace(/^KDO\b/, "KDR")
+      .replace(/^KDM 746D$/, "KDM 745D"),
     type: LEGACY_TYPE_MAP[vehicle.type] || vehicle.type,
     status: LEGACY_STATUS_MAP[vehicle.status] || vehicle.status,
+    remittance_status: vehicle.remittance_status || "unpaid",
   }));
 }
 
@@ -94,6 +103,7 @@ export default function FleetPage() {
       driver_name: form.driver_name.trim() || "Unassigned",
       driver_phone: "",
       status: "parked",
+      remittance_status: "unpaid",
       daily_expected_amount: Number(form.daily_expected_amount) || 0,
     };
 
@@ -175,7 +185,13 @@ export default function FleetPage() {
                   <div className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-white"><img src="/FleetPesa%20FavIcon.jpg" alt="" className="h-full w-full object-contain p-1" /></div>
                   <div className="min-w-0"><h2 className="truncate text-base font-bold text-slate-900">{vehicle.plate_number}</h2><p className="truncate text-sm text-slate-500">{vehicle.type}</p></div>
                 </Link>
-                <StatusBadge label={vehicle.status === "active" ? "Active" : "Parked"} tone={vehicle.status === "active" ? "green" : "slate"} />
+                <div className="flex flex-wrap justify-end gap-2">
+                  <StatusBadge label={vehicle.status === "active" ? "Active" : "Parked"} tone={vehicle.status === "active" ? "green" : "slate"} />
+                  <StatusBadge
+                    label={`Remittance ${vehicle.remittance_status || "unpaid"}`}
+                    tone={REMITTANCE_TONE[vehicle.remittance_status] || "amber"}
+                  />
+                </div>
               </div>
               <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
                 <div className="flex min-w-0 items-center gap-2 text-sm text-slate-600"><UserRound className="h-4 w-4 shrink-0 text-slate-400" /><span className="truncate">{vehicle.driver_name}</span></div>
