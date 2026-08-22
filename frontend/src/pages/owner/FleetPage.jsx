@@ -11,10 +11,28 @@ const INITIAL_FORM = {
   daily_expected_amount: "",
 };
 
+const LEGACY_TYPE_MAP = {
+  "Nissan Caravan": "Isuzu NQR",
+  "Toyota Noah": "Hino 300",
+  "Isuzu NPR": "Isuzu NQR",
+  "Toyota Probox": "Mitsubishi Fuso Canter",
+  "Mitsubishi Canter": "Mitsubishi Fuso Canter",
+};
+
+function migrateVehicles(vehicles) {
+  if (!Array.isArray(vehicles)) return MOCK_VEHICLES;
+
+  return vehicles.map((vehicle) => ({
+    ...vehicle,
+    plate_number: vehicle.plate_number?.replace(/^KDO\b/, "KDR"),
+    type: LEGACY_TYPE_MAP[vehicle.type] || vehicle.type,
+  }));
+}
+
 function getStoredVehicles() {
   try {
     const stored = localStorage.getItem("fleetpesa_mock_vehicles");
-    return stored ? JSON.parse(stored) : MOCK_VEHICLES;
+    return stored ? migrateVehicles(JSON.parse(stored)) : MOCK_VEHICLES;
   } catch {
     return MOCK_VEHICLES;
   }

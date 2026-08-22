@@ -11,7 +11,7 @@ export const MOCK_VEHICLES = [
   {
     id: "mock-2",
     plate_number: "KDK 903B",
-    type: "Nissan Caravan",
+    type: "Isuzu NQR",
     driver_name: "Brian Kiptoo",
     driver_phone: "0723456789",
     status: "active",
@@ -20,7 +20,7 @@ export const MOCK_VEHICLES = [
   {
     id: "mock-3",
     plate_number: "KDL 118C",
-    type: "Toyota Noah",
+    type: "Hino 300",
     driver_name: "Mercy Wanjiku",
     driver_phone: "0734567890",
     status: "active",
@@ -29,7 +29,7 @@ export const MOCK_VEHICLES = [
   {
     id: "mock-4",
     plate_number: "KDM 746D",
-    type: "Isuzu NPR",
+    type: "Isuzu NQR",
     driver_name: "David Mwangi",
     driver_phone: "0745678901",
     status: "active",
@@ -38,7 +38,7 @@ export const MOCK_VEHICLES = [
   {
     id: "mock-5",
     plate_number: "KDN 285E",
-    type: "Toyota Probox",
+    type: "Mitsubishi Fuso Canter",
     driver_name: "Unassigned",
     driver_phone: "",
     status: "available",
@@ -47,7 +47,7 @@ export const MOCK_VEHICLES = [
   {
     id: "mock-6",
     plate_number: "KDR 631F",
-    type: "Mitsubishi Canter",
+    type: "Mitsubishi Fuso Canter",
     driver_name: "Janet Achieng",
     driver_phone: "0756789012",
     status: "active",
