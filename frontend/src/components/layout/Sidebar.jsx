@@ -22,7 +22,7 @@ export function Sidebar() {
 	return (
 		<aside className="sidebar">
 			<div className="brand">
-				<img className="brand-logo" src="/FleetPesa-FavIcon.svg" alt="FleetPesa" />
+				<img className="brand-logo" src="/FleetPesa%20FavIcon.jpg" alt="FleetPesa" />
 			</div>
 
 			<div className="owner-profile">
