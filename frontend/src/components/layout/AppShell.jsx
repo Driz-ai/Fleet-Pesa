@@ -1,7 +1,6 @@
 import { Bell, CircleHelp, Moon, Sun } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import { Owner } from '../Dashboard/Owner'
+import { Outlet, useLocation } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { useTheme } from '../../context/ThemeContext.jsx'
 
@@ -45,7 +44,7 @@ export function AppShell() {
 					</div>
 				</header>
 				<section className="dashboard-content" aria-label="Fleet dashboard">
-					<Owner />
+					<Outlet />
 				</section>
 			</main>
 		</div>

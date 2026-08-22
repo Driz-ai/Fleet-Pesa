@@ -98,6 +98,23 @@ export function updateRemittance(remittanceId, updates = {}) {
   });
 }
 
+export function getVehicle(vehicleId) {
+  return request(`/vehicles/${vehicleId}`);
+}
+
+export function listVehicles() {
+  return request("/vehicles");
+}
+
+export function listRemittances({ vehicleId, driverId } = {}) {
+  const params = new URLSearchParams();
+  if (vehicleId) params.set("vehicle_id", vehicleId);
+  if (driverId) params.set("driver_id", driverId);
+
+  const query = params.toString();
+  return request(`/remittances${query ? `?${query}` : ""}`);
+}
+
 export default {
   login,
   register,
@@ -105,4 +122,7 @@ export default {
   verifyPasswordOtp,
   resetPassword,
   updateRemittance,
+  getVehicle,
+  listVehicles,
+  listRemittances,
 };
