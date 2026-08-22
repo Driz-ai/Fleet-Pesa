@@ -1,10 +1,11 @@
-import { CarFront, Grid2X2, LogOut, Settings } from 'lucide-react'
+import { CarFront, ClipboardList, Grid2X2, LogOut, Settings } from 'lucide-react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
 
 const navigation = [
 	{ label: 'Dashboard', icon: Grid2X2, to: '/owner/dashboard' },
 	{ label: 'Fleet', icon: CarFront, to: '/owner/fleet' },
+	{ label: 'Remittance History', icon: ClipboardList, to: '/vehicles/mock-1/remittances' },
 ]
 
 export function Sidebar() {

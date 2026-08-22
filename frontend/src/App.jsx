@@ -10,6 +10,8 @@ import VehicleDetailPage from "./pages/owner/VehicleDetailPage.jsx";
 import FleetPage from "./pages/owner/FleetPage.jsx";
 import RemmitancePage from "./pages/driver/RemittancePage.jsx";
 import SettingsPage from "./pages/owner/SettingsPage.jsx";
+import RemittanceHistoryPage from "./pages/RemittanceHistoryPage.jsx";
+import { SettingsProvider } from "./context/SettingsContext.jsx";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -21,6 +23,7 @@ export default function App() {
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
+          <SettingsProvider>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
@@ -40,9 +43,13 @@ export default function App() {
               path="/driver/remittance"
               element={<ProtectedRoute><RemmitancePage /></ProtectedRoute>}
             />
+            <Route path="/vehicles/:vehicleId/remittances" element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
+              <Route index element={<RemittanceHistoryPage />} />
+            </Route>
             <Route path="/dashboard" element={<Navigate to="/owner/dashboard" replace />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
+          </SettingsProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

@@ -81,7 +81,7 @@ if (status === "success") {
           </div>
           <div className="receipt-row">
             <span>Vehicle</span>
-            <strong>KDG 567M</strong>
+            <strong>KDJ 421A</strong>
           </div>
         </div>
         <button

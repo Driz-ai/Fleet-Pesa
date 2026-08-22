@@ -59,8 +59,10 @@ export function register({ role, username, name, phone, password }) {
   });
 }
 
-export function updateProfile({ name, phone }) {
-  return request("/users/me", { method: "PATCH", body: { name, phone } });
+export function updateProfile({ name, phone, notification_preference }) {
+  const body = { name, phone };
+  if (notification_preference !== undefined) body.notification_preference = notification_preference;
+  return request("/users/me", { method: "PATCH", body });
 }
 
 export function updatePassword({ currentPassword, newPassword }) {
@@ -126,6 +128,15 @@ export function listRemittances({ vehicleId, driverId } = {}) {
   return request(`/remittances${query ? `?${query}` : ""}`);
 }
 
+export function getVehicleRemittanceHistory(vehicleId, filters = {}) {
+  const params = new URLSearchParams();
+  if (filters.from) params.set("from", filters.from);
+  if (filters.to) params.set("to", filters.to);
+  if (filters.status && filters.status !== "all") params.set("status", filters.status);
+  const query = params.toString();
+  return request(`/vehicles/${encodeURIComponent(vehicleId)}/remittances${query ? `?${query}` : ""}`);
+}
+
 export default {
   login,
   register,
@@ -136,4 +147,5 @@ export default {
   getVehicle,
   listVehicles,
   listRemittances,
+  getVehicleRemittanceHistory,
 };

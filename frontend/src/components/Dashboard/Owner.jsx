@@ -23,7 +23,7 @@ const weeklyRevenue = [
 const sampleShortfall = {
 	id: 'rem-1042',
 	driver_name: 'Peter Omondi',
-	vehicle: 'KCA 482Q',
+	vehicle: 'KDJ 421A',
 	expected_amount: 24000,
 	actual_amount: 14600,
 	timestamp: '2026-08-21T08:40:00Z',
