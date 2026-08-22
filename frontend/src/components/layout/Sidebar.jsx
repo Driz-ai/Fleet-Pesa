@@ -1,5 +1,6 @@
 import { CarFront, Grid2X2, LogOut, Settings } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+// Owner nav setup
 import { useAuth } from '../../context/AuthContext.jsx'
 
 const navigation = [
