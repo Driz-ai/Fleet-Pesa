@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { BusFront, Plus, Search, Trash2, UserRound, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { MOCK_VEHICLES } from "../../data/mockVehicles.js";
+import Pagination from "../../components/shared/Pagination.jsx";
 import StatusBadge from "../../components/shared/StatusBadge.jsx";
 
 const INITIAL_FORM = {
@@ -69,6 +70,8 @@ export default function FleetPage() {
   const [formError, setFormError] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
   const [currentTime, setCurrentTime] = useState(() => new Date());
+  const [fleetPage, setFleetPage] = useState(1);
+  const fleetPageSize = 4;
 
   useEffect(() => {
     localStorage.setItem("fleetpesa_mock_vehicles", JSON.stringify(vehicles));
@@ -88,6 +91,16 @@ export default function FleetPage() {
         .some((value) => value?.toLowerCase().includes(query))
     );
   }, [searchTerm, vehicles]);
+
+  const fleetPageCount = Math.ceil(filteredVehicles.length / fleetPageSize);
+  const visibleVehicles = filteredVehicles.slice(
+    (fleetPage - 1) * fleetPageSize,
+    fleetPage * fleetPageSize,
+  );
+
+  useEffect(() => {
+    setFleetPage((page) => Math.min(page, Math.max(fleetPageCount, 1)));
+  }, [fleetPageCount]);
 
   const ownerAlerts = useMemo(() => {
     const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
@@ -146,6 +159,7 @@ export default function FleetPage() {
       ...current,
     ]);
     setSearchTerm("");
+    setFleetPage(1);
     setSaveMessage(`${plateNumber} was added to your fleet.`);
     setFormError("");
     setForm(INITIAL_FORM);
@@ -210,7 +224,7 @@ export default function FleetPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative w-full sm:max-w-sm">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <input value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Search registration, driver..." aria-label="Search fleet" className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-sm text-slate-900 outline-none focus:border-slate-900" />
+          <input value={searchTerm} onChange={(event) => { setSearchTerm(event.target.value); setFleetPage(1); }} placeholder="Search registration, driver..." aria-label="Search fleet" className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-sm text-slate-900 outline-none focus:border-slate-900" />
         </div>
         <p className="text-sm text-slate-500">Showing <span className="font-semibold text-slate-900">{filteredVehicles.length}</span> of {vehicles.length} vehicles</p>
       </div>
@@ -223,7 +237,7 @@ export default function FleetPage() {
         </div>
       ) : (
         <div className="grid gap-3 md:grid-cols-2">
-          {filteredVehicles.map((vehicle) => (
+          {visibleVehicles.map((vehicle) => (
             <article key={vehicle.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 sm:p-5">
               <div className="flex items-start justify-between gap-3">
                 <Link to={`/owner/vehicles/${vehicle.id}`} className="flex min-w-0 items-center gap-3">
@@ -247,6 +261,7 @@ export default function FleetPage() {
           ))}
         </div>
       )}
+      <Pagination page={fleetPage} pageCount={fleetPageCount} onPageChange={setFleetPage} />
     </div>
   );
 }
