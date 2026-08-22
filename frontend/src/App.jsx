@@ -6,6 +6,7 @@ import SignupPage from "./pages/SignupPage.jsx";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
 import { AppShell } from "./components/layout/AppShell.jsx";
 import Driver from "./components/Dashboard /Driver.jsx";
+import VehicleDetailPage from "./pages/owner/VehicleDetailPage.jsx";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -31,6 +32,10 @@ export default function App() {
             />
             <Route path="/dashboard" element={<Navigate to="/owner/dashboard" replace />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route
+              path="/owner/vehicles/:id"
+              element={<ProtectedRoute><VehicleDetailPage /></ProtectedRoute>}
+            />
           </Routes>
         </AuthProvider>
       </ThemeProvider>
