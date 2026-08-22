@@ -10,7 +10,7 @@ const INITIAL_FORM = {
   type: "",
   driver_name: "",
   daily_expected_amount: "",
-  daily_due_time: "18:00",
+  daily_due_time: "14:00",
 };
 
 const LEGACY_TYPE_MAP = {
@@ -48,7 +48,7 @@ function migrateVehicles(vehicles) {
       type: LEGACY_TYPE_MAP[vehicle.type] || vehicle.type,
       status: wasLegacyKdm ? "parked" : LEGACY_STATUS_MAP[vehicle.status] || vehicle.status,
       remittance_status: vehicle.remittance_status || "unpaid",
-      daily_due_time: vehicle.daily_due_time || "18:00",
+      daily_due_time: vehicle.daily_due_time || "14:00",
     };
   });
 }
@@ -106,7 +106,7 @@ export default function FleetPage() {
     const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
 
     return vehicles.flatMap((vehicle) => {
-      const [hours, minutes] = (vehicle.daily_due_time || "18:00").split(":").map(Number);
+      const [hours, minutes] = (vehicle.daily_due_time || "14:00").split(":").map(Number);
       const dueMinutes = hours * 60 + minutes;
       const alerts = [];
 
@@ -151,7 +151,7 @@ export default function FleetPage() {
       status: "parked",
       remittance_status: "unpaid",
       daily_expected_amount: Number(form.daily_expected_amount) || 0,
-      daily_due_time: form.daily_due_time || "18:00",
+      daily_due_time: form.daily_due_time || "14:00",
     };
 
     setVehicles((current) => [
@@ -254,7 +254,7 @@ export default function FleetPage() {
               </div>
               <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
                 <div className="flex min-w-0 items-center gap-2 text-sm text-slate-600"><UserRound className="h-4 w-4 shrink-0 text-slate-400" /><span className="truncate">{vehicle.driver_name}</span></div>
-                <span className="text-xs font-medium text-slate-500">Due {vehicle.daily_due_time || "18:00"}</span>
+                <span className="text-xs font-medium text-slate-500">Due {vehicle.daily_due_time || "14:00"}</span>
                 <button type="button" onClick={() => removeVehicle(vehicle)} aria-label={`Remove ${vehicle.plate_number}`} title="Remove vehicle" className="rounded-lg p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-600"><Trash2 className="h-4 w-4" /></button>
               </div>
             </article>
