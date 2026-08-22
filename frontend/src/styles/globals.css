@@ -237,6 +237,7 @@ a {
   width: 100%;
 }
 
+/* summary styling */
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
