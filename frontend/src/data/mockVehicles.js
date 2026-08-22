@@ -46,7 +46,7 @@ export const MOCK_VEHICLES = [
   },
   {
     id: "mock-6",
-    plate_number: "KDO 631F",
+    plate_number: "KDR 631F",
     type: "Mitsubishi Canter",
     driver_name: "Janet Achieng",
     driver_phone: "0756789012",
