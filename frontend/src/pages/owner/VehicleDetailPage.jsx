@@ -1,7 +1,7 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as api from "../../lib/api.js";
-import { Loader2 } from "lucide-react";
+import { ArrowLeft, TriangleAlert, Loader2 } from "lucide-react";
 
 export default function VehicleDetailPage() {
   const { id } = useParams();
@@ -81,6 +81,21 @@ if (isLoading) {
     <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3 text-slate-500">
       <Loader2 className="h-6 w-6 animate-spin" />
       <p className="text-sm font-medium">Loading vehicle details…</p>
+    </div>
+  );
+}
+
+if (error) {
+  return (
+    <div className="mx-auto max-w-lg rounded-2xl border border-red-200 bg-red-50 p-5 text-center">
+      <TriangleAlert className="mx-auto mb-2 h-6 w-6 text-red-600" />
+      <p className="text-sm font-semibold text-red-700">{error}</p>
+      <Link
+        to="/owner/dashboard"
+        className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+      >
+        <ArrowLeft className="h-4 w-4" /> Back to dashboard
+      </Link>
     </div>
   );
 }
