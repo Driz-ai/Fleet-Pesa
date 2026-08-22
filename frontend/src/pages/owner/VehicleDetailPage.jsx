@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Car, Loader2, Phone, TriangleAlert } from "lucide-react";
+import { ArrowLeft, BusFront, Loader2, Phone, TriangleAlert } from "lucide-react";
+import { MOCK_VEHICLES } from "../../data/mockVehicles.js";
 import * as api from "../../lib/api.js";
 import Avatar from "../../components/shared/Avatar.jsx";
 import StatusBadge from "../../components/shared/StatusBadge.jsx";
@@ -35,6 +36,21 @@ function statusLabel(status) {
   return status.charAt(0).toUpperCase() + status.slice(1);
 }
 
+function getStoredVehicles() {
+  try {
+    const stored = localStorage.getItem("fleetpesa_mock_vehicles");
+    const vehicles = stored ? JSON.parse(stored) : MOCK_VEHICLES;
+    return Array.isArray(vehicles)
+      ? vehicles.map((item) => ({
+          ...item,
+          status: item.status === "available" ? "parked" : item.status,
+        }))
+      : MOCK_VEHICLES;
+  } catch {
+    return MOCK_VEHICLES;
+  }
+}
+
 export default function VehicleDetailPage() {
   const { id } = useParams();
 
@@ -51,6 +67,14 @@ export default function VehicleDetailPage() {
       setError("");
 
       try {
+        const localVehicle = getStoredVehicles().find((item) => item.id === id);
+        if (localVehicle) {
+          if (!isMounted) return;
+          setVehicle(localVehicle);
+          setRemittances([]);
+          return;
+        }
+
         const [vehicleData, remittanceData] = await Promise.all([
           api.getVehicle(id),
           api.listRemittances({ vehicleId: id }),
@@ -75,6 +99,17 @@ export default function VehicleDetailPage() {
       isMounted = false;
     };
   }, [id]);
+
+  const updateVehicleStatus = (status) => {
+    setVehicle((current) => (current ? { ...current, status } : current));
+
+    if (vehicle?.id?.startsWith("mock-")) {
+      const vehicles = getStoredVehicles().map((item) =>
+        item.id === vehicle.id ? { ...item, status } : item
+      );
+      localStorage.setItem("fleetpesa_mock_vehicles", JSON.stringify(vehicles));
+    }
+  };
 
   const totalExpected = remittances.reduce((sum, r) => sum + Number(r.expected_amount || 0), 0);
   const totalActual = remittances.reduce((sum, r) => sum + Number(r.actual_amount || 0), 0);
@@ -132,7 +167,7 @@ export default function VehicleDetailPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-center gap-3">
             <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-slate-900 text-white">
-              <Car className="h-6 w-6" />
+              <BusFront className="h-6 w-6" />
             </div>
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
@@ -189,6 +224,28 @@ export default function VehicleDetailPage() {
               <Phone className="h-4 w-4" /> {vehicle.driver_phone}
             </a>
           )}
+        </div>
+
+        <div className="mt-5 border-t border-slate-100 pt-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+            Vehicle status
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="Vehicle status">
+            {[
+              { value: "active", label: "Active" },
+              { value: "parked", label: "Parked" },
+            ].map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => updateVehicleStatus(option.value)}
+                aria-pressed={vehicle.status === option.value}
+                className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${vehicle.status === option.value ? "border-[#16A34A] bg-[#16A34A] text-white" : "border-slate-200 bg-white text-slate-600 hover:border-[#16A34A] hover:text-[#16A34A]"}`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 

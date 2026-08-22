@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Car, Plus, Search, Trash2, UserRound, X } from "lucide-react";
+import { BusFront, Plus, Search, Trash2, UserRound, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { MOCK_VEHICLES } from "../../data/mockVehicles.js";
 import StatusBadge from "../../components/shared/StatusBadge.jsx";
@@ -19,6 +19,10 @@ const LEGACY_TYPE_MAP = {
   "Mitsubishi Canter": "Mitsubishi Fuso Canter",
 };
 
+const LEGACY_STATUS_MAP = {
+  available: "parked",
+};
+
 function migrateVehicles(vehicles) {
   if (!Array.isArray(vehicles)) return MOCK_VEHICLES;
 
@@ -26,6 +30,7 @@ function migrateVehicles(vehicles) {
     ...vehicle,
     plate_number: vehicle.plate_number?.replace(/^KDO\b/, "KDR"),
     type: LEGACY_TYPE_MAP[vehicle.type] || vehicle.type,
+    status: LEGACY_STATUS_MAP[vehicle.status] || vehicle.status,
   }));
 }
 
@@ -88,7 +93,7 @@ export default function FleetPage() {
       type: form.type.trim(),
       driver_name: form.driver_name.trim() || "Unassigned",
       driver_phone: "",
-      status: "available",
+      status: "parked",
       daily_expected_amount: Number(form.daily_expected_amount) || 0,
     };
 
@@ -157,7 +162,7 @@ export default function FleetPage() {
 
       {filteredVehicles.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-10 text-center">
-          <Car className="mx-auto h-8 w-8 text-slate-400" />
+          <BusFront className="mx-auto h-8 w-8 text-slate-400" />
           <p className="mt-3 text-sm font-semibold text-slate-700">No vehicles match your search.</p>
           <button type="button" onClick={() => setSearchTerm("")} className="mt-2 text-sm font-semibold text-slate-900 hover:underline">Clear search</button>
         </div>
@@ -170,7 +175,7 @@ export default function FleetPage() {
                   <div className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-white"><img src="/FleetPesa%20FavIcon.jpg" alt="" className="h-full w-full object-contain p-1" /></div>
                   <div className="min-w-0"><h2 className="truncate text-base font-bold text-slate-900">{vehicle.plate_number}</h2><p className="truncate text-sm text-slate-500">{vehicle.type}</p></div>
                 </Link>
-                <StatusBadge label={vehicle.status} tone={vehicle.status === "active" ? "green" : "amber"} />
+                <StatusBadge label={vehicle.status === "active" ? "Active" : "Parked"} tone={vehicle.status === "active" ? "green" : "slate"} />
               </div>
               <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
                 <div className="flex min-w-0 items-center gap-2 text-sm text-slate-600"><UserRound className="h-4 w-4 shrink-0 text-slate-400" /><span className="truncate">{vehicle.driver_name}</span></div>

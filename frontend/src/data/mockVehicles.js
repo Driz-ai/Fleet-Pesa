@@ -41,7 +41,7 @@ export const MOCK_VEHICLES = [
     type: "Mitsubishi Fuso Canter",
     driver_name: "Unassigned",
     driver_phone: "",
-    status: "available",
+    status: "parked",
     daily_expected_amount: 6500,
   },
   {
