@@ -219,6 +219,9 @@ a {
 .settings-primary, .settings-secondary { min-height: 40px; margin-top: 20px; padding: 0 16px; border: 0; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
 .settings-primary { color: #fff; background: var(--primary); }
 .settings-secondary { color: var(--navy); background: #e8eff5; }
+.settings-primary:disabled { cursor: wait; opacity: .65; }
+.settings-error { margin: 14px 0 0 !important; color: #b42318 !important; }
+.settings-success { margin: 14px 0 0 !important; color: #087443 !important; }
 @media (max-width: 720px) { .settings-page { padding: 0 0 28px; } .settings-layout { grid-template-columns: 1fr; gap: 16px; } .settings-tabs { flex-direction: row; overflow-x: auto; } .settings-tab { white-space: nowrap; } .settings-form-grid { grid-template-columns: 1fr; } }
 
 .sidebar {

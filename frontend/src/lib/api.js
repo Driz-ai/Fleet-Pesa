@@ -59,6 +59,10 @@ export function register({ role, username, name, phone, password }) {
   });
 }
 
+export function updateProfile({ name, phone }) {
+  return request("/users/me", { method: "PATCH", body: { name, phone } });
+}
+
 // Expected password recovery contract: the backend sends a six-digit OTP to phone.
 export function requestPasswordOtp({ phone }) {
   return request("/auth/password/otp/request", {

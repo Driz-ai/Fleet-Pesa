@@ -1,4 +1,7 @@
 import { Bell, KeyRound, UserRound } from 'lucide-react'
+import { useState } from 'react'
+import { useAuth } from '../../context/AuthContext.jsx'
+import { updateProfile } from '../../lib/api.js'
 
 const sections = [
 	{ id: 'profile', label: 'Profile details', icon: UserRound },
@@ -7,6 +10,23 @@ const sections = [
 ]
 
 export default function SettingsPage() {
+	const { user, setAuth, token } = useAuth()
+	const [name, setName] = useState(user?.name || '')
+	const [phone, setPhone] = useState(user?.phone || '')
+	const [profileState, setProfileState] = useState({ loading: false, error: '', success: '' })
+
+	async function handleProfileSubmit(event) {
+		event.preventDefault()
+		setProfileState({ loading: true, error: '', success: '' })
+		try {
+			const response = await updateProfile({ name: name.trim(), phone: phone.trim() })
+			setAuth({ token, user: response.user })
+			setProfileState({ loading: false, error: '', success: 'Profile updated successfully.' })
+		} catch (error) {
+			setProfileState({ loading: false, error: error.message, success: '' })
+		}
+	}
+
 	return (
 		<div className="settings-page">
 			<div className="settings-heading">
@@ -32,11 +52,15 @@ export default function SettingsPage() {
 						<div className="settings-panel-heading">
 							<div><h3>Profile details</h3><p>Keep your contact details up to date.</p></div>
 						</div>
-						<div className="settings-form-grid">
-							<label>Name<input type="text" placeholder="Your name" /></label>
-							<label>Phone number<input type="tel" placeholder="0712345678" /></label>
-						</div>
-						<button className="settings-primary" type="button">Save profile</button>
+						<form onSubmit={handleProfileSubmit}>
+							<div className="settings-form-grid">
+								<label>Name<input type="text" value={name} onChange={(event) => setName(event.target.value)} required minLength={2} maxLength={120} /></label>
+								<label>Phone number<input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} required /></label>
+							</div>
+							{profileState.error && <p className="settings-error" role="alert">{profileState.error}</p>}
+							{profileState.success && <p className="settings-success" role="status">{profileState.success}</p>}
+							<button className="settings-primary" type="submit" disabled={profileState.loading}>{profileState.loading ? 'Saving...' : 'Save profile'}</button>
+						</form>
 					</section>
 
 					<section className="settings-panel" id="password">
