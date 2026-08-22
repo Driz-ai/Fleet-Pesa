@@ -216,6 +216,9 @@ a {
 .settings-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .settings-form-grid label { display: grid; gap: 7px; color: #61758d; font-size: 12px; font-weight: 700; }
 .settings-form-grid input { min-height: 42px; padding: 0 12px; color: var(--foreground); background: transparent; border: 1px solid #d5e0e9; border-radius: 8px; outline: none; }
+.settings-preferences { display: flex; flex-wrap: wrap; gap: 10px; }
+.settings-preferences label { display: flex; align-items: center; gap: 8px; padding: 11px 14px; color: #61758d; border: 1px solid #d5e0e9; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.settings-preferences input { accent-color: var(--primary); }
 .settings-primary, .settings-secondary { min-height: 40px; margin-top: 20px; padding: 0 16px; border: 0; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
 .settings-primary { color: #fff; background: var(--primary); }
 .settings-secondary { color: var(--navy); background: #e8eff5; }

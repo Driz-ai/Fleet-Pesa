@@ -16,6 +16,8 @@ export default function SettingsPage() {
 	const [profileState, setProfileState] = useState({ loading: false, error: '', success: '' })
 	const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '', confirmation: '' })
 	const [passwordState, setPasswordState] = useState({ loading: false, error: '', success: '' })
+	const [notificationPreference, setNotificationPreference] = useState(user?.notification_preference || 'none')
+	const [notificationState, setNotificationState] = useState({ loading: false, error: '', success: '' })
 
 	async function handleProfileSubmit(event) {
 		event.preventDefault()
@@ -42,6 +44,18 @@ export default function SettingsPage() {
 			setPasswordState({ loading: false, error: '', success: 'Password updated successfully.' })
 		} catch (error) {
 			setPasswordState({ loading: false, error: error.message, success: '' })
+		}
+	}
+
+	async function handleNotificationSubmit(event) {
+		event.preventDefault()
+		setNotificationState({ loading: true, error: '', success: '' })
+		try {
+			const response = await updateProfile({ notification_preference: notificationPreference })
+			setAuth({ token, user: response.user })
+			setNotificationState({ loading: false, error: '', success: 'Notification preference saved.' })
+		} catch (error) {
+			setNotificationState({ loading: false, error: error.message, success: '' })
 		}
 	}
 
@@ -97,7 +111,16 @@ export default function SettingsPage() {
 
 					<section className="settings-panel" id="notifications">
 						<h3>Remittance alerts</h3><p>Choose where default remittance notifications should be sent.</p>
-						<button className="settings-secondary" type="button">Save notification preference</button>
+						<form onSubmit={handleNotificationSubmit}>
+							<div className="settings-preferences">
+								{[['email', 'Email'], ['sms', 'SMS'], ['none', 'None']].map(([value, label]) => (
+									<label key={value}><input type="radio" name="notification-preference" value={value} checked={notificationPreference === value} onChange={(event) => setNotificationPreference(event.target.value)} />{label}</label>
+								))}
+							</div>
+							{notificationState.error && <p className="settings-error" role="alert">{notificationState.error}</p>}
+							{notificationState.success && <p className="settings-success" role="status">{notificationState.success}</p>}
+							<button className="settings-secondary" type="submit" disabled={notificationState.loading}>{notificationState.loading ? 'Saving...' : 'Save notification preference'}</button>
+						</form>
 					</section>
 				</div>
 			</div>
