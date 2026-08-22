@@ -311,6 +311,7 @@ a {
   font-weight: 700;
 }
 
+/* maintenance cleanup */
 .summary-card .summary-value {
   font-family: "Space Mono", monospace;
 }
