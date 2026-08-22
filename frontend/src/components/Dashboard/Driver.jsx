@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Moon, Phone, Sun, Truck } from "lucide-react";
+import { Moon, Phone, Sun } from "lucide-react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import  StatusBadge  from "../shared/StatusBadge.jsx";
 import { StatCard } from "../shared/StatCard";
@@ -102,10 +102,7 @@ if (status === "success") {
           <div className="driver-header-inner">
             <div className="driver-brand-row">
               <div className="driver-brand">
-                <span className="driver-brand-icon" aria-hidden="true">
-                  <Truck size={17} strokeWidth={2.25} />
-                </span>
-                <span>FleetPesa</span>
+                <img src="/Fleet-pesa%20Logo%20Dark.jpg" alt="FleetPesa" />
               </div>
                   <div className="driver-actions">
                     <button className="driver-theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${isDark ? "light" : "dark"} mode`} title={`Switch to ${isDark ? "light" : "dark"} mode`}>
