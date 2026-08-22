@@ -7,7 +7,7 @@ from config import Config
 from extensions import bcrypt, db, jwt, migrate
 from models.user import User
 from routes.auth_routes import auth_bp
-from schemas.user_schema import profile_schema
+from schemas.user_schema import password_change_schema, profile_schema
 
 
 def create_app(config_class=Config):
@@ -38,6 +38,26 @@ def create_app(config_class=Config):
 			setattr(user, field, value)
 		db.session.commit()
 		return jsonify(user=user.to_dict())
+
+	@app.patch("/api/users/me/password")
+	@jwt_required()
+	def change_password():
+		try:
+			data = password_change_schema.load(request.get_json(silent=True) or {})
+		except ValidationError as error:
+			return jsonify(message="Invalid password data", errors=error.messages), 400
+
+		user = db.session.get(User, int(get_jwt_identity()))
+		if user is None:
+			return jsonify(message="User not found"), 404
+		if not user.check_password(data["current_password"]):
+			return jsonify(message="Current password is incorrect"), 401
+		if data["current_password"] == data["new_password"]:
+			return jsonify(message="New password must be different from current password"), 400
+
+		user.set_password(data["new_password"])
+		db.session.commit()
+		return jsonify(message="Password updated successfully")
 
 	return app
 
