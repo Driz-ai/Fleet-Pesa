@@ -1,5 +1,6 @@
 import { Check, CircleAlert, Loader2, X } from "lucide-react";
 import { useState } from "react";
+import Pagination from "../../components/shared/Pagination.jsx";
 
 const quickAmounts = [50, 100, 150, 200, 300];
 
@@ -23,6 +24,13 @@ export default function FarePaymentModal({ onClose }) {
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState("idle");
   const [prompts, setPrompts] = useState(initialPrompts);
+  const [promptPage, setPromptPage] = useState(1);
+  const promptPageSize = 5;
+  const promptPageCount = Math.ceil(prompts.length / promptPageSize);
+  const visiblePrompts = prompts.slice(
+    (promptPage - 1) * promptPageSize,
+    promptPage * promptPageSize,
+  );
 
   const cleanPhone = phone.replace(/\D/g, "");
   const isValid = Number(amount) > 0 && /^07\d{8}$/.test(cleanPhone);
@@ -46,6 +54,7 @@ export default function FarePaymentModal({ onClose }) {
         },
         ...current,
       ]);
+      setPromptPage(1);
       setStatus("success");
     } catch {
       setStatus("failed");
@@ -183,7 +192,7 @@ export default function FarePaymentModal({ onClose }) {
               <span className="text-xs text-slate-400">Today</span>
             </div>
             <div className="divide-y divide-slate-100">
-              {prompts.map((prompt) => (
+              {visiblePrompts.map((prompt) => (
                 <div key={prompt.id} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
                   <div className="min-w-0">
                     <p className="font-mono text-sm font-bold text-[#0F2440]">KES {formatAmount(prompt.amount)}</p>
@@ -195,6 +204,7 @@ export default function FarePaymentModal({ onClose }) {
                 </div>
               ))}
             </div>
+            <Pagination page={promptPage} pageCount={promptPageCount} onPageChange={setPromptPage} />
           </section>
         </div>
       </div>

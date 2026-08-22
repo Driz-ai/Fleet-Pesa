@@ -4,6 +4,7 @@ import { ArrowLeft, BusFront, Loader2, Phone, TriangleAlert } from "lucide-react
 import { MOCK_VEHICLES } from "../../data/mockVehicles.js";
 import * as api from "../../lib/api.js";
 import Avatar from "../../components/shared/Avatar.jsx";
+import Pagination from "../../components/shared/Pagination.jsx";
 import StatusBadge from "../../components/shared/StatusBadge.jsx";
 
 const formatCurrency = (value) =>
@@ -58,6 +59,8 @@ export default function VehicleDetailPage() {
   const [remittances, setRemittances] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [remittancePage, setRemittancePage] = useState(1);
+  const remittancePageSize = 5;
 
   useEffect(() => {
     let isMounted = true;
@@ -65,6 +68,7 @@ export default function VehicleDetailPage() {
     async function load() {
       setIsLoading(true);
       setError("");
+      setRemittancePage(1);
 
       try {
         const localVehicle = getStoredVehicles().find((item) => item.id === id);
@@ -99,6 +103,12 @@ export default function VehicleDetailPage() {
       isMounted = false;
     };
   }, [id]);
+
+  const remittancePageCount = Math.ceil(remittances.length / remittancePageSize);
+  const visibleRemittances = remittances.slice(
+    (remittancePage - 1) * remittancePageSize,
+    remittancePage * remittancePageSize,
+  );
 
   const updateVehicleStatus = (status) => {
     setVehicle((current) => (current ? { ...current, status } : current));
@@ -262,7 +272,7 @@ export default function VehicleDetailPage() {
         ) : (
           <>
             <div className="space-y-3 sm:hidden">
-              {remittances.map((r) => (
+              {visibleRemittances.map((r) => (
                 <div key={r.id} className="rounded-xl border border-slate-200 p-3">
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-semibold text-slate-900">{formatDate(r.timestamp)}</p>
@@ -295,7 +305,7 @@ export default function VehicleDetailPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {remittances.map((r) => (
+                  {visibleRemittances.map((r) => (
                     <tr key={r.id}>
                       <td className="py-3 pr-4 text-slate-700">{formatDate(r.timestamp)}</td>
                       <td className="py-3 pr-4 text-slate-700">{formatCurrency(r.expected_amount)}</td>
@@ -319,6 +329,7 @@ export default function VehicleDetailPage() {
                 </tbody>
               </table>
             </div>
+            <Pagination page={remittancePage} pageCount={remittancePageCount} onPageChange={setRemittancePage} />
           </>
         )}
       </section>
