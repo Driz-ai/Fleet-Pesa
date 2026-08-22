@@ -7,3 +7,11 @@ class UserProfileSchema(Schema):
 
 
 profile_schema = UserProfileSchema()
+
+
+class PasswordChangeSchema(Schema):
+    current_password = fields.Str(required=True, validate=validate.Length(min=1))
+    new_password = fields.Str(required=True, validate=validate.Length(min=6, max=128))
+
+
+password_change_schema = PasswordChangeSchema()
