@@ -217,7 +217,6 @@ if (status === "success") {
         </main>
         {showFarePaymentModal && (
           <FarePaymentModal
-            defaultPhone={paymentPhone}
             onClose={() => setShowFarePaymentModal(false)}
           />
         )}
