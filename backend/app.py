@@ -32,6 +32,8 @@ def create_app(config_class=Config):
 		user = db.session.get(User, int(get_jwt_identity()))
 		if user is None:
 			return jsonify(message="User not found"), 404
+		if "notification_preference" in data and user.role != "owner":
+			return jsonify(message="Only owners can update notification preferences"), 403
 		if "phone" in data and User.query.filter(User.phone == data["phone"], User.id != user.id).first():
 			return jsonify(message="phone is already registered"), 409
 		for field, value in data.items():
