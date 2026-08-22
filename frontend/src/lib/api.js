@@ -102,6 +102,10 @@ export function getVehicle(vehicleId) {
   return request(`/vehicles/${vehicleId}`);
 }
 
+export function listVehicles() {
+  return request("/vehicles");
+}
+
 export function listRemittances({ vehicleId, driverId } = {}) {
   const params = new URLSearchParams();
   if (vehicleId) params.set("vehicle_id", vehicleId);
@@ -118,4 +122,7 @@ export default {
   verifyPasswordOtp,
   resetPassword,
   updateRemittance,
+  getVehicle,
+  listVehicles,
+  listRemittances,
 };
