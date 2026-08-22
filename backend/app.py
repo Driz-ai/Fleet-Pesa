@@ -7,6 +7,7 @@ from config import Config
 from extensions import bcrypt, db, jwt, migrate
 from models.user import User
 from routes.auth_routes import auth_bp
+from routes.remittance_routes import remittance_bp
 from schemas.user_schema import password_change_schema, profile_schema
 
 
@@ -19,6 +20,7 @@ def create_app(config_class=Config):
 	jwt.init_app(app)
 	migrate.init_app(app, db)
 	app.register_blueprint(auth_bp)
+	app.register_blueprint(remittance_bp)
 
 	@app.patch("/api/users/me")
 	@jwt_required()
