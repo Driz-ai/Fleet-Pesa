@@ -118,7 +118,7 @@ if (status === "success") {
                 <Avatar name = "Peter Omondi"/>
                 <div>
                   <h1 className="driver-name">Peter Omondi</h1>
-                  <p className="driver-vehicle">KDG 567M · Matatu</p>
+                  <p className="driver-vehicle">KDJ 421A · Toyota Hiace</p>
                 </div>
               </div>
             </div>
