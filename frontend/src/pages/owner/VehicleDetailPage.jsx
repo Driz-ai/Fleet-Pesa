@@ -99,4 +99,18 @@ if (error) {
     </div>
   );
 }
+
+if (!vehicle) {
+  return (
+    <div className="mx-auto max-w-lg rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
+      <p className="text-sm font-semibold text-slate-600">Vehicle not found.</p>
+      <Link
+        to="/owner/dashboard"
+        className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+      >
+        <ArrowLeft className="h-4 w-4" /> Back to dashboard
+      </Link>
+    </div>
+  );
+}
 }
