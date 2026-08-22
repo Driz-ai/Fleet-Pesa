@@ -37,6 +37,7 @@ a {
   text-decoration: none;
 }
 
+/* shell styling */
 .app-shell {
   display: flex;
   min-height: 100vh;
