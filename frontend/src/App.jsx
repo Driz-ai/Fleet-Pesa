@@ -5,7 +5,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
 import { AppShell } from "./components/layout/AppShell.jsx";
-import Driver from "./components/Dashboard /Driver.jsx";
+import Driver from "./components/Dashboard/Driver.jsx";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
