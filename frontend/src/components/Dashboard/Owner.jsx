@@ -1,4 +1,5 @@
- import {
+import { useState } from 'react'
+import {
 	ArrowUpRight,
 	Clock3,
 	TrendingUp,
@@ -14,6 +15,7 @@ import {
 	XAxis,
 	YAxis,
 } from 'recharts'
+import ShortfallModal from '../../features/shortfall/ShortfallModal.jsx'
 
 const weeklyRevenue = [
 	{ day: 'Mon', revenue: 38000 },
@@ -35,6 +37,15 @@ const driverRemittances = [
 	{ initials: 'SK', name: 'Samuel Kipchoge', type: 'Matatu', vehicle: 'KBM 678G', collected: 4500, expected: 4500, status: 'Paid', time: '11:20 AM' },
 	{ initials: 'EN', name: 'Esther Nyambura', type: 'Boda Boda', vehicle: 'KCH 321R', collected: 900, expected: 1500, status: 'Short', time: '09:47 AM', action: 'Review' },
 ]
+
+const sampleShortfall = {
+	id: 'rem-1042',
+	driver_name: 'Peter Omondi',
+	vehicle: 'KCA 482Q',
+	expected_amount: 24000,
+	actual_amount: 14600,
+	timestamp: '2026-08-21T08:40:00Z',
+}
 
 function formatCurrency(value) {
 	return `KES ${value.toLocaleString('en-KE')}`
@@ -59,7 +70,6 @@ function statusClass(status) {
 	return `status-badge status-${status.toLowerCase()}`
 }
 
-// Owner KPIs
 const summaryCards = [
 	{ label: 'Today\'s Revenue', value: 'KES 14,100', trend: '+ 14% vs yesterday', tone: 'success', icon: TrendingUp },
 	{ label: 'Outstanding', value: 'KES 9,900', trend: '4 drivers pending', tone: 'warning', icon: Clock3 },
@@ -67,6 +77,10 @@ const summaryCards = [
 ]
 
 export function Owner() {
+	const [showShortfall, setShowShortfall] = useState(true)
+	const [isResolved, setIsResolved] = useState(false)
+	const hasShortfall = !isResolved && true
+
 	return (
 		<div className="owner-dashboard">
 			<section className="summary-grid" aria-label="Owner summary metrics">
@@ -82,6 +96,29 @@ export function Owner() {
 					</div>
 				))}
 			</section>
+
+			{hasShortfall && (
+				<section className={`${isResolved ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-amber-50'} mt-0 mb-6 rounded-2xl p-4 shadow-sm`}>
+					<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+						<div>
+							<p className={`text-xs font-semibold uppercase tracking-[0.12em] ${isResolved ? 'text-emerald-700' : 'text-amber-700'}`}>
+								{isResolved ? 'Resolved shortfall' : 'Shortfall alert'}
+							</p>
+							<h3 className="mt-1 text-lg font-bold text-slate-900">
+								{isResolved ? 'Peter Omondi remittance has been resolved' : 'Peter Omondi has a remittance gap'}
+							</h3>
+						</div>
+						<button
+							type="button"
+							onClick={() => setShowShortfall(true)}
+							className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+						>
+							{isResolved ? 'View resolved record' : 'View details'}
+						</button>
+					</div>
+				</section>
+			)}
+
 			<section className="revenue-card" aria-labelledby="weekly-revenue-title">
 				<div className="card-heading">
 					<div>
@@ -143,6 +180,14 @@ export function Owner() {
 					</table>
 				</div>
 			</section>
+
+			{showShortfall && (
+				<ShortfallModal
+					remittance={sampleShortfall}
+					onClose={() => setShowShortfall(false)}
+					onResolved={() => setIsResolved(true)}
+				/>
+			)}
 		</div>
 	)
 }

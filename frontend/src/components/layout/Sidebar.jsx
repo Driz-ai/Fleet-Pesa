@@ -14,7 +14,10 @@ export function Sidebar() {
 
 	function handleSignOut() {
 		logout()
-		navigate('/login', { replace: true })
+		navigate('/login', {
+			replace: true,
+			state: { success: 'Successfully signed out.' },
+		})
 	}
 
 	return (
