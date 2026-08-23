@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Owner } from '../Dashboard/Owner'
 import { Sidebar } from './Sidebar'
+import { BottomNav } from './BottomNav'
 import { useTheme } from '../../context/ThemeContext.jsx'
 
 export function AppShell() {
@@ -47,6 +48,7 @@ export function AppShell() {
 				<section className="dashboard-content" aria-label="Fleet dashboard">
 					<Owner />
 				</section>
+				<BottomNav />
 			</main>
 		</div>
 	)

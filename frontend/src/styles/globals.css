@@ -173,7 +173,7 @@ body {
 }
 
 :root[data-theme="dark"] .revenue-card,
-:root[data-theme="dark"] .remittances-card {
+:root[data-theme="dark"] .bottom-nav {
   background: #14263a;
   border-color: #2d435b;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -386,6 +386,176 @@ a {
   width: 100%;
 }
 
+.bottom-nav {
+  margin: 0 28px 28px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e5ebf1;
+  border-radius: 18px;
+  box-shadow: 0 2px 4px rgba(24, 45, 74, 0.04);
+}
+
+.table-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 28px 19px;
+}
+
+.table-heading h2 {
+  margin: 0;
+  color: #1b3555;
+  font-size: 17px;
+}
+
+.table-heading p {
+  margin: 5px 0 0;
+  color: #95a8c0;
+  font-size: 14px;
+}
+
+.filter-button,
+.review-button {
+  color: #203f68;
+  background: #f2f6fa;
+  border: 1px solid #dce5ee;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.filter-button {
+  padding: 9px 15px;
+}
+
+.filter-button:hover,
+.review-button:hover {
+  background: #e6eef6;
+}
+
+.remittances-table-wrap {
+  overflow-x: auto;
+}
+
+.remittances-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.remittances-table th {
+  padding: 11px 20px;
+  color: #9aacc2;
+  background: #f8fafc;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.remittances-table th:first-child,
+.remittances-table td:first-child {
+  width: 31%;
+  padding-left: 28px;
+}
+
+.remittances-table th:nth-child(2) { width: 15%; }
+.remittances-table th:nth-child(3) { width: 18%; }
+.remittances-table th:nth-child(4) { width: 13%; }
+.remittances-table th:nth-child(5) { width: 13%; }
+.remittances-table th:last-child { width: 10%; }
+
+.remittances-table td {
+  height: 72px;
+  padding: 12px 20px;
+  border-top: 1px solid #edf1f4;
+  color: #526983;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.driver-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.driver-table-avatar {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  place-items: center;
+  color: #fff;
+  background: #203f68;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.driver-cell strong,
+.driver-cell small,
+.collected-amount,
+.expected-label {
+  display: block;
+}
+
+.driver-cell strong,
+.collected-amount {
+  color: #203653;
+  font-size: 13px;
+}
+
+.driver-cell small,
+.expected-label {
+  margin-top: 3px;
+  color: #96a8c0;
+  font-size: 11px;
+}
+
+.vehicle-cell,
+.time-cell,
+.collected-amount {
+  font-family: "Space Mono", monospace;
+}
+
+.status-badge {
+  display: inline-flex;
+  min-width: 53px;
+  justify-content: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.status-paid {
+  color: #079447;
+  background: #e8f9ef;
+}
+
+.status-short,
+.status-late {
+  color: #d97706;
+  background: #fff7e6;
+}
+
+.status-overdue {
+  color: #e11d48;
+  background: #fff0f2;
+}
+
+.review-button {
+  padding: 7px 11px;
+  color: #e11d48;
+  background: #fff0f2;
+  border-color: transparent;
+}
+
 .revenue-card {
   min-height: 305px;
   padding: 28px 28px 24px;
@@ -509,6 +679,10 @@ a {
     padding: 17px;
   }
 
+  .bottom-nav {
+    margin: 0 17px 17px;
+  }
+
   .revenue-card {
     padding: 21px 16px 17px;
   }
@@ -524,5 +698,15 @@ a {
   .revenue-chart {
     height: 205px;
     margin-top: 12px;
+  }
+
+  .table-heading {
+    align-items: flex-start;
+    padding: 20px 16px 16px;
+  }
+
+  .remittances-table th:first-child,
+  .remittances-table td:first-child {
+    padding-left: 16px;
   }
 }
