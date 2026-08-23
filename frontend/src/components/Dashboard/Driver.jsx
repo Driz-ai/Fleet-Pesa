@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Moon, Phone, Sun } from "lucide-react";
+import { History, Moon, Phone, Sun } from "lucide-react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import  StatusBadge  from "../shared/StatusBadge.jsx";
 import { StatCard } from "../shared/StatCard";
@@ -8,6 +8,7 @@ import Avatar from "../shared/Avatar.jsx";
 import AlertBanner from "../shared/AlertBanner.jsx";
 import { useTheme } from "../../context/ThemeContext.jsx";
 import FarePaymentModal from "../../features/paymentPrompt/FarePaymentModal.jsx";
+import { Link } from "react-router-dom";
 
 export default function Driver(){
   const location = useLocation()
@@ -206,6 +207,10 @@ if (status === "success") {
               ?`Submit KES ${Number(amount).toLocaleString()}`
               : "Enter an amount"}
           </button>
+
+          <Link to="/vehicles/mock-1/remittances" className="driver-history-link">
+            <History size={17} /> View remittance history
+          </Link>
 
           <button
             className="w-full rounded-2xl border-0 bg-[#16A34A] px-5 py-4 text-base font-bold text-white transition hover:bg-[#15803D] focus:outline-none focus:ring-4 focus:ring-emerald-500/20"

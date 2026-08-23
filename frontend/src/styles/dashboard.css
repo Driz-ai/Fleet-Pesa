@@ -157,6 +157,10 @@
     @apply cursor-wait bg-[#0e9d4e] text-white disabled:bg-[#0e9d4e] disabled:text-white;
   }
 
+  .driver-history-link {
+    @apply flex items-center justify-center gap-2 rounded-2xl border border-[#dce4ec] bg-white px-5 py-3.5 text-sm font-bold text-[#41536c] transition hover:border-[#12b75b] hover:text-[#0e9d4e];
+  }
+
   .success-shell {
     @apply grid min-h-screen place-items-center bg-[#f2f6fa] px-5 py-10;
   }
