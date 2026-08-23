@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import { Car, Loader2, TriangleAlert } from "lucide-react";
-import  useVehicles  from "../../hooks/useVehicles.js";
+import useVehicles from "../../hooks/useVehicles.js";
 
 export default function FleetPage() {
-  const { vehicles, isLoading, error } = useVehicles();
+  const { vehicles = [], loading, error } = useVehicles();
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-slate-500">
         <Loader2 className="h-6 w-6 animate-spin" />
@@ -42,11 +42,15 @@ export default function FleetPage() {
           <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-slate-900 text-white">
             <Car className="h-5 w-5" />
           </div>
+
           <div>
             <p className="text-sm font-semibold text-slate-900">
               {vehicle.plate_number || "Unregistered"}
             </p>
-            <p className="text-xs text-slate-500">{vehicle.type || "Vehicle"}</p>
+
+            <p className="text-xs text-slate-500">
+              {vehicle.type || "Vehicle"}
+            </p>
           </div>
         </Link>
       ))}
