@@ -1,15 +1,17 @@
-import { CarFront, Grid2X2, LogOut, Settings } from 'lucide-react'
+import { CarFront, ClipboardList, Grid2X2, LogOut, Settings } from 'lucide-react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
 
 const navigation = [
 	{ label: 'Dashboard', icon: Grid2X2, to: '/owner/dashboard' },
 	{ label: 'Fleet', icon: CarFront, to: '/owner/fleet' },
+	{ label: 'Remittance History', icon: ClipboardList, to: '/vehicles/mock-1/remittances' },
 ]
 
 export function Sidebar() {
 	const navigate = useNavigate()
-	const { logout } = useAuth()
+	const { logout, user } = useAuth()
+	const initials = (user?.name || 'Fleet Owner').split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase()
 
 	function handleSignOut() {
 		logout()
@@ -22,14 +24,13 @@ export function Sidebar() {
 	return (
 		<aside className="sidebar">
 			<div className="brand">
-				<div className="brand-mark"><CarFront size={19} strokeWidth={2.1} /></div>
-				<span>FleetPesa</span>
+				<img className="brand-logo" src="/FleetPesa%20FavIcon.jpg" alt="FleetPesa" />
 			</div>
 
 			<div className="owner-profile">
-				<div className="owner-avatar">JD</div>
+				<div className="owner-avatar">{user?.profile_picture ? <img src={user.profile_picture} alt="" /> : initials}</div>
 				<div>
-					<strong>James David</strong>
+					<strong>{user?.name || 'Fleet Owner'}</strong>
 					<span>Fleet Owner</span>
 				</div>
 			</div>

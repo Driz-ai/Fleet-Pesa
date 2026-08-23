@@ -1,19 +1,5 @@
-import { useCallback } from "react";
-import useFetch from "./useFetch";
-
-function buildQuery(params = {}) {
-  const query = new URLSearchParams();
-
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== "") {
-      query.append(key, String(value));
-    }
-  });
-
-  const queryString = query.toString();
-
-  return queryString ? `?${queryString}` : "";
-}
+import { useCallback, useEffect, useState } from "react";
+import * as api from "../lib/api.js";
 
 function isValidObject(value) {
   return (
@@ -24,121 +10,83 @@ function isValidObject(value) {
   );
 }
 
+function extractVehicles(payload) {
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+
+  if (!isValidObject(payload)) {
+    return [];
+  }
+
+  if (Array.isArray(payload.vehicles)) {
+    return payload.vehicles;
+  }
+
+  if (Array.isArray(payload.data)) {
+    return payload.data;
+  }
+
+  if (Array.isArray(payload.items)) {
+    return payload.items;
+  }
+
+  return [];
+}
+
 export default function useVehicles() {
-  const {
-    data,
-    loading,
-    error,
-    get,
-    post,
-    put,
-    patch,
-    remove,
-    reset,
-  } = useFetch();
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // GET /vehicles
-  const getVehicles = useCallback(
-    (params = {}) => {
-      return get(`/vehicles${buildQuery(params)}`);
-    },
-    [get]
-  );
+  const getVehicles = useCallback(async () => {
+    setLoading(true);
+    setError(null);
 
-  // GET /vehicles/:vehicleId
-  const getVehicle = useCallback(
-    (vehicleId) => {
-      if (!vehicleId) {
-        throw new Error("Vehicle ID is required");
-      }
+    try {
+      const response = await api.listVehicles();
+      const nextVehicles = extractVehicles(response);
 
-      return get(`/vehicles/${encodeURIComponent(vehicleId)}`);
-    },
-    [get]
-  );
+      setVehicles(nextVehicles);
+      return nextVehicles;
+    } catch (err) {
+      const message =
+        err?.message || "Failed to load vehicles.";
 
-  // POST /vehicles
-  const createVehicle = useCallback(
-    (vehicleData) => {
-      if (!isValidObject(vehicleData)) {
-        throw new Error("Vehicle information is required");
-      }
+      setError(message);
+      setVehicles([]);
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-      return post("/vehicles", vehicleData);
-    },
-    [post]
-  );
+  const deleteVehicle = useCallback(async (vehicleOrId) => {
+    const vehicleId =
+      typeof vehicleOrId === "object"
+        ? vehicleOrId?.id
+        : vehicleOrId;
 
-  // PUT /vehicles/:vehicleId
-  const updateVehicle = useCallback(
-    (vehicleId, vehicleData) => {
-      if (!vehicleId) {
-        throw new Error("Vehicle ID is required");
-      }
+    if (!vehicleId) {
+      throw new Error("Vehicle ID is required.");
+    }
 
-      if (!isValidObject(vehicleData)) {
-        throw new Error("Vehicle information is required");
-      }
+    await api.deleteVehicle(vehicleId);
 
-      return put(
-        `/vehicles/${encodeURIComponent(vehicleId)}`,
-        vehicleData
-      );
-    },
-    [put]
-  );
+    setVehicles((current) =>
+      current.filter((vehicle) => vehicle.id !== vehicleId)
+    );
+  }, []);
 
-  // PATCH /vehicles/:vehicleId/status
-  const updateVehicleStatus = useCallback(
-    (vehicleId, status) => {
-      if (!vehicleId) {
-        throw new Error("Vehicle ID is required");
-      }
-
-      if (typeof status !== "string" || !status.trim()) {
-        throw new Error("Vehicle status is required");
-      }
-
-      return patch(
-        `/vehicles/${encodeURIComponent(vehicleId)}/status`,
-        {
-          status: status.trim(),
-        }
-      );
-    },
-    [patch]
-  );
-
-  // DELETE /vehicles/:vehicleId
-  const deleteVehicle = useCallback(
-    (vehicleId) => {
-      if (!vehicleId) {
-        throw new Error("Vehicle ID is required");
-      }
-
-      return remove(
-        `/vehicles/${encodeURIComponent(vehicleId)}`
-      );
-    },
-    [remove]
-  );
-
-  // GET /owners/me/vehicles
-  const getMyVehicles = useCallback(() => {
-    return get("/owners/me/vehicles");
-  }, [get]);
+  useEffect(() => {
+    getVehicles();
+  }, [getVehicles]);
 
   return {
-    vehicles: data,
+    vehicles,
     loading,
     error,
     getVehicles,
-    getVehicle,
-    createVehicle,
-    updateVehicle,
-    updateVehicleStatus,
     deleteVehicle,
-    getMyVehicles,
-    reset,
   };
 }
