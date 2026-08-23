@@ -1,5 +1,6 @@
 import { Check, CircleAlert, Loader2, X } from "lucide-react";
 import { useState } from "react";
+import Pagination from "../../components/shared/Pagination.jsx";
 
 const quickAmounts = [50, 100, 150, 200, 300];
 
@@ -18,21 +19,21 @@ function maskPhone(value) {
   return `+254 ${digits.slice(-9, -6)}  ••  ${digits.slice(-2)}`;
 }
 
-function normalizePhone(value) {
-  const digits = value.replace(/\D/g, "");
-  if (digits.startsWith("254")) return digits.slice(3);
-  if (digits.startsWith("0")) return digits.slice(1);
-  return digits;
-}
-
-export default function FarePaymentModal({ onClose, defaultPhone = "" }) {
+export default function FarePaymentModal({ onClose }) {
   const [amount, setAmount] = useState("100");
-  const [phone, setPhone] = useState(normalizePhone(defaultPhone));
+  const [phone, setPhone] = useState("");
   const [status, setStatus] = useState("idle");
   const [prompts, setPrompts] = useState(initialPrompts);
+  const [promptPage, setPromptPage] = useState(1);
+  const promptPageSize = 5;
+  const promptPageCount = Math.ceil(prompts.length / promptPageSize);
+  const visiblePrompts = prompts.slice(
+    (promptPage - 1) * promptPageSize,
+    promptPage * promptPageSize,
+  );
 
   const cleanPhone = phone.replace(/\D/g, "");
-  const isValid = Number(amount) > 0 && /^7\d{8}$/.test(cleanPhone);
+  const isValid = Number(amount) > 0 && /^07\d{8}$/.test(cleanPhone);
 
   const handleSendPrompt = async () => {
     if (!isValid) return;
@@ -53,6 +54,7 @@ export default function FarePaymentModal({ onClose, defaultPhone = "" }) {
         },
         ...current,
       ]);
+      setPromptPage(1);
       setStatus("success");
     } catch {
       setStatus("failed");
@@ -140,15 +142,14 @@ export default function FarePaymentModal({ onClose, defaultPhone = "" }) {
               <div>
                 <label htmlFor="customer-phone" className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-600">Customer phone</label>
                 <div className="flex items-center rounded-xl border border-slate-200 px-4 focus-within:ring-2 focus-within:ring-[#1E3A5F]">
-                  <span className="font-mono font-semibold text-slate-400">+254</span>
                   <input
                     id="customer-phone"
                     type="tel"
                     inputMode="tel"
                     value={phone}
-                    onChange={(event) => setPhone(event.target.value.replace(/\D/g, "").replace(/^254/, ""))}
+                    onChange={(event) => setPhone(event.target.value.replace(/\D/g, ""))}
                     className="w-full border-0 px-3 py-3 font-mono text-base text-[#0F2440] outline-none focus:ring-0"
-                    placeholder="712345678"
+                    placeholder="0712345678"
                   />
                 </div>
               </div>
@@ -191,7 +192,7 @@ export default function FarePaymentModal({ onClose, defaultPhone = "" }) {
               <span className="text-xs text-slate-400">Today</span>
             </div>
             <div className="divide-y divide-slate-100">
-              {prompts.map((prompt) => (
+              {visiblePrompts.map((prompt) => (
                 <div key={prompt.id} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
                   <div className="min-w-0">
                     <p className="font-mono text-sm font-bold text-[#0F2440]">KES {formatAmount(prompt.amount)}</p>
@@ -203,6 +204,7 @@ export default function FarePaymentModal({ onClose, defaultPhone = "" }) {
                 </div>
               ))}
             </div>
+            <Pagination page={promptPage} pageCount={promptPageCount} onPageChange={setPromptPage} />
           </section>
         </div>
       </div>

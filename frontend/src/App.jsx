@@ -5,7 +5,14 @@ import LoginPage from "./pages/LoginPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
 import { AppShell } from "./components/layout/AppShell.jsx";
-import Driver from "./components/Dashboard/Driver.jsx";
+import DashboardPage from "./pages/owner/DashboardPage.jsx";
+import VehicleDetailPage from "./pages/owner/VehicleDetailPage.jsx";
+import FleetPage from "./pages/owner/FleetPage.jsx";
+import RemmitancePage from "./pages/driver/RemittancePage.jsx";
+import SettingsPage from "./pages/owner/SettingsPage.jsx";
+import RemittanceHistoryPage from "./pages/RemittanceHistoryPage.jsx";
+import { SettingsProvider } from "./context/SettingsContext.jsx";
+import DriverRemittanceHistoryPage from "./pages/driver/RemittanceHistoryPage.jsx";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -17,21 +24,37 @@ export default function App() {
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
+          <SettingsProvider>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
             <Route
-              path="/owner/dashboard"
+              path="/owner"
               element={<ProtectedRoute><AppShell /></ProtectedRoute>}
-            />
+            >
+              <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="fleet" element={<FleetPage />} />
+              <Route path="vehicles/:id" element={<VehicleDetailPage />} />
+              <Route path="settings" element={<SettingsPage />} />
+            </Route>
+
             <Route
               path="/driver/remittance"
-              element={<ProtectedRoute><Driver /></ProtectedRoute>}
+              element={<ProtectedRoute><RemmitancePage /></ProtectedRoute>}
             />
+            <Route
+              path="/driver/remittance-history"
+              element={<ProtectedRoute><DriverRemittanceHistoryPage /></ProtectedRoute>}
+            />
+            <Route path="/vehicles/:vehicleId/remittances" element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
+              <Route index element={<RemittanceHistoryPage />} />
+            </Route>
             <Route path="/dashboard" element={<Navigate to="/owner/dashboard" replace />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
+          </SettingsProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
