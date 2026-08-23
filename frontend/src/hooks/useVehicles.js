@@ -5,11 +5,7 @@ function buildQuery(params = {}) {
   const query = new URLSearchParams();
 
   Object.entries(params).forEach(([key, value]) => {
-    if (
-      value !== undefined &&
-      value !== null &&
-      value !== ""
-    ) {
+    if (value !== undefined && value !== null && value !== "") {
       query.append(key, String(value));
     }
   });
@@ -28,7 +24,7 @@ function isValidObject(value) {
   );
 }
 
-export default function useVehicle() {
+export default function useVehicles() {
   const {
     data,
     loading,
@@ -101,10 +97,7 @@ export default function useVehicle() {
         throw new Error("Vehicle ID is required");
       }
 
-      if (
-        typeof status !== "string" ||
-        !status.trim()
-      ) {
+      if (typeof status !== "string" || !status.trim()) {
         throw new Error("Vehicle status is required");
       }
 
@@ -154,3 +147,5 @@ export default function useVehicle() {
     reset,
   };
 }
+
+

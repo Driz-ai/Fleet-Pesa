@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Car, Loader2, TriangleAlert } from "lucide-react";
-import { useVehicles } from "../../hooks/useVehicles.js";
+import  useVehicles  from "../../hooks/useVehicles.js";
 
 export default function FleetPage() {
   const { vehicles, isLoading, error } = useVehicles();
