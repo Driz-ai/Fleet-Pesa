@@ -52,9 +52,7 @@ export default function useVehicles() {
         throw new Error("Vehicle ID is required");
       }
 
-      return get(
-        `/vehicles/${encodeURIComponent(vehicleId)}`
-      );
+      return get(`/vehicles/${encodeURIComponent(vehicleId)}`);
     },
     [get]
   );
@@ -132,10 +130,8 @@ export default function useVehicles() {
 
   return {
     vehicles: data,
-
     loading,
     error,
-
     getVehicles,
     getVehicle,
     createVehicle,
@@ -143,9 +139,6 @@ export default function useVehicles() {
     updateVehicleStatus,
     deleteVehicle,
     getMyVehicles,
-
     reset,
   };
 }
-
-
