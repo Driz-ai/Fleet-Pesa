@@ -13,6 +13,7 @@ export default function SettingsPage() {
 	const { user, setAuth, token } = useAuth()
 	const [name, setName] = useState(user?.name || '')
 	const [phone, setPhone] = useState(user?.phone || '')
+	const [profilePicture, setProfilePicture] = useState(user?.profile_picture || '')
 	const [profileState, setProfileState] = useState({ loading: false, error: '', success: '' })
 	const [profileSaved, setProfileSaved] = useState(false)
 	const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '', confirmation: '' })
@@ -27,7 +28,7 @@ export default function SettingsPage() {
 		setProfileState({ loading: true, error: '', success: '' })
 		try {
 			const response = token?.startsWith('mock-token')
-				? await new Promise((resolve) => window.setTimeout(() => resolve({ user: { ...user, name: name.trim(), phone: phone.trim() } }), 450))
+				? await new Promise((resolve) => window.setTimeout(() => resolve({ user: { ...user, name: name.trim(), phone: phone.trim(), profile_picture: profilePicture } }), 450))
 				: await updateProfile({ name: name.trim(), phone: phone.trim() })
 			setAuth({ token, user: response.user })
 			setProfileState({ loading: false, error: '', success: '' })
@@ -41,6 +42,10 @@ export default function SettingsPage() {
 		event.preventDefault()
 		if (passwords.newPassword !== passwords.confirmation) {
 			setPasswordState({ loading: false, error: 'New passwords do not match.', success: '' })
+			return
+		}
+		if (passwords.currentPassword === passwords.newPassword) {
+			setPasswordState({ loading: false, error: 'New password must be different from your current password.', success: '' })
 			return
 		}
 		setPasswordState({ loading: true, error: '', success: '' })
@@ -101,6 +106,8 @@ export default function SettingsPage() {
 							<div><h3>Profile details</h3><p>Keep your contact details up to date.</p></div>
 						</div>
 						<form onSubmit={handleProfileSubmit}>
+							<label className="profile-picture-field">Profile picture<input type="file" accept="image/*" capture="user" onChange={(event) => { const file = event.target.files?.[0]; if (!file) return; const reader = new FileReader(); reader.onload = () => setProfilePicture(reader.result); reader.readAsDataURL(file) }} /></label>
+							{profilePicture && <img className="profile-picture-preview" src={profilePicture} alt="Profile preview" />}
 							<div className="settings-form-grid">
 								<label>Name<input type="text" value={name} onChange={(event) => setName(event.target.value)} required minLength={2} maxLength={120} /></label>
 								<label>Phone number<input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} required /></label>

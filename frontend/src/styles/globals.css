@@ -225,14 +225,24 @@ a {
 .settings-primary:disabled, .settings-secondary:disabled { cursor: wait; opacity: .65; }
 .settings-error { margin: 14px 0 0 !important; color: #b42318 !important; }
 .settings-success { margin: 14px 0 0 !important; color: #087443 !important; }
+.owner-avatar img, .topbar-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.topbar-popover { position: absolute; top: 62px; right: 52px; z-index: 4; width: 240px; padding: 15px; color: var(--navy); background: var(--background); border: 1px solid #dfe7ee; border-radius: 10px; box-shadow: 0 12px 28px rgba(16, 40, 68, .16); }
+.topbar-popover p { margin: 6px 0 0; color: #61758d; font-size: 12px; }
+.faq-popover { right: 98px; }
+.faq-popover button { float: right; border: 0; color: #61758d; background: transparent; cursor: pointer; }
 .settings-success-card { display: grid; gap: 3px; margin-top: 18px; padding: 14px 16px; color: #087443; background: #ecfdf3; border: 1px solid #a7e8c1; border-radius: 10px; }
 .settings-success-card span { color: #3d8060; font-size: 13px; }
 .settings-email-field { display: grid; gap: 7px; max-width: 360px; margin-top: 14px; color: #61758d; font-size: 12px; font-weight: 700; }
 .settings-email-field input { min-height: 42px; padding: 0 12px; color: var(--foreground); background: transparent; border: 1px solid #d5e0e9; border-radius: 8px; outline: none; }
+.profile-picture-field { display: grid; gap: 7px; margin-bottom: 14px; color: #61758d; font-size: 12px; font-weight: 700; }
+.profile-picture-field input { min-height: 42px; padding: 9px 12px; color: var(--foreground); background: transparent; border: 1px solid #d5e0e9; border-radius: 8px; }
+.profile-picture-preview { width: 64px; height: 64px; margin-bottom: 16px; border-radius: 50%; object-fit: cover; border: 3px solid #e5edf4; }
 .history-filter-bar { display: flex; flex-wrap: wrap; align-items: end; gap: 14px; padding: 16px; background: #fff; border: 1px solid #dfe7ee; border-radius: 14px; box-shadow: 0 8px 20px rgba(16, 40, 68, .05); }
 .history-filter-bar label { display: grid; gap: 6px; min-width: 145px; color: #61758d; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .history-filter-bar input, .history-filter-bar select { min-height: 40px; padding: 0 11px; color: #102844; background: #f8fafc; border: 1px solid #d5e0e9; border-radius: 8px; outline: none; }
 .history-filter-bar input:focus, .history-filter-bar select:focus { border-color: #12b75b; box-shadow: 0 0 0 3px rgba(18, 183, 91, .12); }
+.history-vehicle-picker { display: grid; gap: 6px; max-width: 320px; color: #61758d; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.history-vehicle-picker select { min-height: 42px; padding: 0 12px; color: #102844; background: #fff; border: 1px solid #d5e0e9; border-radius: 9px; }
 .history-table-wrap { overflow-x: auto; background: #fff; border: 1px solid #dfe7ee; border-radius: 14px; box-shadow: 0 8px 20px rgba(16, 40, 68, .05); }
 .history-table { width: 100%; min-width: 680px; border-collapse: collapse; text-align: left; font-size: 13px; }
 .history-table th { padding: 13px 16px; color: #61758d; background: #f7fafc; border-bottom: 1px solid #e5edf3; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
