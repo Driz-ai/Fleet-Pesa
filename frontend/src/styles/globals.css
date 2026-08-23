@@ -243,6 +243,8 @@ a {
 .history-filter-bar input:focus, .history-filter-bar select:focus { border-color: #12b75b; box-shadow: 0 0 0 3px rgba(18, 183, 91, .12); }
 .history-date-field { position: relative; display: grid; gap: 6px; min-width: 170px; color: #61758d; font-family: "DM Sans", sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 .history-date-field input { position: relative; z-index: 1; width: 100%; padding-right: 12px; }
+.history-date-field input.date-input-empty { color: transparent; }
+.history-date-field input.date-input-empty::-webkit-datetime-edit { color: transparent; }
 .history-date-field span { position: absolute; right: 12px; bottom: 12px; z-index: 2; display: flex; align-items: center; gap: 5px; color: #8a9caf; background: #f8fafc; font-size: 11px; font-weight: 600; letter-spacing: 0; text-transform: none; pointer-events: none; }
 .history-vehicle-picker { display: grid; gap: 6px; max-width: 320px; color: #61758d; font-family: "DM Sans", sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 .history-vehicle-picker select { min-height: 44px; padding: 0 12px; color: #102844; background: #fff; border: 1px solid #d5e0e9; border-radius: 9px; font-family: "DM Sans", sans-serif; font-size: 14px; }
