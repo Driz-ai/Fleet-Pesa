@@ -7,7 +7,7 @@ export const MOCK_VEHICLES = [
     driver_phone: "0712345678",
     status: "active",
     remittance_status: "paid",
-    daily_due_time: "18:00",
+    daily_due_time: "14:00",
     daily_expected_amount: 8500,
   },
   {
@@ -18,7 +18,7 @@ export const MOCK_VEHICLES = [
     driver_phone: "0723456789",
     status: "active",
     remittance_status: "unpaid",
-    daily_due_time: "18:00",
+    daily_due_time: "14:00",
     daily_expected_amount: 7800,
   },
   {
@@ -29,7 +29,7 @@ export const MOCK_VEHICLES = [
     driver_phone: "0734567890",
     status: "active",
     remittance_status: "short",
-    daily_due_time: "18:00",
+    daily_due_time: "14:00",
     daily_expected_amount: 7200,
   },
   {
@@ -40,7 +40,7 @@ export const MOCK_VEHICLES = [
     driver_phone: "0745678901",
     status: "parked",
     remittance_status: "unpaid",
-    daily_due_time: "18:00",
+    daily_due_time: "14:00",
     daily_expected_amount: 9200,
   },
   {
@@ -51,7 +51,7 @@ export const MOCK_VEHICLES = [
     driver_phone: "",
     status: "parked",
     remittance_status: "paid",
-    daily_due_time: "18:00",
+    daily_due_time: "14:00",
     daily_expected_amount: 6500,
   },
   {
@@ -62,7 +62,7 @@ export const MOCK_VEHICLES = [
     driver_phone: "0756789012",
     status: "active",
     remittance_status: "short",
-    daily_due_time: "18:00",
+    daily_due_time: "14:00",
     daily_expected_amount: 8900,
   },
 ];
