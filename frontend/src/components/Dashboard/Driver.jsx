@@ -208,7 +208,7 @@ if (status === "success") {
               : "Enter an amount"}
           </button>
 
-          <Link to="/vehicles/mock-1/remittances" className="driver-history-link">
+          <Link to="/driver/remittance-history" className="driver-history-link">
             <History size={17} /> View remittance history
           </Link>
 

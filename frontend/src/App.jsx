@@ -12,6 +12,7 @@ import RemmitancePage from "./pages/driver/RemittancePage.jsx";
 import SettingsPage from "./pages/owner/SettingsPage.jsx";
 import RemittanceHistoryPage from "./pages/RemittanceHistoryPage.jsx";
 import { SettingsProvider } from "./context/SettingsContext.jsx";
+import DriverRemittanceHistoryPage from "./pages/driver/RemittanceHistoryPage.jsx";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -42,6 +43,10 @@ export default function App() {
             <Route
               path="/driver/remittance"
               element={<ProtectedRoute><RemmitancePage /></ProtectedRoute>}
+            />
+            <Route
+              path="/driver/remittance-history"
+              element={<ProtectedRoute><DriverRemittanceHistoryPage /></ProtectedRoute>}
             />
             <Route path="/vehicles/:vehicleId/remittances" element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
               <Route index element={<RemittanceHistoryPage />} />
