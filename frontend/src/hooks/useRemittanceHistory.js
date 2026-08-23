@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import { getVehicleRemittanceHistory } from "../lib/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { MOCK_VEHICLES } from "../data/mockVehicles.js";
-
-const MOCK_HISTORY = [
-  { id: "mock-rem-1", submitted_at: "2026-08-22T14:10:00Z", expected_amount: 8500, actual_amount: 8500, status: "paid", payment_status: "confirmed" },
-  { id: "mock-rem-2", submitted_at: "2026-08-21T14:25:00Z", expected_amount: 8500, actual_amount: 7000, status: "short", payment_status: "confirmed" },
-];
+import { MOCK_REMITTANCES } from "../data/mockRemittances.js";
 
 export default function useRemittanceHistory(vehicleId, filters) {
   const { token } = useAuth();
@@ -18,9 +14,14 @@ export default function useRemittanceHistory(vehicleId, filters) {
     const request = token?.startsWith("mock-token")
       ? new Promise((resolve) => window.setTimeout(() => {
           const vehicle = MOCK_VEHICLES.find((item) => item.id === vehicleId);
+          const remittances = MOCK_REMITTANCES
+            .filter((item) => item.vehicle_id === vehicleId)
+            .filter((item) => !filters.status || filters.status === "all" || item.status === filters.status)
+            .filter((item) => !filters.from || item.submitted_at.slice(0, 10) >= filters.from)
+            .filter((item) => !filters.to || item.submitted_at.slice(0, 10) <= filters.to);
           resolve({
             vehicle: vehicle ? { id: vehicle.id, plate_number: vehicle.plate_number, vehicle_type: vehicle.type } : null,
-            remittances: vehicleId === "mock-1" ? MOCK_HISTORY : [],
+            remittances,
           });
         }, 250))
       : getVehicleRemittanceHistory(vehicleId, filters);
