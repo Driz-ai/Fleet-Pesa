@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, History, Loader2 } from "lucide-react";
 import useRemittanceHistory from "../hooks/useRemittanceHistory.js";
@@ -10,10 +10,15 @@ function dateLabel(value) { return new Intl.DateTimeFormat("en-KE", { dateStyle:
 export default function RemittanceHistoryPage() {
   const { vehicleId } = useParams();
   const navigate = useNavigate();
+  const [selectedVehicleId, setSelectedVehicleId] = useState(vehicleId || "");
   const [filters, setFilters] = useState({ from: "", to: "", status: "all" });
   const history = useRemittanceHistory(vehicleId, filters);
-  const mockVehicle = MOCK_VEHICLES.find((vehicle) => vehicle.id === vehicleId);
-  const vehicle = history.vehicle || (mockVehicle && { plate_number: mockVehicle.plate_number, vehicle_type: mockVehicle.type });
+  const mockVehicle = MOCK_VEHICLES.find((vehicle) => vehicle.id === selectedVehicleId);
+  const vehicle = (mockVehicle && { plate_number: mockVehicle.plate_number, vehicle_type: mockVehicle.type }) || history.vehicle;
+
+  useEffect(() => {
+    setSelectedVehicleId(vehicleId || "");
+  }, [vehicleId]);
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-4 pb-10 sm:p-6">
@@ -24,7 +29,7 @@ export default function RemittanceHistoryPage() {
         {vehicle?.vehicle_type && <p className="mt-1 text-sm text-slate-500">{vehicle.vehicle_type}</p>}
       </header>
 
-      <label className="history-vehicle-picker">Vehicle<select value={vehicleId} onChange={(event) => navigate(`/vehicles/${event.target.value}/remittances`)}><option value="">Choose a vehicle</option>{MOCK_VEHICLES.map((item) => <option key={item.id} value={item.id}>{item.plate_number} · {item.driver_name}</option>)}</select></label>
+      <label className="history-vehicle-picker">Vehicle<select value={selectedVehicleId} onChange={(event) => { setSelectedVehicleId(event.target.value); navigate(`/vehicles/${event.target.value}/remittances`); }}><option value="">Choose a vehicle</option>{MOCK_VEHICLES.map((item) => <option key={item.id} value={item.id}>{item.plate_number} · {item.driver_name}</option>)}</select></label>
 
       <section className="history-filter-bar" aria-label="Remittance filters">
         <label className="text-xs font-bold uppercase tracking-wide text-slate-500">From<input type="date" value={filters.from} onChange={(event) => setFilters({ ...filters, from: event.target.value })} className="mt-1 block rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900" /></label>

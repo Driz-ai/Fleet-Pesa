@@ -238,11 +238,11 @@ a {
 .profile-picture-field input { min-height: 42px; padding: 9px 12px; color: var(--foreground); background: transparent; border: 1px solid #d5e0e9; border-radius: 8px; }
 .profile-picture-preview { width: 64px; height: 64px; margin-bottom: 16px; border-radius: 50%; object-fit: cover; border: 3px solid #e5edf4; }
 .history-filter-bar { display: flex; flex-wrap: wrap; align-items: end; gap: 14px; padding: 16px; background: #fff; border: 1px solid #dfe7ee; border-radius: 14px; box-shadow: 0 8px 20px rgba(16, 40, 68, .05); }
-.history-filter-bar label { display: grid; gap: 6px; min-width: 145px; color: #61758d; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-.history-filter-bar input, .history-filter-bar select { min-height: 40px; padding: 0 11px; color: #102844; background: #f8fafc; border: 1px solid #d5e0e9; border-radius: 8px; outline: none; }
+.history-filter-bar label { display: grid; gap: 6px; min-width: 145px; color: #61758d; font-family: "DM Sans", sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.history-filter-bar input, .history-filter-bar select { min-height: 42px; padding: 0 11px; color: #102844; background: #f8fafc; border: 1px solid #d5e0e9; border-radius: 8px; font-family: "DM Sans", sans-serif; font-size: 14px; outline: none; }
 .history-filter-bar input:focus, .history-filter-bar select:focus { border-color: #12b75b; box-shadow: 0 0 0 3px rgba(18, 183, 91, .12); }
-.history-vehicle-picker { display: grid; gap: 6px; max-width: 320px; color: #61758d; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-.history-vehicle-picker select { min-height: 42px; padding: 0 12px; color: #102844; background: #fff; border: 1px solid #d5e0e9; border-radius: 9px; }
+.history-vehicle-picker { display: grid; gap: 6px; max-width: 320px; color: #61758d; font-family: "DM Sans", sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.history-vehicle-picker select { min-height: 44px; padding: 0 12px; color: #102844; background: #fff; border: 1px solid #d5e0e9; border-radius: 9px; font-family: "DM Sans", sans-serif; font-size: 14px; }
 .history-table-wrap { overflow-x: auto; background: #fff; border: 1px solid #dfe7ee; border-radius: 14px; box-shadow: 0 8px 20px rgba(16, 40, 68, .05); }
 .history-table { width: 100%; min-width: 680px; border-collapse: collapse; text-align: left; font-size: 13px; }
 .history-table th { padding: 13px 16px; color: #61758d; background: #f7fafc; border-bottom: 1px solid #e5edf3; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
