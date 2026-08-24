@@ -74,6 +74,7 @@ export default function FleetPage() {
   const [vehicles, setVehicles] = useState(getStoredVehicles);
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [editingVehicleId, setEditingVehicleId] = useState(null);
   const [form, setForm] = useState(INITIAL_FORM);
   const [formError, setFormError] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
