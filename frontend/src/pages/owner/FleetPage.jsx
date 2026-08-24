@@ -193,6 +193,22 @@ export default function FleetPage() {
     setIsAddOpen(true);
   };
 
+  const startEdit = (vehicle) => {
+    setForm({
+      plate_number: vehicle.plate_number || "",
+      type: vehicle.type || "",
+      driver_name:
+        vehicle.driver_name === "Unassigned" ? "" : vehicle.driver_name || "",
+      daily_expected_amount: vehicle.daily_expected_amount
+        ? String(vehicle.daily_expected_amount)
+        : "",
+      daily_due_time: vehicle.daily_due_time || "14:00",
+    });
+    setEditingVehicleId(vehicle.id);
+    setFormError("");
+    setIsAddOpen(true);
+  };
+
   const addVehicle = (event) => {
     event.preventDefault();
 
