@@ -1,7 +1,6 @@
 import { Section,Search ,Pencil,Power,Trash2} from "lucide-react";
 import { useState } from "react";
 export default function DriversPage(){
-
     const initialdrivers = [
   {
     id: 1,
@@ -18,7 +17,13 @@ export default function DriversPage(){
     vehicle: "Unassigned",
   },
 ];
-const [drivers,setDrivers] = useState(initialdrivers)
+    const [drivers,setDrivers] = useState(initialdrivers)
+    const [search,setSearch] = useState("")
+    const [isAddOpen, setIsAddOpen] = useState(false);
+
+const filteredDrivers = drivers.filter((driver) =>
+  driver.name.toLowerCase().includes(search.toLowerCase())
+);
 
 function handleToggleStatus(driverId){
 setDrivers((currentDrivers)=> 
@@ -40,12 +45,46 @@ currentDrivers.map((driver) => driver.id === driverId ?
           </p>
         </div>
         <button
-          type="button"
-          className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800"
-        >
-          + Add driver
-        </button>
+  type="button"
+  onClick={() => setIsAddOpen(true)}
+  className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800"
+>
+   + Add driver
+</button>
+</div>
+{isAddOpen && (
+  <form className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="mb-4 flex items-start justify-between">
+      <div>
+        <h2 className="text-base font-bold text-slate-900">
+          Add a driver
+        </h2>
+        <p className="mt-1 text-sm text-slate-500">
+          Enter the driver's details below.
+        </p>
       </div>
+      <button
+        type="button"
+        onClick={() => setIsAddOpen(false)}
+        className="text-sm font-medium text-slate-500 hover:text-slate-900"
+      >
+        Close
+      </button>
+    </div>
+    <div className="grid gap-3 sm:grid-cols-2">
+      <input
+        type="text"
+        placeholder="Driver name"
+        className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+      />
+      <input
+        type="tel"
+        placeholder="Phone number"
+        className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+      />
+    </div>
+  </form>
+)}
       <div className="relative max-w-md">
   <Search
     size={18}
@@ -55,11 +94,13 @@ currentDrivers.map((driver) => driver.id === driverId ?
   <input
     type="search"
     placeholder="Search driver..."
+    value={search}
+    onChange={(e) =>setSearch(e.target.value)}
     className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-900 outline-none transition focus:border-slate-400"
   />
 </div>
 <div className="grid gap-4 sm:grid-cols-2">
-  {drivers.map((driver) => (
+  {filteredDrivers.map((driver) => (
     <div
       key={driver.id}
       className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
