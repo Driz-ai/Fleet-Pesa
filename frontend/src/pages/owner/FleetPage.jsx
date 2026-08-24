@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { BusFront, Plus, Search, Trash2, UserRound, X } from "lucide-react";
+import { BusFront, Pencil, Plus, Search, Trash2, UserRound, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { MOCK_VEHICLES } from "../../data/mockVehicles.js";
 import Pagination from "../../components/shared/Pagination.jsx";
