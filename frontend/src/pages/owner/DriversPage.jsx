@@ -82,6 +82,12 @@ currentDrivers.map((driver) => driver.id === driverId ?
         placeholder="Phone number"
         className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-slate-400"
       />
+      <button
+  type="submit"
+  className="mt-4 inline-flex w-fit items-center rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-600"
+>
+  Save driver
+</button>
     </div>
   </form>
 )}
