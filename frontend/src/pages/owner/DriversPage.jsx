@@ -1,8 +1,8 @@
-import { Section,Search } from "lucide-react";
-
+import { Section,Search ,Pencil,Power,Trash2} from "lucide-react";
+import { useState } from "react";
 export default function DriversPage(){
 
-    const drivers = [
+    const initialdrivers = [
   {
     id: 1,
     name: "Peter Omondi",
@@ -18,6 +18,13 @@ export default function DriversPage(){
     vehicle: "Unassigned",
   },
 ];
+const [drivers,setDrivers] = useState(initialdrivers)
+
+function handleToggleStatus(driverId){
+setDrivers((currentDrivers)=> 
+currentDrivers.map((driver) => driver.id === driverId ? 
+{...driver,status:driver.status === "active" ? "inactive" : "active",} :driver))
+}
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-4 pb-10 sm:p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -87,6 +94,34 @@ export default function DriversPage(){
         <p className="font-medium text-slate-900">
           {driver.vehicle}
         </p>
+        <div className="mt-4 flex items-center justify-end gap-2 border-t border-slate-100 pt-3">
+  <button
+    type="button"
+    title="Edit driver"
+    className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+  >
+    <Pencil size={17} />
+  </button>
+  <button
+  type="button"
+  onClick={() => handleToggleStatus(driver.id)}
+  title={driver.status === "active" ? "Deactivate driver" : "Activate driver"}
+  className={`rounded-lg p-2 transition ${
+    driver.status === "active"
+      ? "text-amber-600 hover:bg-amber-50"
+      : "text-emerald-600 hover:bg-emerald-50"
+  }`}
+>
+  <Power size={17} />
+</button>
+  <button
+    type="button"
+    title="Delete driver"
+    className="rounded-lg p-2 text-red-500 transition hover:bg-red-50 hover:text-red-700"
+  >
+    <Trash2 size={17} />
+  </button>
+</div>
       </div>
     </div>
   ))}
