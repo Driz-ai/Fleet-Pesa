@@ -438,7 +438,7 @@ export default function FleetPage() {
             type="submit"
             className="mt-4 rounded-xl bg-[#12b75b] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#0e9d4e]"
           >
-            Save vehicle
+            {editingVehicleId ? "Save changes" : "Save vehicle"}
           </button>
         </form>
       )}
