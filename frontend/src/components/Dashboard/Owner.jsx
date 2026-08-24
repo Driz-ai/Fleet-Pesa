@@ -1,5 +1,10 @@
 import { useState } from 'react'
 import {
+	Clock3,
+	TrendingUp,
+	Users,
+} from 'lucide-react'
+import {
 	CartesianGrid,
 	Line,
 	LineChart,
@@ -44,6 +49,12 @@ function RevenueTooltip({ active, payload, label }) {
 	)
 }
 
+const summaryCards = [
+	{ label: 'Today\'s Revenue', value: 'KES 14,100', trend: '+ 14% vs yesterday', tone: 'success', icon: TrendingUp },
+	{ label: 'Outstanding', value: 'KES 9,900', trend: '4 drivers pending', tone: 'warning', icon: Clock3 },
+	{ label: 'Active Drivers', value: '6 / 8', trend: '1 offline today', tone: 'info', icon: Users },
+]
+
 export function Owner() {
 	const [showShortfall, setShowShortfall] = useState(true)
 	const [isResolved, setIsResolved] = useState(false)
@@ -51,6 +62,20 @@ export function Owner() {
 
 	return (
 		<div className="owner-dashboard">
+			<section className="summary-grid" aria-label="Owner summary metrics">
+				{summaryCards.map(({ label, value, trend, tone, icon: Icon }) => (
+					<div className={`summary-card ${tone}`} key={label}>
+						<div className="summary-icon-wrap">
+							<Icon size={18} strokeWidth={2} />
+						</div>
+						<div className="summary-metric">
+							<div className="summary-trend">{trend}</div>
+							<div className="summary-value">{value}</div>
+						</div>
+					</div>
+				))}
+			</section>
+
 			{hasShortfall && (
 				<section className={`${isResolved ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-amber-50'} mt-0 mb-6 rounded-2xl p-4 shadow-sm`}>
 					<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -111,7 +136,6 @@ export function Owner() {
 					onResolved={() => setIsResolved(true)}
 				/>
 			)}
-
 		</div>
 	)
 }

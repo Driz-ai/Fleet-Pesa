@@ -2,6 +2,7 @@ import { Bell, CircleHelp, Moon, Sun, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
+import { BottomNav } from './BottomNav'
 import { useTheme } from '../../context/ThemeContext.jsx'
 import { useAuth } from '../../context/AuthContext.jsx'
 
@@ -53,6 +54,7 @@ export function AppShell() {
 				<section className="dashboard-content" aria-label="Fleet dashboard">
 					<Outlet />
 				</section>
+				<BottomNav />
 			</main>
 		</div>
 	)
