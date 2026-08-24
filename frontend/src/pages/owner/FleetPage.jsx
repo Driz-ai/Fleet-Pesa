@@ -179,6 +179,20 @@ export default function FleetPage() {
     setFormError("");
   };
 
+  const closeForm = () => {
+    setIsAddOpen(false);
+    setEditingVehicleId(null);
+    setForm(INITIAL_FORM);
+    setFormError("");
+  };
+
+  const openAddForm = () => {
+    setEditingVehicleId(null);
+    setForm(INITIAL_FORM);
+    setFormError("");
+    setIsAddOpen(true);
+  };
+
   const addVehicle = (event) => {
     event.preventDefault();
 
