@@ -42,7 +42,7 @@ export default function App() {
 
             <Route
               path="/driver/remittance"
-              element={<ProtectedRoute><RemmitancePage /></ProtectedRoute>}
+              element={<ProtectedRoute><RemmitancePage/></ProtectedRoute>}
             />
             <Route
               path="/driver/remittance-history"

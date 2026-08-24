@@ -69,8 +69,9 @@ export function Owner() {
 							<Icon size={18} strokeWidth={2} />
 						</div>
 						<div className="summary-metric">
-							<div className="summary-trend">{trend}</div>
+							<div className="summary-trend">{label}</div>
 							<div className="summary-value">{value}</div>
+							<div className='summary-label'>{trend}</div>
 						</div>
 					</div>
 				))}

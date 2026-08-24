@@ -315,3 +315,31 @@
     border-color: #2d435b;
   }
 }
+.summary-grid{
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 1rem;
+}
+.summary-card{
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin: 1rem;
+}
+/* .summary-label{
+  font-size: 0.09rem;
+  color: #64748b;
+
+}
+.summary-value{
+  font-size: 0.09rem;
+  font-weight: 700;
+  margin: 0.025rem 0;
+
+}
+.summary-trend{
+font-size: 0.09rem;
+color: #64748b;
+} */
