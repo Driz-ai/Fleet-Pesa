@@ -554,15 +554,27 @@ export default function FleetPage() {
                   Due {vehicle.daily_due_time || "14:00"}
                 </span>
 
-                <button
-                  type="button"
-                  onClick={() => removeVehicle(vehicle)}
-                  aria-label={`Remove ${vehicle.plate_number}`}
-                  title="Remove vehicle"
-                  className="rounded-lg p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-600"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => startEdit(vehicle)}
+                    aria-label={`Edit ${vehicle.plate_number}`}
+                    title="Edit vehicle"
+                    className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => removeVehicle(vehicle)}
+                    aria-label={`Remove ${vehicle.plate_number}`}
+                    title="Remove vehicle"
+                    className="rounded-lg p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             </article>
           ))}
