@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { History, Moon, Phone, Sun } from "lucide-react";
+import { Bell, CircleHelp, History, Moon, Phone, Sun } from "lucide-react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import  StatusBadge  from "../shared/StatusBadge.jsx";
 import { StatCard } from "../shared/StatCard";
@@ -96,35 +96,40 @@ if (status === "success") {
     </main>
   );
 }
+    const todayLabel = new Intl.DateTimeFormat("en-KE", { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(new Date())
+    const initials = (user?.name || "Peter Omondi").split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase()
+
     return(
       <div className="driver-page">
         {successMessage && <p className="auth-success" role="status">{successMessage}</p>}
-        <header className="driver-header">
+        <header className="driver-topbar">
+          <div>
+            <h1>Daily Remittance</h1>
+            <p>{todayLabel}</p>
+          </div>
+          <div className="driver-topbar-actions">
+            <button className="driver-topbar-button" type="button" onClick={toggleTheme} aria-label={`Switch to ${isDark ? "light" : "dark"} mode`} title={`Switch to ${isDark ? "light" : "dark"} mode`}>
+              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            <button className="driver-topbar-button" type="button" aria-label="Help"><CircleHelp size={19} strokeWidth={1.8} /></button>
+            <button className="driver-topbar-button driver-notification-button" type="button" aria-label="Notifications"><Bell size={20} strokeWidth={1.8} /><span /></button>
+            <div className="driver-topbar-avatar">{user?.profile_picture ? <img src={user.profile_picture} alt="" /> : initials}</div>
+            <button className="driver-signout" type="button" onClick={handleSignOut}>Sign out</button>
+          </div>
+        </header>
+
+        <section className="driver-profile-banner" aria-label="Driver and vehicle details">
           <div className="driver-header-inner">
-            <div className="driver-brand-row">
-              <div className="driver-brand">
-                <img src="/FleetPesa%20FavIcon.jpg" alt="FleetPesa" />
-              </div>
-                  <div className="driver-actions">
-                    <button className="driver-theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${isDark ? "light" : "dark"} mode`} title={`Switch to ${isDark ? "light" : "dark"} mode`}>
-                      {isDark ? <Sun size={16} /> : <Moon size={16} />}
-                    </button>
-                    <button className="driver-signout" type="button" onClick={handleSignOut}>Sign out</button>
-                  </div>
-            </div>
-            {/* Driver details are mock data until authentication/API intergration */}
-            <div className="driver-profile">
-              <p className="driver-label">Daily remittance for</p>
-              <div className="driver-profile-row">
-                <Avatar name = "Peter Omondi"/>
-                <div>
-                  <h1 className="driver-name">Peter Omondi</h1>
-                  <p className="driver-vehicle">KDJ 421A · Toyota Hiace</p>
-                </div>
+            <p className="driver-label">Daily remittance for</p>
+            <div className="driver-profile-row">
+              <Avatar name={user?.name || "Peter Omondi"} />
+              <div>
+                <h2 className="driver-name">{user?.name || "Peter Omondi"}</h2>
+                <p className="driver-vehicle">KDJ 421A · Toyota Hiace</p>
               </div>
             </div>
           </div>
-        </header>
+        </section>
 
         <main className="driver-content">
           <AlertBanner title ="Remittance shortfall" 
