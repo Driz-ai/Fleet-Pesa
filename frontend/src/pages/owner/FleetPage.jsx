@@ -209,7 +209,7 @@ export default function FleetPage() {
     setIsAddOpen(true);
   };
 
-  const addVehicle = (event) => {
+  const saveVehicle = (event) => {
     event.preventDefault();
 
     const plateNumber = form.plate_number.trim().toUpperCase();
@@ -224,35 +224,52 @@ export default function FleetPage() {
       return;
     }
 
-    if (
-      vehicles.some(
-        (vehicle) => vehicle.plate_number === plateNumber,
-      )
-    ) {
+    const isDuplicate = vehicles.some(
+      (vehicle) =>
+        vehicle.plate_number === plateNumber && vehicle.id !== editingVehicleId,
+    );
+
+    if (isDuplicate) {
       setFormError("That registration is already in your fleet.");
       return;
     }
 
-    const newVehicle = {
-      id: `mock-${Date.now()}`,
-      plate_number: plateNumber,
-      type: form.type.trim(),
-      driver_name: form.driver_name.trim() || "Unassigned",
-      driver_phone: "",
-      status: "parked",
-      remittance_status: "unpaid",
-      daily_expected_amount:
-        Number(form.daily_expected_amount) || 0,
-      daily_due_time: form.daily_due_time || "14:00",
-    };
+    if (editingVehicleId) {
+      setVehicles((current) =>
+        current.map((vehicle) =>
+          vehicle.id === editingVehicleId
+            ? {
+                ...vehicle,
+                plate_number: plateNumber,
+                type: form.type.trim(),
+                driver_name: form.driver_name.trim() || "Unassigned",
+                daily_expected_amount: Number(form.daily_expected_amount) || 0,
+                daily_due_time: form.daily_due_time || "14:00",
+              }
+            : vehicle,
+        ),
+      );
+      setSaveMessage(`${plateNumber} was updated.`);
+    } else {
+      const newVehicle = {
+        id: `mock-${Date.now()}`,
+        plate_number: plateNumber,
+        type: form.type.trim(),
+        driver_name: form.driver_name.trim() || "Unassigned",
+        driver_phone: "",
+        status: "parked",
+        remittance_status: "unpaid",
+        daily_expected_amount: Number(form.daily_expected_amount) || 0,
+        daily_due_time: form.daily_due_time || "14:00",
+      };
 
-    setVehicles((current) => [newVehicle, ...current]);
+      setVehicles((current) => [newVehicle, ...current]);
+      setSaveMessage(`${plateNumber} was added to your fleet.`);
+    }
+
     setSearchTerm("");
     setFleetPage(1);
-    setSaveMessage(`${plateNumber} was added to your fleet.`);
-    setFormError("");
-    setForm(INITIAL_FORM);
-    setIsAddOpen(false);
+    closeForm();
   };
 
   const removeVehicle = (vehicle) => {
