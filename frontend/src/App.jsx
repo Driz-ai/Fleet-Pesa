@@ -13,6 +13,7 @@ import SettingsPage from "./pages/owner/SettingsPage.jsx";
 import RemittanceHistoryPage from "./pages/RemittanceHistoryPage.jsx";
 import { SettingsProvider } from "./context/SettingsContext.jsx";
 import DriverRemittanceHistoryPage from "./pages/driver/RemittanceHistoryPage.jsx";
+import DriversPage from "./pages/owner/DriversPage.jsx";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -35,6 +36,7 @@ export default function App() {
               element={<ProtectedRoute><AppShell /></ProtectedRoute>}
             >
               <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="drivers" element={<DriversPage/>}></Route>
               <Route path="fleet" element={<FleetPage />} />
               <Route path="vehicles/:id" element={<VehicleDetailPage />} />
               <Route path="settings" element={<SettingsPage />} />

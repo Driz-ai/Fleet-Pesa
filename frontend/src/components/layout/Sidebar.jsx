@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext.jsx'
 
 const navigation = [
 	{ label: 'Dashboard', icon: Grid2X2, to: '/owner/dashboard' },
+	{label:"Drivers",icon:"Users" ,to:"/owner/drivers"}
 	{ label: 'Fleet', icon: CarFront, to: '/owner/fleet' },
 	{ label: 'Remittance History', icon: ClipboardList, to: '/vehicles/mock-1/remittances' },
 ]
