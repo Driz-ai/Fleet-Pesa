@@ -349,12 +349,12 @@ export default function FleetPage() {
 
       {isAddOpen && (
         <form
-          onSubmit={addVehicle}
+          onSubmit={saveVehicle}
           className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
         >
           <div className="mb-4">
             <h2 className="text-base font-bold text-slate-900">
-              Add a vehicle
+              {editingVehicleId ? "Edit vehicle" : "Add a vehicle"}
             </h2>
 
             <p className="mt-1 text-sm text-slate-500">
