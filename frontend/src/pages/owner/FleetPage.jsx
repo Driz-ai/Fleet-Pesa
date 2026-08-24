@@ -311,7 +311,7 @@ export default function FleetPage() {
 
         <button
           type="button"
-          onClick={() => setIsAddOpen((open) => !open)}
+          onClick={() => (isAddOpen ? closeForm() : openAddForm())}
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
         >
           {isAddOpen ? (
