@@ -285,6 +285,10 @@ export default function FleetPage() {
       setSaveMessage(
         `${vehicle.plate_number} was removed from your fleet.`,
       );
+
+      if (editingVehicleId === vehicle.id) {
+        closeForm();
+      }
     }
   };
 
