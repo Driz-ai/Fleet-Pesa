@@ -9,6 +9,7 @@ const INITIAL_FORM = {
   plate_number: "",
   type: "",
   driver_name: "",
+  driverId : "",
   daily_expected_amount: "",
   daily_due_time: "14:00",
 };
@@ -212,7 +213,24 @@ export default function FleetPage() {
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Registration<input required name="plate_number" value={form.plate_number} onChange={updateForm} placeholder="KDP 407G" className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm uppercase text-slate-900 outline-none focus:border-slate-900" /></label>
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Vehicle type<input required name="type" value={form.type} onChange={updateForm} placeholder="Toyota Hiace" className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-900" /></label>
-            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Driver<input name="driver_name" value={form.driver_name} onChange={updateForm} placeholder="Optional" className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-900" /></label>
+            <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+  Driver
+  <select
+    name="driverId"
+    value={form.driverId}
+    onChange={updateForm}
+    className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
+  >
+    <option value="">Select driver</option>
+    {drivers
+      .filter((driver) => driver.status === "active")
+      .map((driver) => (
+        <option key={driver.id} value={driver.id}>
+          {driver.name}
+        </option>
+      ))}
+  </select>
+</label>
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Daily target<input name="daily_expected_amount" type="number" min="0" value={form.daily_expected_amount} onChange={updateForm} placeholder="8500" className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-900" /></label>
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Daily due payment<input required name="daily_due_time" type="time" value={form.daily_due_time} onChange={updateForm} className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-900" /></label>
           </div>
