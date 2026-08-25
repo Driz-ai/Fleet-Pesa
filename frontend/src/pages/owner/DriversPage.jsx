@@ -21,6 +21,7 @@ export default function DriversPage(){
     const [search,setSearch] = useState("")
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [form, setForm] = useState({name: "",phone: "",});
+    const [editingDriverId, setEditingDriverId] = useState(null);
 
 const filteredDrivers = drivers.filter((driver) =>
   driver.name.toLowerCase().includes(search.toLowerCase())
@@ -44,17 +45,33 @@ function handleAddDriver(event) {
   if (!form.name.trim() || !form.phone.trim()) {
     return;
   }
-  const newDriver = {
-    id: Date.now(),
-    name: form.name.trim(),
-    phone: form.phone.trim(),
-    status: "active",
-    vehicle: "Unassigned",
-  };
-  setDrivers((currentDrivers) => [
-    ...currentDrivers,
-    newDriver,
-  ]);
+  if (editingDriverId) {
+    setDrivers((currentDrivers) =>
+      currentDrivers.map((driver) =>
+        driver.id === editingDriverId
+          ? {
+              ...driver,
+              name: form.name.trim(),
+              phone: form.phone.trim(),
+            }
+          : driver
+      )
+    );
+
+    setEditingDriverId(null);
+  } else {
+    const newDriver = {
+      id: Date.now(),
+      name: form.name.trim(),
+      phone: form.phone.trim(),
+      status: "active",
+      vehicle: "Unassigned",
+    };
+    setDrivers((currentDrivers) => [
+      ...currentDrivers,
+      newDriver,
+    ]);
+  }
   setForm({
     name: "",
     phone: "",
@@ -89,8 +106,8 @@ function handleAddDriver(event) {
     <div className="mb-4 flex items-start justify-between">
       <div>
         <h2 className="text-base font-bold text-slate-900">
-          Add a driver
-        </h2>
+  {editingDriverId ? "Edit driver" : "Add a driver"}
+</h2>
         <p className="mt-1 text-sm text-slate-500">
           Enter the driver's details below.
         </p>
@@ -122,9 +139,9 @@ function handleAddDriver(event) {
       />
       <button
   type="submit"
-  className="mt-4 inline-flex w-fit items-center rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-600"
+  className="mt-4 inline-flex w-fit items-center justify-center rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-600"
 >
-  Save driver
+  {editingDriverId ? "Update driver" : "Save driver"}
 </button>
     </div>
   </form>
@@ -181,12 +198,20 @@ function handleAddDriver(event) {
         </p>
         <div className="mt-4 flex items-center justify-end gap-2 border-t border-slate-100 pt-3">
   <button
-    type="button"
-    title="Edit driver"
-    className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-  >
-    <Pencil size={17} />
-  </button>
+  type="button"
+  onClick={() => {
+    setEditingDriverId(driver.id);
+    setForm({
+      name: driver.name,
+      phone: driver.phone,
+    });
+    setIsAddOpen(true);
+  }}
+  title="Edit driver"
+  className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+>
+  <Pencil size={17} />
+</button>
   <button
   type="button"
   onClick={() => handleToggleStatus(driver.id)}
