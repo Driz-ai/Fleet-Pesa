@@ -39,6 +39,28 @@ function handleFormChange(event) {
     [name]: value,
   }));
 }
+function handleAddDriver(event) {
+  event.preventDefault();
+  if (!form.name.trim() || !form.phone.trim()) {
+    return;
+  }
+  const newDriver = {
+    id: Date.now(),
+    name: form.name.trim(),
+    phone: form.phone.trim(),
+    status: "active",
+    vehicle: "Unassigned",
+  };
+  setDrivers((currentDrivers) => [
+    ...currentDrivers,
+    newDriver,
+  ]);
+  setForm({
+    name: "",
+    phone: "",
+  });
+  setIsAddOpen(false);
+}
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-4 pb-10 sm:p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -62,7 +84,8 @@ function handleFormChange(event) {
 </button>
 </div>
 {isAddOpen && (
-  <form className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+  <form onSubmit={handleAddDriver}
+  className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
     <div className="mb-4 flex items-start justify-between">
       <div>
         <h2 className="text-base font-bold text-slate-900">
