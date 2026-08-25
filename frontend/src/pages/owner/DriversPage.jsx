@@ -20,6 +20,7 @@ export default function DriversPage(){
     const [drivers,setDrivers] = useState(initialdrivers)
     const [search,setSearch] = useState("")
     const [isAddOpen, setIsAddOpen] = useState(false);
+    const [form, setForm] = useState({name: "",phone: "",});
 
 const filteredDrivers = drivers.filter((driver) =>
   driver.name.toLowerCase().includes(search.toLowerCase())
@@ -29,6 +30,14 @@ function handleToggleStatus(driverId){
 setDrivers((currentDrivers)=> 
 currentDrivers.map((driver) => driver.id === driverId ? 
 {...driver,status:driver.status === "active" ? "inactive" : "active",} :driver))
+}
+function handleFormChange(event) {
+  const { name, value } = event.target;
+
+  setForm((currentForm) => ({
+    ...currentForm,
+    [name]: value,
+  }));
 }
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-4 pb-10 sm:p-6">
@@ -74,11 +83,17 @@ currentDrivers.map((driver) => driver.id === driverId ?
     <div className="grid gap-3 sm:grid-cols-2">
       <input
         type="text"
+        name="name"
+        value={form.name}
+        onChange={handleFormChange}
         placeholder="Driver name"
         className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-slate-400"
       />
       <input
         type="tel"
+        name="phone"
+        value={form.phone}
+        onChange={handleFormChange}
         placeholder="Phone number"
         className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-slate-400"
       />
