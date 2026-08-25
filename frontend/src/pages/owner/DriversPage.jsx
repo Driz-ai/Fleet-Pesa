@@ -78,6 +78,11 @@ function handleAddDriver(event) {
   });
   setIsAddOpen(false);
 }
+function handleDeleteDriver(driverId) {
+  setDrivers((currentDrivers) =>
+    currentDrivers.filter((driver) => driver.id !== driverId)
+  );
+}
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-4 pb-10 sm:p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -226,6 +231,7 @@ function handleAddDriver(event) {
 </button>
   <button
     type="button"
+    onClick={()=>handleDeleteDriver(driver.id)}
     title="Delete driver"
     className="rounded-lg p-2 text-red-500 transition hover:bg-red-50 hover:text-red-700"
   >
