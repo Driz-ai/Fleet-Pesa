@@ -1,230 +1,684 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { History, Moon, Phone, Sun } from "lucide-react";
+import { useLocation, useNavigate, Link } from "react-router-dom";
+import {
+  Bell,
+  History,
+  Moon,
+  Phone,
+  Sun,
+  X,
+} from "lucide-react";
+
 import { useAuth } from "../../context/AuthContext.jsx";
-import  StatusBadge  from "../shared/StatusBadge.jsx";
+import { useTheme } from "../../context/ThemeContext.jsx";
+
+import StatusBadge from "../shared/StatusBadge.jsx";
 import { StatCard } from "../shared/StatCard";
 import Avatar from "../shared/Avatar.jsx";
 import AlertBanner from "../shared/AlertBanner.jsx";
-import { useTheme } from "../../context/ThemeContext.jsx";
+
 import FarePaymentModal from "../../features/paymentPrompt/FarePaymentModal.jsx";
-import { Link } from "react-router-dom";
+import DriverPaymentNotifications from "../../components/notifications/DriverPaymentNotifications.jsx";
 
-export default function Driver(){
-  const location = useLocation()
-    const [successMessage, setSuccessMessage] = useState(location.state?.success || "")
-    const navigate = useNavigate()
-    const { user, logout } = useAuth()
-    const { isDark, toggleTheme } = useTheme()
-    const [amount,setAmount] = useState("")
-    const [status,setStatus] = useState("idle")
-    const [paymentPhone, setPaymentPhone] = useState(user?.phone || "0712345678")
-    const [showFarePaymentModal, setShowFarePaymentModal] = useState(false)
-    const quickAmounts = [1500,3000,4500]
+export default function Driver() {
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-      if (!successMessage) return undefined
-      const timeoutId = window.setTimeout(() => setSuccessMessage(""), 5000)
-      return () => window.clearTimeout(timeoutId)
-    }, [successMessage])
+  const { user, logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
 
-    function handleAmountChange(event){
-      const newAmount = event.target.value.replace(/\D/g, "")
-      setAmount(newAmount)
-    
-    }
-    function handleQuickSelect(value){
-       setAmount(value)
-    } 
-    const isAmountValid = /^\d+$/.test(amount) && Number(amount) > 0
-    function handleSubmit(){
-      if (!/^07\d{8}$/.test(paymentPhone.replace(/\s/g, ""))) return
-      setStatus("processing")
-      console.log("Submitting amount:", amount, "to:", paymentPhone)
-      // simulates mpesa payment untill backend m-pesa Api is connected
-      setTimeout(()=>{
-        setStatus("success")
-      },3000)
-    }
-    function handleSubmitAnother() {
-  setAmount("");
-  setStatus("idle");
-  
-}
-    function handleSignOut() {
-      logout()
-      navigate("/login", {
-        replace: true,
-        state: { success: "Successfully signed out." },
-      })
-    }
-// displays the receipt after successfull remmitance 
-if (status === "success") {
-  return (
-    <main className="success-shell">
-      <section className="success-card" aria-labelledby="success-title">
-        <div className="success-icon" aria-hidden="true">✓</div>
-        <h1 className="success-title" id="success-title">Payment Received!</h1>
-        <p className="success-copy">Successfully remitted</p>
-        <p className="success-amount">KES {Number(amount).toLocaleString()}</p>
-        <div className="receipt-details">
-          <div className="receipt-row">
-            <span>Reference</span>
-            <strong>FP-2025-001847</strong>
-          </div>
-          <div className="receipt-row">
-            <span>M-Pesa Code</span>
-            <strong>QHF72JK48N</strong>
-          </div>
-          <div className="receipt-row">
-            <span>Payment Number</span>
-            <strong>{paymentPhone}</strong>
-          </div>
-          <div className="receipt-row">
-            <span>Vehicle</span>
-            <strong>KDJ 421A</strong>
-          </div>
-        </div>
-        <button
-          className="submit-another-button"
-          type="button"
-          onClick={handleSubmitAnother}                                                                                                                                                                                                                                                                                                                                                              
-        >
-          Submit Another
-        </button>
-      </section>
-    </main>
+  const [successMessage, setSuccessMessage] = useState(
+    location.state?.success || ""
   );
-}
-    return(
-      <div className="driver-page">
-        {successMessage && <p className="auth-success" role="status">{successMessage}</p>}
-        <header className="driver-header">
-          <div className="driver-header-inner">
-            <div className="driver-brand-row">
-              <div className="driver-brand">
-                <img src="/FleetPesa%20FavIcon.jpg" alt="FleetPesa" />
-              </div>
-                  <div className="driver-actions">
-                    <button className="driver-theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${isDark ? "light" : "dark"} mode`} title={`Switch to ${isDark ? "light" : "dark"} mode`}>
-                      {isDark ? <Sun size={16} /> : <Moon size={16} />}
-                    </button>
-                    <button className="driver-signout" type="button" onClick={handleSignOut}>Sign out</button>
-                  </div>
+
+  const [amount, setAmount] = useState("");
+  const [status, setStatus] = useState("idle");
+
+  const [paymentPhone, setPaymentPhone] = useState(
+    user?.phone || "0712345678"
+  );
+
+  const [showFarePaymentModal, setShowFarePaymentModal] =
+    useState(false);
+
+  /*
+   * Notification dropdown
+   *
+   * FRONTEND ONLY FOR NOW.
+   * Backend will be connected later.
+   */
+  const [showNotifications, setShowNotifications] =
+    useState(false);
+
+  const [notificationCount, setNotificationCount] =
+    useState(3);
+
+  const quickAmounts = [1500, 3000, 4500];
+
+  useEffect(() => {
+    if (!successMessage) {
+      return undefined;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setSuccessMessage("");
+    }, 5000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [successMessage]);
+
+  function handleAmountChange(event) {
+    const newAmount = event.target.value.replace(/\D/g, "");
+    setAmount(newAmount);
+  }
+
+  function handleQuickSelect(value) {
+    setAmount(String(value));
+  }
+
+  const isAmountValid =
+    /^\d+$/.test(amount) && Number(amount) > 0;
+
+  function handleSubmit() {
+    const cleanPhone = paymentPhone.replace(/\s/g, "");
+
+    if (!/^07\d{8}$/.test(cleanPhone)) {
+      return;
+    }
+
+    setStatus("processing");
+
+    console.log(
+      "Submitting daily remittance:",
+      amount,
+      "to:",
+      cleanPhone
+    );
+
+    /*
+     * FRONTEND-ONLY SIMULATION
+     *
+     * Backend/M-Pesa integration will be added later.
+     */
+    window.setTimeout(() => {
+      setStatus("success");
+    }, 1500);
+  }
+
+  function handleSubmitAnother() {
+    setAmount("");
+    setStatus("idle");
+  }
+
+  function handleSignOut() {
+    logout();
+
+    navigate("/login", {
+      replace: true,
+      state: {
+        success: "Successfully signed out.",
+      },
+    });
+  }
+
+  function handleNotificationClick() {
+    setShowNotifications((current) => !current);
+
+    /*
+     * FRONTEND ONLY FOR NOW.
+     *
+     * Opening the notification panel clears
+     * the temporary notification badge.
+     */
+    setNotificationCount(0);
+  }
+
+  /*
+   * =========================
+   * SUCCESS RECEIPT
+   * =========================
+   */
+
+  if (status === "success") {
+    return (
+      <main className="success-shell">
+        <section
+          className="success-card"
+          aria-labelledby="success-title"
+        >
+          <div
+            className="success-icon"
+            aria-hidden="true"
+          >
+            ✓
+          </div>
+
+          <h1
+            className="success-title"
+            id="success-title"
+          >
+            Payment Received!
+          </h1>
+
+          <p className="success-copy">
+            Successfully remitted to owner
+          </p>
+
+          <p className="success-amount">
+            KES {Number(amount).toLocaleString("en-KE")}
+          </p>
+
+          <div className="receipt-details">
+            <div className="receipt-row">
+              <span>Reference</span>
+              <strong>FP-2026-001847</strong>
             </div>
-            {/* Driver details are mock data until authentication/API intergration */}
-            <div className="driver-profile">
-              <p className="driver-label">Daily remittance for</p>
-              <div className="driver-profile-row">
-                <Avatar name = "Peter Omondi"/>
-                <div>
-                  <h1 className="driver-name">Peter Omondi</h1>
-                  <p className="driver-vehicle">KDJ 421A · Toyota Hiace</p>
-                </div>
-              </div>
+
+            <div className="receipt-row">
+              <span>M-Pesa Code</span>
+              <strong>QHF72JK48N</strong>
+            </div>
+
+            <div className="receipt-row">
+              <span>Payment Number</span>
+              <strong>{paymentPhone}</strong>
+            </div>
+
+            <div className="receipt-row">
+              <span>Vehicle</span>
+              <strong>KDJ 421A</strong>
+            </div>
+
+            <div className="receipt-row">
+              <span>Recipient</span>
+              <strong>FleetPesa Owner</strong>
             </div>
           </div>
-        </header>
 
-        <main className="driver-content">
-          <AlertBanner title ="Remittance shortfall" 
-          message="You have KES 1500 remaining for todays target."
-          type="warning"/>
-          
-          <section className="amount-card">
-            <label className="driver-label" htmlFor="amount">Amount to submit</label>
-            <div className="amount-input-row">
-              <span className="currency-prefix">KES</span>
-              <input
-                className="amount-input"
-                id="amount"
-                type="number"
-                min="1"
-                step="1"
-                inputMode="numeric"
-                value={amount}
-                onChange={handleAmountChange}
-                placeholder="0"
-                aria-describedby="amount-help"
+          <button
+            className="submit-another-button"
+            type="button"
+            onClick={handleSubmitAnother}
+          >
+            Submit Another
+          </button>
+        </section>
+      </main>
+    );
+  }
+
+  /*
+   * =========================
+   * DRIVER PAGE
+   * =========================
+   */
+
+  return (
+    <div className="driver-page">
+
+      {/* SUCCESS MESSAGE */}
+
+      {successMessage && (
+        <p
+          className="auth-success"
+          role="status"
+        >
+          {successMessage}
+        </p>
+      )}
+
+      {/* =========================
+          DRIVER HEADER
+      ========================= */}
+
+      <header className="driver-header">
+        <div className="driver-header-inner">
+
+          {/* =========================
+              BRAND + ACTIONS
+          ========================= */}
+
+          <div className="driver-brand-row">
+
+            {/* BRAND */}
+
+            <div className="driver-brand">
+              <img
+                src="/FleetPesa%20FavIcon.jpg"
+                alt="FleetPesa"
               />
             </div>
-            <div className="expected-row">
-              <span>Expected today</span>
-              <strong className="expected-amount">KES 4,500</strong>
-            </div>
-            <p className="amount-help" id="amount-help">Enter the amount you are remitting in Kenyan shillings.</p>
-            <StatCard label="Expected today"
-            value="KES 4500"/>
-          </section>
 
-          <section className="quick-section" aria-labelledby="quick-select-title">
-            <h2 className="driver-label" id="quick-select-title">Quick select</h2>
-            <div className="quick-grid">
-              {quickAmounts.map((value) => (
-                <button
-                  className={`quick-button ${Number(amount) === value ? "quick-button-active" : ""}`}
-                  key={value}
-                  type="button"
-                  aria-pressed={Number(amount) === value}
-                  onClick={() => handleQuickSelect(value)}
-                >
-                  {value.toLocaleString()}
-                </button>
-              ))}
+            {/* ACTION BUTTONS */}
+
+            <div className="driver-actions">
+
+              {/* THEME BUTTON */}
+
+              <button
+                className="driver-theme-toggle"
+                type="button"
+                onClick={toggleTheme}
+                aria-label={`Switch to ${
+                  isDark ? "light" : "dark"
+                } mode`}
+                title={`Switch to ${
+                  isDark ? "light" : "dark"
+                } mode`}
+              >
+                {isDark ? (
+                  <Sun size={16} />
+                ) : (
+                  <Moon size={16} />
+                )}
+              </button>
+
+
+              {/* =========================
+                  NOTIFICATION BUTTON
+              ========================= */}
+
+              <button
+                type="button"
+                onClick={handleNotificationClick}
+                className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#0F2440] shadow-sm transition hover:bg-slate-50"
+                aria-label="Open notifications"
+                title="Notifications"
+              >
+                <Bell size={19} />
+
+                {notificationCount > 0 && (
+                  <span
+                    className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white"
+                  >
+                    {notificationCount > 9
+                      ? "9+"
+                      : notificationCount}
+                  </span>
+                )}
+              </button>
+
+
+              {/* =========================
+                  SIGN OUT
+              ========================= */}
+
+              <button
+                className="driver-signout"
+                type="button"
+                onClick={handleSignOut}
+              >
+                Sign out
+              </button>
+
             </div>
-          </section>
-          <section className="payment-card" aria-label="Payment method">
-            <div className="payment-details">
-              <span className="payment-icon" aria-hidden="true">
-                <Phone size={18} strokeWidth={2} />
-              </span>
-              <div>
-                <h2 className="payment-name">M-Pesa</h2>
-                <label className="payment-phone-label" htmlFor="payment-phone">Payment number</label>
-                <input
-                  className="payment-phone-input"
-                  id="payment-phone"
-                  type="tel"
-                  inputMode="tel"
-                  value={paymentPhone}
-                  onChange={(event) => setPaymentPhone(event.target.value)}
-                  aria-label="M-Pesa payment number"
-                />
+          </div>
+
+
+          {/* =========================
+              NOTIFICATION DROPDOWN
+          ========================= */}
+
+          {showNotifications && (
+            <div className="relative z-50">
+
+              <div className="absolute right-0 top-3 w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+
+                {/* PANEL HEADER */}
+
+                <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[#16A34A]">
+                      Driver
+                    </p>
+
+                    <h2 className="text-lg font-bold text-[#0F2440]">
+                      Notifications
+                    </h2>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowNotifications(false)
+                    }
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                    aria-label="Close notifications"
+                  >
+                    <X size={18} />
+                  </button>
+
+                </div>
+
+
+                {/* =========================
+                    NOTIFICATION LIST
+                ========================= */}
+
+                <div className="max-h-[480px] overflow-y-auto">
+
+                  <DriverPaymentNotifications />
+
+                </div>
+
+
+                {/* =========================
+                    VIEW ALL
+                ========================= */}
+
+                <div className="border-t border-slate-100 p-3">
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowNotifications(false);
+                      navigate("/driver/notifications");
+                    }}
+                    className="w-full rounded-xl bg-[#0F2440] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#1E3A5F]"
+                  >
+                    View all notifications
+                  </button>
+
+                </div>
+
               </div>
+
             </div>
-            <StatusBadge status="Ready"/>
-          </section>
+          )}
 
-          <button
-            className={`submit-button ${status === "processing" ? "submit-button-processing" : ""}`}
-            type="button"
-            onClick={handleSubmit}
-            disabled={!isAmountValid || !/^07\d{8}$/.test(paymentPhone.replace(/\s/g, "")) || status === "processing"}
+        </div>
+
+
+        {/* =========================
+            DRIVER PROFILE
+        ========================= */}
+
+        <div className="driver-profile">
+
+          <p className="driver-label">
+            Daily remittance for
+          </p>
+
+          <div className="driver-profile-row">
+
+            <Avatar
+              name={user?.name || "Peter Omondi"}
+            />
+
+            <div>
+
+              <h1 className="driver-name">
+                {user?.name || "Peter Omondi"}
+              </h1>
+
+              <p className="driver-vehicle">
+                KDJ 421A · Toyota Hiace
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </header>
+
+
+      {/* =========================
+          DRIVER CONTENT
+      ========================= */}
+
+      <main className="driver-content">
+
+        {/* =========================
+            REMITTANCE SHORTFALL
+        ========================= */}
+
+        <AlertBanner
+          title="Remittance shortfall"
+          message="You have KES 1500 remaining for today's target."
+          type="warning"
+        />
+
+
+        {/* =========================
+            DAILY REMITTANCE
+        ========================= */}
+
+        <section className="amount-card">
+
+          <label
+            className="driver-label"
+            htmlFor="amount"
           >
-            {status === "processing"
-              ? "Processing..."
-              :isAmountValid
-              ?`Submit KES ${Number(amount).toLocaleString()}`
-              : "Enter an amount"}
-          </button>
+            Amount to submit
+          </label>
 
-          <Link to="/driver/remittance-history" className="driver-history-link">
-            <History size={17} /> View remittance history
-          </Link>
+          <div className="amount-input-row">
 
-          <button
-            className="w-full rounded-2xl border-0 bg-[#16A34A] px-5 py-4 text-base font-bold text-white transition hover:bg-[#15803D] focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
-            type="button"
-            onClick={() => setShowFarePaymentModal(true)}
+            <span className="currency-prefix">
+              KES
+            </span>
+
+            <input
+              className="amount-input"
+              id="amount"
+              type="number"
+              min="1"
+              step="1"
+              inputMode="numeric"
+              value={amount}
+              onChange={handleAmountChange}
+              placeholder="0"
+              aria-describedby="amount-help"
+            />
+
+          </div>
+
+
+          <div className="expected-row">
+
+            <span>
+              Expected today
+            </span>
+
+            <strong className="expected-amount">
+              KES 4,500
+            </strong>
+
+          </div>
+
+
+          <p
+            className="amount-help"
+            id="amount-help"
           >
-            Prompt Fare Payment
-          </button>
-        </main>
-        {showFarePaymentModal && (
-          <FarePaymentModal
-            onClose={() => setShowFarePaymentModal(false)}
+            Enter the amount you are remitting to the
+            owner in Kenyan shillings.
+          </p>
+
+
+          <StatCard
+            label="Expected today"
+            value="KES 4500"
           />
-        )}
-      </div>
-    )
+
+        </section>
+
+
+        {/* =========================
+            QUICK SELECT
+        ========================= */}
+
+        <section
+          className="quick-section"
+          aria-labelledby="quick-select-title"
+        >
+
+          <h2
+            className="driver-label"
+            id="quick-select-title"
+          >
+            Quick select
+          </h2>
+
+          <div className="quick-grid">
+
+            {quickAmounts.map((value) => (
+              <button
+                className={`quick-button ${
+                  Number(amount) === value
+                    ? "quick-button-active"
+                    : ""
+                }`}
+                key={value}
+                type="button"
+                aria-pressed={
+                  Number(amount) === value
+                }
+                onClick={() =>
+                  handleQuickSelect(value)
+                }
+              >
+                {value.toLocaleString("en-KE")}
+              </button>
+            ))}
+
+          </div>
+
+        </section>
+
+
+        {/* =========================
+            M-PESA
+        ========================= */}
+
+        <section
+          className="payment-card"
+          aria-label="Payment method"
+        >
+
+          <div className="payment-details">
+
+            <span
+              className="payment-icon"
+              aria-hidden="true"
+            >
+              <Phone
+                size={18}
+                strokeWidth={2}
+              />
+            </span>
+
+            <div>
+
+              <h2 className="payment-name">
+                M-Pesa
+              </h2>
+
+              <label
+                className="payment-phone-label"
+                htmlFor="payment-phone"
+              >
+                Payment number
+              </label>
+
+              <input
+                className="payment-phone-input"
+                id="payment-phone"
+                type="tel"
+                inputMode="tel"
+                value={paymentPhone}
+                onChange={(event) =>
+                  setPaymentPhone(
+                    event.target.value
+                  )
+                }
+                aria-label="M-Pesa payment number"
+              />
+
+            </div>
+
+          </div>
+
+          <StatusBadge status="Ready" />
+
+        </section>
+
+
+        {/* =========================
+            SUBMIT REMITTANCE
+        ========================= */}
+
+        <button
+          className={`submit-button ${
+            status === "processing"
+              ? "submit-button-processing"
+              : ""
+          }`}
+          type="button"
+          onClick={handleSubmit}
+          disabled={
+            !isAmountValid ||
+            !/^07\d{8}$/.test(
+              paymentPhone.replace(/\s/g, "")
+            ) ||
+            status === "processing"
+          }
+        >
+          {status === "processing"
+            ? "Processing..."
+            : isAmountValid
+              ? `Submit KES ${Number(
+                  amount
+                ).toLocaleString("en-KE")}`
+              : "Enter an amount"}
+        </button>
+
+
+        {/* =========================
+            REMITTANCE HISTORY
+        ========================= */}
+
+        <Link
+          to="/driver/remittance-history"
+          className="driver-history-link"
+        >
+          <History size={17} />
+          View remittance history
+        </Link>
+
+
+        {/* =========================
+            CUSTOMER FARE PROMPT
+        ========================= */}
+
+        <button
+          className="w-full rounded-2xl border-0 bg-[#16A34A] px-5 py-4 text-base font-bold text-white transition hover:bg-[#15803D] focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
+          type="button"
+          onClick={() =>
+            setShowFarePaymentModal(true)
+          }
+        >
+          Prompt Fare Payment
+        </button>
+
+      </main>
+
+
+      {/* =========================
+          FARE PAYMENT MODAL
+      ========================= */}
+
+      {showFarePaymentModal && (
+        <FarePaymentModal
+          onClose={() =>
+            setShowFarePaymentModal(false)
+          }
+        />
+      )}
+
+    </div>
+  );
 }
