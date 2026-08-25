@@ -4,11 +4,12 @@ import { Link } from "react-router-dom";
 import { MOCK_VEHICLES } from "../../data/mockVehicles.js";
 import Pagination from "../../components/shared/Pagination.jsx";
 import StatusBadge from "../../components/shared/StatusBadge.jsx";
-
+import useDrivers from "../../hooks/useDrivers";
 const INITIAL_FORM = {
   plate_number: "",
   type: "",
   driver_name: "",
+  driverId : "",
   daily_expected_amount: "",
   daily_due_time: "14:00",
 };
@@ -30,6 +31,18 @@ const REMITTANCE_TONE = {
   unpaid: "amber",
   short: "red",
 };
+const drivers = [
+  {
+    id: 1,
+    name: "Peter Omondi",
+    status: "active",
+  },
+  {
+    id: 2,
+    name: "Brian Kiptoo",
+    status: "inactive",
+  },
+];
 
 function statusLabel(status) {
   return status.charAt(0).toUpperCase() + status.slice(1);
@@ -82,7 +95,13 @@ export default function FleetPage() {
   const [fleetPage, setFleetPage] = useState(1);
 
   const fleetPageSize = 4;
-
+//  const {
+//   data: drivers = [],
+//   getDrivers,
+// } = useDrivers();
+// useEffect(() => {
+//   getDrivers();
+// }, [getDrivers]);
   useEffect(() => {
     localStorage.setItem(
       "fleetpesa_mock_vehicles",
@@ -167,7 +186,7 @@ export default function FleetPage() {
       return alerts;
     });
   }, [currentTime, vehicles]);
-
+  
   const updateForm = (event) => {
     const { name, value } = event.target;
 
@@ -390,13 +409,26 @@ export default function FleetPage() {
 
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Driver
-              <input
-                name="driver_name"
-                value={form.driver_name}
-                onChange={updateForm}
-                placeholder="Optional"
-                className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-900"
-              />
+              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+  Driver
+
+  <select
+    name="driverId"
+    value={form.driverId}
+    onChange={updateForm}
+    className="mt-1.5 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
+  >
+    <option value="">Select driver</option>
+
+    {drivers
+      .filter((driver) => driver.status === "active")
+      .map((driver) => (
+        <option key={driver.id} value={driver.id}>
+          {driver.name}
+        </option>
+      ))}
+  </select>
+</label>
             </label>
 
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
