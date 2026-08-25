@@ -41,12 +41,7 @@ export default function Driver() {
   const [showFarePaymentModal, setShowFarePaymentModal] =
     useState(false);
 
-  /*
-   * Notification dropdown
-   *
-   * FRONTEND ONLY FOR NOW.
-   * Backend will be connected later.
-   */
+  
   const [showNotifications, setShowNotifications] =
     useState(false);
 
@@ -95,11 +90,7 @@ export default function Driver() {
       cleanPhone
     );
 
-    /*
-     * FRONTEND-ONLY SIMULATION
-     *
-     * Backend/M-Pesa integration will be added later.
-     */
+    
     window.setTimeout(() => {
       setStatus("success");
     }, 1500);
@@ -124,20 +115,11 @@ export default function Driver() {
   function handleNotificationClick() {
     setShowNotifications((current) => !current);
 
-    /*
-     * FRONTEND ONLY FOR NOW.
-     *
-     * Opening the notification panel clears
-     * the temporary notification badge.
-     */
+    
     setNotificationCount(0);
   }
 
-  /*
-   * =========================
-   * SUCCESS RECEIPT
-   * =========================
-   */
+  
 
   if (status === "success") {
     return (
@@ -207,16 +189,12 @@ export default function Driver() {
     );
   }
 
-  /*
-   * =========================
-   * DRIVER PAGE
-   * =========================
-   */
+  
 
   return (
     <div className="driver-page">
 
-      {/* SUCCESS MESSAGE */}
+      
 
       {successMessage && (
         <p
@@ -227,20 +205,16 @@ export default function Driver() {
         </p>
       )}
 
-      {/* =========================
-          DRIVER HEADER
-      ========================= */}
+      
 
       <header className="driver-header">
         <div className="driver-header-inner">
 
-          {/* =========================
-              BRAND + ACTIONS
-          ========================= */}
+         
 
           <div className="driver-brand-row">
 
-            {/* BRAND */}
+            
 
             <div className="driver-brand">
               <img
@@ -249,11 +223,11 @@ export default function Driver() {
               />
             </div>
 
-            {/* ACTION BUTTONS */}
+            
 
             <div className="driver-actions">
 
-              {/* THEME BUTTON */}
+              
 
               <button
                 className="driver-theme-toggle"
@@ -274,9 +248,7 @@ export default function Driver() {
               </button>
 
 
-              {/* =========================
-                  NOTIFICATION BUTTON
-              ========================= */}
+              
 
               <button
                 type="button"
@@ -299,9 +271,7 @@ export default function Driver() {
               </button>
 
 
-              {/* =========================
-                  SIGN OUT
-              ========================= */}
+              
 
               <button
                 className="driver-signout"
@@ -315,16 +285,14 @@ export default function Driver() {
           </div>
 
 
-          {/* =========================
-              NOTIFICATION DROPDOWN
-          ========================= */}
+          
 
           {showNotifications && (
             <div className="relative z-50">
 
               <div className="absolute right-0 top-3 w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
 
-                {/* PANEL HEADER */}
+                
 
                 <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
 
@@ -352,9 +320,7 @@ export default function Driver() {
                 </div>
 
 
-                {/* =========================
-                    NOTIFICATION LIST
-                ========================= */}
+               
 
                 <div className="max-h-[480px] overflow-y-auto">
 
@@ -363,9 +329,7 @@ export default function Driver() {
                 </div>
 
 
-                {/* =========================
-                    VIEW ALL
-                ========================= */}
+                
 
                 <div className="border-t border-slate-100 p-3">
 
@@ -390,9 +354,7 @@ export default function Driver() {
         </div>
 
 
-        {/* =========================
-            DRIVER PROFILE
-        ========================= */}
+        
 
         <div className="driver-profile">
 
@@ -425,15 +387,11 @@ export default function Driver() {
       </header>
 
 
-      {/* =========================
-          DRIVER CONTENT
-      ========================= */}
+      
 
       <main className="driver-content">
 
-        {/* =========================
-            REMITTANCE SHORTFALL
-        ========================= */}
+       
 
         <AlertBanner
           title="Remittance shortfall"
@@ -442,9 +400,7 @@ export default function Driver() {
         />
 
 
-        {/* =========================
-            DAILY REMITTANCE
-        ========================= */}
+        
 
         <section className="amount-card">
 
@@ -507,9 +463,7 @@ export default function Driver() {
         </section>
 
 
-        {/* =========================
-            QUICK SELECT
-        ========================= */}
+        
 
         <section
           className="quick-section"
@@ -550,9 +504,7 @@ export default function Driver() {
         </section>
 
 
-        {/* =========================
-            M-PESA
-        ========================= */}
+        
 
         <section
           className="payment-card"
@@ -607,9 +559,7 @@ export default function Driver() {
         </section>
 
 
-        {/* =========================
-            SUBMIT REMITTANCE
-        ========================= */}
+        
 
         <button
           className={`submit-button ${
@@ -637,9 +587,7 @@ export default function Driver() {
         </button>
 
 
-        {/* =========================
-            REMITTANCE HISTORY
-        ========================= */}
+        
 
         <Link
           to="/driver/remittance-history"
@@ -650,9 +598,7 @@ export default function Driver() {
         </Link>
 
 
-        {/* =========================
-            CUSTOMER FARE PROMPT
-        ========================= */}
+        
 
         <button
           className="w-full rounded-2xl border-0 bg-[#16A34A] px-5 py-4 text-base font-bold text-white transition hover:bg-[#15803D] focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
@@ -667,9 +613,7 @@ export default function Driver() {
       </main>
 
 
-      {/* =========================
-          FARE PAYMENT MODAL
-      ========================= */}
+      
 
       {showFarePaymentModal && (
         <FarePaymentModal

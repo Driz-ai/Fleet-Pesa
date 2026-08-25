@@ -20,24 +20,13 @@ import DashboardPage from "./pages/owner/DashboardPage.jsx";
 import VehicleDetailPage from "./pages/owner/VehicleDetailPage.jsx";
 import FleetPage from "./pages/owner/FleetPage.jsx";
 import SettingsPage from "./pages/owner/SettingsPage.jsx";
+import DriversPage from "./pages/owner/DriversPage.jsx";
 import RemittanceTransactionsPage from "./pages/owner/RemittanceTransactionsPage.jsx";
 
 import RemmitancePage from "./pages/driver/RemittancePage.jsx";
 import DriverRemittanceHistoryPage from "./pages/driver/RemittanceHistoryPage.jsx";
+
 import RemittanceHistoryPage from "./pages/RemittanceHistoryPage.jsx";
-
-
-/*
-|--------------------------------------------------------------------------
-| DRIVER NOTIFICATIONS PAGE
-|--------------------------------------------------------------------------
-|
-| This page is for DRIVER notifications only.
-|
-| Customer payments can appear here because they are relevant
-| to the driver.
-|
-*/
 
 function DriverNotificationsPage() {
   const notifications = [
@@ -86,11 +75,7 @@ function DriverNotificationsPage() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-6 dark:bg-slate-950">
       <div className="mx-auto w-full max-w-3xl">
-
-        {/* HEADER */}
-
         <div className="mb-6 flex items-center justify-between">
-
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-[#16A34A]">
               Driver
@@ -112,31 +97,21 @@ function DriverNotificationsPage() {
           >
             Back
           </button>
-
         </div>
 
-
-        {/* DRIVER NOTIFICATIONS */}
-
         <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-
           {notifications.map((notification) => (
-
             <article
               key={notification.id}
               className="border-b border-slate-100 p-5 last:border-b-0 dark:border-slate-800"
             >
-
               <div className="flex gap-4">
-
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[#16A34A] dark:bg-emerald-950">
                   🔔
                 </div>
 
                 <div className="min-w-0 flex-1">
-
                   <div className="flex items-start justify-between gap-4">
-
                     <h2 className="font-bold text-[#0F2440] dark:text-white">
                       {notification.title}
                     </h2>
@@ -144,7 +119,6 @@ function DriverNotificationsPage() {
                     <span className="shrink-0 text-xs text-slate-400">
                       {notification.time}
                     </span>
-
                   </div>
 
                   <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
@@ -162,28 +136,15 @@ function DriverNotificationsPage() {
                       {notification.phone}
                     </p>
                   )}
-
                 </div>
-
               </div>
-
             </article>
-
           ))}
-
         </section>
-
       </div>
     </main>
   );
 }
-
-
-/*
-|--------------------------------------------------------------------------
-| PROTECTED ROUTE
-|--------------------------------------------------------------------------
-*/
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -191,38 +152,20 @@ function ProtectedRoute({ children }) {
   return isAuthenticated ? (
     children
   ) : (
-    <Navigate
-      to="/login"
-      replace
-    />
+    <Navigate to="/login" replace />
   );
 }
-
-
-/*
-|--------------------------------------------------------------------------
-| APP
-|--------------------------------------------------------------------------
-*/
 
 export default function App() {
   return (
     <BrowserRouter>
-
       <ThemeProvider>
-
         <AuthProvider>
-
           <SettingsProvider>
-
             <NotificationProvider>
-
               <Routes>
 
-
-                {/* =====================================================
-                    PUBLIC ROUTES
-                ===================================================== */}
+                {/* PUBLIC ROUTES */}
 
                 <Route
                   path="/login"
@@ -239,10 +182,7 @@ export default function App() {
                   element={<ForgotPasswordPage />}
                 />
 
-
-                {/* =====================================================
-                    OWNER ROUTES
-                ===================================================== */}
+                {/* OWNER ROUTES */}
 
                 <Route
                   path="/owner"
@@ -252,59 +192,38 @@ export default function App() {
                     </ProtectedRoute>
                   }
                 >
-
-                  {/* OWNER DASHBOARD */}
-
                   <Route
                     path="dashboard"
                     element={<DashboardPage />}
                   />
 
-
-                  {/* OWNER FLEET */}
+                  <Route
+                    path="drivers"
+                    element={<DriversPage />}
+                  />
 
                   <Route
                     path="fleet"
                     element={<FleetPage />}
                   />
 
-
-                  {/* OWNER VEHICLE */}
-
                   <Route
                     path="vehicles/:id"
                     element={<VehicleDetailPage />}
                   />
-
-
-                  {/* OWNER SETTINGS */}
 
                   <Route
                     path="settings"
                     element={<SettingsPage />}
                   />
 
-
-                  {/* =================================================
-                      OWNER REMITTANCE TRANSACTIONS
-
-                      Example:
-                      /owner/remittance-transactions
-                  ================================================= */}
-
                   <Route
                     path="remittance-transactions"
-                    element={
-                      <RemittanceTransactionsPage />
-                    }
+                    element={<RemittanceTransactionsPage />}
                   />
-
                 </Route>
 
-
-                {/* =====================================================
-                    DRIVER ROUTES
-                ===================================================== */}
+                {/* DRIVER REMITTANCE */}
 
                 <Route
                   path="/driver/remittance"
@@ -315,6 +234,7 @@ export default function App() {
                   }
                 />
 
+                {/* DRIVER REMITTANCE HISTORY */}
 
                 <Route
                   path="/driver/remittance-history"
@@ -325,13 +245,7 @@ export default function App() {
                   }
                 />
 
-
-                {/* =====================================================
-                    DRIVER NOTIFICATIONS
-
-                    Example:
-                    /driver/notifications
-                ===================================================== */}
+                {/* DRIVER NOTIFICATIONS */}
 
                 <Route
                   path="/driver/notifications"
@@ -342,10 +256,7 @@ export default function App() {
                   }
                 />
 
-
-                {/* =====================================================
-                    VEHICLE REMITTANCE HISTORY
-                ===================================================== */}
+                {/* VEHICLE REMITTANCE HISTORY */}
 
                 <Route
                   path="/vehicles/:vehicleId/remittances"
@@ -355,18 +266,13 @@ export default function App() {
                     </ProtectedRoute>
                   }
                 >
-
                   <Route
                     index
                     element={<RemittanceHistoryPage />}
                   />
-
                 </Route>
 
-
-                {/* =====================================================
-                    DEFAULT DASHBOARD REDIRECT
-                ===================================================== */}
+                {/* DEFAULT DASHBOARD */}
 
                 <Route
                   path="/dashboard"
@@ -378,10 +284,7 @@ export default function App() {
                   }
                 />
 
-
-                {/* =====================================================
-                    UNKNOWN ROUTES
-                ===================================================== */}
+                {/* UNKNOWN ROUTES */}
 
                 <Route
                   path="*"
@@ -394,15 +297,10 @@ export default function App() {
                 />
 
               </Routes>
-
             </NotificationProvider>
-
           </SettingsProvider>
-
         </AuthProvider>
-
       </ThemeProvider>
-
     </BrowserRouter>
   );
 }
