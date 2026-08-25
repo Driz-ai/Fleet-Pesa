@@ -7,7 +7,4 @@ export default function AlertBanner({title,message, type="warning"}){
 
     </div>
   )
-
-
-
 }
