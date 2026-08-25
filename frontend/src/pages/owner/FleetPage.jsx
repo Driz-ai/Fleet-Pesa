@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { MOCK_VEHICLES } from "../../data/mockVehicles.js";
 import Pagination from "../../components/shared/Pagination.jsx";
 import StatusBadge from "../../components/shared/StatusBadge.jsx";
-
+import useDrivers from "../../hooks/useDrivers";
 const INITIAL_FORM = {
   plate_number: "",
   type: "",
@@ -31,6 +31,18 @@ const REMITTANCE_TONE = {
   unpaid: "amber",
   short: "red",
 };
+const drivers = [
+  {
+    id: 1,
+    name: "Peter Omondi",
+    status: "active",
+  },
+  {
+    id: 2,
+    name: "Brian Kiptoo",
+    status: "inactive",
+  },
+];
 
 function statusLabel(status) {
   return status.charAt(0).toUpperCase() + status.slice(1);
@@ -73,7 +85,13 @@ export default function FleetPage() {
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const [fleetPage, setFleetPage] = useState(1);
   const fleetPageSize = 4;
-
+//  const {
+//   data: drivers = [],
+//   getDrivers,
+// } = useDrivers();
+// useEffect(() => {
+//   getDrivers();
+// }, [getDrivers]);
   useEffect(() => {
     localStorage.setItem("fleetpesa_mock_vehicles", JSON.stringify(vehicles));
   }, [vehicles]);
@@ -120,7 +138,7 @@ export default function FleetPage() {
       return alerts;
     });
   }, [currentTime, vehicles]);
-
+  
   const updateForm = (event) => {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
@@ -223,8 +241,8 @@ export default function FleetPage() {
   >
     <option value="">Select driver</option>
     {drivers
-      .filter((driver) => driver.status === "active")
-      .map((driver) => (
+    .filter((driver) => driver.status === "active")
+    .map((driver) => (
         <option key={driver.id} value={driver.id}>
           {driver.name}
         </option>
