@@ -110,6 +110,10 @@
     @apply min-h-10 rounded-lg border border-[#d5e0e9] bg-white px-3 text-sm font-semibold text-[#102844] outline-none focus:border-[#12b75b];
   }
 
+  .driver-activate-button {
+    @apply rounded-lg bg-[#12b75b] px-3 py-2 text-sm font-bold text-white transition hover:bg-[#0e9d4e] focus:outline-none focus:ring-4 focus:ring-emerald-500/20;
+  }
+
   .amount-card,
   .payment-card,
   .success-card {

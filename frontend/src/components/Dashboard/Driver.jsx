@@ -48,7 +48,7 @@ export default function Driver() {
   const [notificationCount, setNotificationCount] =
     useState(3);
 
-  const [vehicles] = useState(() => {
+  const [vehicles, setVehicles] = useState(() => {
     try {
       const stored = localStorage.getItem("fleetpesa_mock_vehicles");
       return stored ? JSON.parse(stored) : MOCK_VEHICLES;
@@ -83,11 +83,48 @@ export default function Driver() {
   function handleStartDay(event) {
     const vehicleId = event.target.value;
     setStartedVehicleId(vehicleId);
+    const selectedVehicle = assignedVehicles.find(
+      (vehicle) => vehicle.id === vehicleId,
+    );
+
+    if (selectedVehicle?.status !== "active") {
+      localStorage.removeItem("fleetpesa_driver_day_start");
+      return;
+    }
+
     localStorage.setItem(
       "fleetpesa_driver_day_start",
       JSON.stringify({
         date: new Date().toISOString().slice(0, 10),
         vehicleId,
+        driverName: user?.name || "Peter Omondi",
+      }),
+    );
+  }
+
+  function handleActivateVehicle() {
+    if (!startedVehicle || startedVehicle.status !== "parked") {
+      return;
+    }
+
+    const activatedVehicle = {
+      ...startedVehicle,
+      status: "active",
+    };
+    const updatedVehicles = vehicles.map((vehicle) =>
+      vehicle.id === activatedVehicle.id ? activatedVehicle : vehicle,
+    );
+
+    setVehicles(updatedVehicles);
+    localStorage.setItem(
+      "fleetpesa_mock_vehicles",
+      JSON.stringify(updatedVehicles),
+    );
+    localStorage.setItem(
+      "fleetpesa_driver_day_start",
+      JSON.stringify({
+        date: new Date().toISOString().slice(0, 10),
+        vehicleId: activatedVehicle.id,
         driverName: user?.name || "Peter Omondi",
       }),
     );
@@ -449,11 +486,13 @@ export default function Driver() {
         <section className="driver-start-card" aria-labelledby="start-day-title">
           <div>
             <p className="driver-label" id="start-day-title">
-              Vehicle started today
+              {startedVehicle?.status === "parked"
+                ? "Vehicle selected"
+                : "Vehicle started today"}
             </p>
             <p className="driver-start-copy">
               {startedVehicle
-                ? `${startedVehicle.plate_number} · ${startedVehicle.type}`
+                ? `${startedVehicle.plate_number} · ${startedVehicle.type}${startedVehicle.status === "parked" ? " · Parked" : ""}`
                 : "Log the vehicle you started the day with."}
             </p>
           </div>
@@ -471,6 +510,16 @@ export default function Driver() {
               </option>
             ))}
           </select>
+
+          {startedVehicle?.status === "parked" && (
+            <button
+              className="driver-activate-button"
+              type="button"
+              onClick={handleActivateVehicle}
+            >
+              Activate vehicle
+            </button>
+          )}
         </section>
 
         <section className="amount-card">
