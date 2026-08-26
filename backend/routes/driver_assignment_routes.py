@@ -6,7 +6,7 @@ from extensions import db
 from models.user import User, UserRole
 from models.vehicle import Vehicle
 from models.driver_assignment import DriverAssignment
-from schemas.driver_assignment_schema import driver_assignment_schema
+from schemas.driver_assignment_schema import driver_assignment_schema,driver_assignments_schema
 
 class DriverAssignments(Resource):
 
@@ -77,3 +77,10 @@ class DriverAssignments(Resource):
             driver_assignment_schema.dump(assignment),
             201,
         )
+    def get(self):
+      assignments = DriverAssignment.query.all()
+
+      return (
+        driver_assignments_schema.dump(assignments),
+        200,
+    )

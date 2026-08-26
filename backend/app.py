@@ -18,8 +18,7 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    api.add_resource( DriverAssignments,"/driver-assignments"
-)
+    api.add_resource( DriverAssignments,"/driver-assignments")
 
     CORS(app)
     db.init_app(app)
