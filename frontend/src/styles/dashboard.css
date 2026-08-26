@@ -5,6 +5,18 @@
     @apply min-h-screen bg-[#f2f6fa] text-[#102844];
   }
 
+  .driver-header {
+    @apply bg-[#102844] px-5 pb-7 pt-5 text-white;
+  }
+
+  .driver-brand-row {
+    @apply flex items-center justify-between gap-4;
+  }
+
+  .driver-brand {
+    @apply flex items-center;
+  }
+
   .driver-topbar {
     @apply flex min-h-[86px] items-center justify-between gap-5 border-b border-[#e7edf3] bg-white px-5 py-4 text-[#182d4a];
   }

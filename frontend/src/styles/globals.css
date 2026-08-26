@@ -42,6 +42,14 @@ body {
   transition: background-color 180ms ease, color 180ms ease;
 }
 
+.login-logo-frame-light {
+  background: #ffffff;
+}
+
+.login-logo-frame-dark {
+  background: #021634;
+}
+
 .auth-success {
   margin: 16px;
   padding: 10px 16px;
