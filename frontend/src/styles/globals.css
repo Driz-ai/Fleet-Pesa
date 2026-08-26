@@ -268,6 +268,75 @@ a {
 .history-payment { color: #52677e; background: #eef3f7; }
 @media (max-width: 720px) { .settings-page { padding: 0 0 28px; } .settings-layout { grid-template-columns: 1fr; gap: 16px; } .settings-tabs { flex-direction: row; overflow-x: auto; } .settings-tab { white-space: nowrap; } .settings-form-grid { grid-template-columns: 1fr; } }
 
+:root[data-theme="dark"] .main-content .bg-white,
+:root[data-theme="dark"] .driver-page .bg-white {
+  background-color: #14263a;
+}
+
+:root[data-theme="dark"] .main-content .bg-slate-50,
+:root[data-theme="dark"] .driver-page .bg-slate-50 {
+  background-color: #102135;
+}
+
+:root[data-theme="dark"] .main-content .bg-slate-100,
+:root[data-theme="dark"] .driver-page .bg-slate-100 {
+  background-color: #20364f;
+}
+
+:root[data-theme="dark"] .main-content .text-slate-900,
+:root[data-theme="dark"] .main-content .text-slate-700,
+:root[data-theme="dark"] .main-content .text-slate-600,
+:root[data-theme="dark"] .driver-page .text-slate-900,
+:root[data-theme="dark"] .driver-page .text-slate-700,
+:root[data-theme="dark"] .driver-page .text-slate-600 {
+  color: #edf4fb;
+}
+
+:root[data-theme="dark"] .main-content .text-slate-500,
+:root[data-theme="dark"] .main-content .text-slate-400,
+:root[data-theme="dark"] .driver-page .text-slate-500,
+:root[data-theme="dark"] .driver-page .text-slate-400 {
+  color: #b6c7d9;
+}
+
+:root[data-theme="dark"] .main-content .border-slate-200,
+:root[data-theme="dark"] .main-content .border-slate-100,
+:root[data-theme="dark"] .driver-page .border-slate-200,
+:root[data-theme="dark"] .driver-page .border-slate-100 {
+  border-color: #2d435b;
+}
+
+:root[data-theme="dark"] .main-content input,
+:root[data-theme="dark"] .main-content select,
+:root[data-theme="dark"] .driver-page input,
+:root[data-theme="dark"] .driver-page select {
+  color: #edf4fb;
+  background-color: #102135;
+  border-color: #38536f;
+}
+
+:root[data-theme="dark"] .settings-heading h2,
+:root[data-theme="dark"] .settings-panel h3 {
+  color: #edf4fb;
+}
+
+:root[data-theme="dark"] .settings-heading p,
+:root[data-theme="dark"] .settings-panel p,
+:root[data-theme="dark"] .settings-tab,
+:root[data-theme="dark"] .settings-form-grid label,
+:root[data-theme="dark"] .profile-picture-field {
+  color: #b6c7d9;
+}
+
+:root[data-theme="dark"] .settings-panel {
+  border-color: #2d435b;
+}
+
+:root[data-theme="dark"] .settings-secondary {
+  color: #edf4fb;
+  background: #294361;
+}
+
 .sidebar {
   width: 256px;
   flex: 0 0 256px;
@@ -792,4 +861,51 @@ a {
   .remittances-table td:first-child {
     padding-left: 16px;
   }
+}
+
+:root[data-theme="dark"] .bottom-nav,
+:root[data-theme="dark"] .revenue-card,
+:root[data-theme="dark"] .summary-card,
+:root[data-theme="dark"] .history-filter-bar,
+:root[data-theme="dark"] .history-table-wrap {
+  background: #14263a;
+  border-color: #2d435b;
+  color: #e7eef7;
+}
+
+:root[data-theme="dark"] .table-heading h2,
+:root[data-theme="dark"] .driver-cell strong,
+:root[data-theme="dark"] .collected-amount,
+:root[data-theme="dark"] .card-heading h2,
+:root[data-theme="dark"] .history-table td {
+  color: #edf4fb;
+}
+
+:root[data-theme="dark"] .table-heading p,
+:root[data-theme="dark"] .remittances-table th,
+:root[data-theme="dark"] .remittances-table td,
+:root[data-theme="dark"] .driver-cell small,
+:root[data-theme="dark"] .expected-label,
+:root[data-theme="dark"] .card-heading p,
+:root[data-theme="dark"] .chart-legend,
+:root[data-theme="dark"] .history-table th,
+:root[data-theme="dark"] .history-date {
+  color: #b6c7d9;
+}
+
+:root[data-theme="dark"] .remittances-table th,
+:root[data-theme="dark"] .history-table th {
+  background: #102135;
+}
+
+:root[data-theme="dark"] .remittances-table td,
+:root[data-theme="dark"] .history-table td {
+  border-color: #2d435b;
+}
+
+:root[data-theme="dark"] .filter-button,
+:root[data-theme="dark"] .review-button {
+  color: #edf4fb;
+  background: #294361;
+  border-color: #38536f;
 }
