@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { BusFront, Plus, Search, Trash2, UserRound, X } from "lucide-react";
+import { BusFront, Pencil, Plus, Search, Trash2, UserRound, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { MOCK_VEHICLES } from "../../data/mockVehicles.js";
 import Pagination from "../../components/shared/Pagination.jsx";
 import StatusBadge from "../../components/shared/StatusBadge.jsx";
-
+import useDrivers from "../../hooks/useDrivers";
 const INITIAL_FORM = {
   plate_number: "",
   type: "",
   driver_name: "",
+  driverId : "",
   daily_expected_amount: "",
   daily_due_time: "14:00",
 };
@@ -30,6 +31,18 @@ const REMITTANCE_TONE = {
   unpaid: "amber",
   short: "red",
 };
+const drivers = [
+  {
+    id: 1,
+    name: "Peter Omondi",
+    status: "active",
+  },
+  {
+    id: 2,
+    name: "Brian Kiptoo",
+    status: "inactive",
+  },
+];
 
 function statusLabel(status) {
   return status.charAt(0).toUpperCase() + status.slice(1);
@@ -74,6 +87,7 @@ export default function FleetPage() {
   const [vehicles, setVehicles] = useState(getStoredVehicles);
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [editingVehicleId, setEditingVehicleId] = useState(null);
   const [form, setForm] = useState(INITIAL_FORM);
   const [formError, setFormError] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
@@ -81,7 +95,13 @@ export default function FleetPage() {
   const [fleetPage, setFleetPage] = useState(1);
 
   const fleetPageSize = 4;
-
+//  const {
+//   data: drivers = [],
+//   getDrivers,
+// } = useDrivers();
+// useEffect(() => {
+//   getDrivers();
+// }, [getDrivers]);
   useEffect(() => {
     localStorage.setItem(
       "fleetpesa_mock_vehicles",
@@ -166,7 +186,7 @@ export default function FleetPage() {
       return alerts;
     });
   }, [currentTime, vehicles]);
-
+  
   const updateForm = (event) => {
     const { name, value } = event.target;
 
@@ -178,7 +198,37 @@ export default function FleetPage() {
     setFormError("");
   };
 
-  const addVehicle = (event) => {
+  const closeForm = () => {
+    setIsAddOpen(false);
+    setEditingVehicleId(null);
+    setForm(INITIAL_FORM);
+    setFormError("");
+  };
+
+  const openAddForm = () => {
+    setEditingVehicleId(null);
+    setForm(INITIAL_FORM);
+    setFormError("");
+    setIsAddOpen(true);
+  };
+
+  const startEdit = (vehicle) => {
+    setForm({
+      plate_number: vehicle.plate_number || "",
+      type: vehicle.type || "",
+      driver_name:
+        vehicle.driver_name === "Unassigned" ? "" : vehicle.driver_name || "",
+      daily_expected_amount: vehicle.daily_expected_amount
+        ? String(vehicle.daily_expected_amount)
+        : "",
+      daily_due_time: vehicle.daily_due_time || "14:00",
+    });
+    setEditingVehicleId(vehicle.id);
+    setFormError("");
+    setIsAddOpen(true);
+  };
+
+  const saveVehicle = (event) => {
     event.preventDefault();
 
     const plateNumber = form.plate_number.trim().toUpperCase();
@@ -193,35 +243,52 @@ export default function FleetPage() {
       return;
     }
 
-    if (
-      vehicles.some(
-        (vehicle) => vehicle.plate_number === plateNumber,
-      )
-    ) {
+    const isDuplicate = vehicles.some(
+      (vehicle) =>
+        vehicle.plate_number === plateNumber && vehicle.id !== editingVehicleId,
+    );
+
+    if (isDuplicate) {
       setFormError("That registration is already in your fleet.");
       return;
     }
 
-    const newVehicle = {
-      id: `mock-${Date.now()}`,
-      plate_number: plateNumber,
-      type: form.type.trim(),
-      driver_name: form.driver_name.trim() || "Unassigned",
-      driver_phone: "",
-      status: "parked",
-      remittance_status: "unpaid",
-      daily_expected_amount:
-        Number(form.daily_expected_amount) || 0,
-      daily_due_time: form.daily_due_time || "14:00",
-    };
+    if (editingVehicleId) {
+      setVehicles((current) =>
+        current.map((vehicle) =>
+          vehicle.id === editingVehicleId
+            ? {
+                ...vehicle,
+                plate_number: plateNumber,
+                type: form.type.trim(),
+                driver_name: form.driver_name.trim() || "Unassigned",
+                daily_expected_amount: Number(form.daily_expected_amount) || 0,
+                daily_due_time: form.daily_due_time || "14:00",
+              }
+            : vehicle,
+        ),
+      );
+      setSaveMessage(`${plateNumber} was updated.`);
+    } else {
+      const newVehicle = {
+        id: `mock-${Date.now()}`,
+        plate_number: plateNumber,
+        type: form.type.trim(),
+        driver_name: form.driver_name.trim() || "Unassigned",
+        driver_phone: "",
+        status: "parked",
+        remittance_status: "unpaid",
+        daily_expected_amount: Number(form.daily_expected_amount) || 0,
+        daily_due_time: form.daily_due_time || "14:00",
+      };
 
-    setVehicles((current) => [newVehicle, ...current]);
+      setVehicles((current) => [newVehicle, ...current]);
+      setSaveMessage(`${plateNumber} was added to your fleet.`);
+    }
+
     setSearchTerm("");
     setFleetPage(1);
-    setSaveMessage(`${plateNumber} was added to your fleet.`);
-    setFormError("");
-    setForm(INITIAL_FORM);
-    setIsAddOpen(false);
+    closeForm();
   };
 
   const removeVehicle = (vehicle) => {
@@ -237,6 +304,10 @@ export default function FleetPage() {
       setSaveMessage(
         `${vehicle.plate_number} was removed from your fleet.`,
       );
+
+      if (editingVehicleId === vehicle.id) {
+        closeForm();
+      }
     }
   };
 
@@ -259,7 +330,7 @@ export default function FleetPage() {
 
         <button
           type="button"
-          onClick={() => setIsAddOpen((open) => !open)}
+          onClick={() => (isAddOpen ? closeForm() : openAddForm())}
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
         >
           {isAddOpen ? (
@@ -297,12 +368,12 @@ export default function FleetPage() {
 
       {isAddOpen && (
         <form
-          onSubmit={addVehicle}
+          onSubmit={saveVehicle}
           className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
         >
           <div className="mb-4">
             <h2 className="text-base font-bold text-slate-900">
-              Add a vehicle
+              {editingVehicleId ? "Edit vehicle" : "Add a vehicle"}
             </h2>
 
             <p className="mt-1 text-sm text-slate-500">
@@ -338,13 +409,26 @@ export default function FleetPage() {
 
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Driver
-              <input
-                name="driver_name"
-                value={form.driver_name}
-                onChange={updateForm}
-                placeholder="Optional"
-                className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-900"
-              />
+              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+  Driver
+
+  <select
+    name="driverId"
+    value={form.driverId}
+    onChange={updateForm}
+    className="mt-1.5 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
+  >
+    <option value="">Select driver</option>
+
+    {drivers
+      .filter((driver) => driver.status === "active")
+      .map((driver) => (
+        <option key={driver.id} value={driver.id}>
+          {driver.name}
+        </option>
+      ))}
+  </select>
+</label>
             </label>
 
             <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -386,7 +470,7 @@ export default function FleetPage() {
             type="submit"
             className="mt-4 rounded-xl bg-[#12b75b] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#0e9d4e]"
           >
-            Save vehicle
+            {editingVehicleId ? "Save changes" : "Save vehicle"}
           </button>
         </form>
       )}
@@ -502,15 +586,27 @@ export default function FleetPage() {
                   Due {vehicle.daily_due_time || "14:00"}
                 </span>
 
-                <button
-                  type="button"
-                  onClick={() => removeVehicle(vehicle)}
-                  aria-label={`Remove ${vehicle.plate_number}`}
-                  title="Remove vehicle"
-                  className="rounded-lg p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-600"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => startEdit(vehicle)}
+                    aria-label={`Edit ${vehicle.plate_number}`}
+                    title="Edit vehicle"
+                    className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => removeVehicle(vehicle)}
+                    aria-label={`Remove ${vehicle.plate_number}`}
+                    title="Remove vehicle"
+                    className="rounded-lg p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             </article>
           ))}
