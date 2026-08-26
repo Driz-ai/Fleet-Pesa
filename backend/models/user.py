@@ -12,6 +12,7 @@ from extensions import db, bcrypt
 class UserRole(enum.Enum):
     ADMIN = "admin"
     DRIVER = "driver"
+    OWNER = "owner"
 
 
 class User(db.Model):
@@ -31,18 +32,18 @@ class User(db.Model):
     )
 
     username = db.Column(
-        db.String(100),
+        db.String(80),
         unique=True,
         nullable=False,
     )
 
     name = db.Column(
-        db.String(150),
+        db.String(120),
         nullable=False,
     )
 
     phone = db.Column(
-        db.String(13),
+        db.String(15),
         unique=True,
         nullable=False,
     )
@@ -53,15 +54,10 @@ class User(db.Model):
     )
 
     role = db.Column(
-        db.Enum(
-            UserRole,
-            name="user_role",
-            values_callable=lambda enum_class: [
-                member.value for member in enum_class
-            ],
-        ),
+        db.String(10),
         nullable=False,
-        default=UserRole.DRIVER,
+        default=UserRole.DRIVER.value,
+
     )
 
     created_at = db.Column(
@@ -69,6 +65,13 @@ class User(db.Model):
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
         server_default=db.func.now(),
+    )
+
+    notification_preference = db.Column(
+        db.String(5),
+        nullable=False,
+        default="none",
+        server_default="none",
     )
 
     fleet_owner = db.relationship(
@@ -147,7 +150,7 @@ class User(db.Model):
         """
         Normalize Kenyan phone numbers to +254XXXXXXXXX.
 
-        Accepted examples:
+ R       Accepted examples:
             0712345678
             0112345678
             254712345678
@@ -197,8 +200,9 @@ class User(db.Model):
             "username": self.username,
             "name": self.name,
             "phone": self.phone,
-            "role": self.role.value if self.role else None,
+            "role": self.role,
             "fleet_owner_id": self.fleet_owner_id,
+            "notification_preference": self.notification_preference,
             "created_at": (
                 self.created_at.isoformat()
                 if self.created_at

@@ -39,7 +39,12 @@ class UserSchema(Schema):
 
     role = fields.String(
         load_default="driver",
-        validate=validate.OneOf(["admin", "driver"]),
+        validate=validate.OneOf(["admin", "driver", "owner"]),
+    )
+
+    notification_preference = fields.String(
+        load_default="none",
+        validate=validate.OneOf(["none", "sms", "email"]),
     )
 
     created_at = fields.DateTime(dump_only=True)
