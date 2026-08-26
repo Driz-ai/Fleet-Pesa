@@ -1,4 +1,4 @@
-import { Bell, KeyRound, UserRound } from 'lucide-react'
+import { KeyRound, UserRound } from 'lucide-react'
 import { useState } from 'react'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { updatePassword, updateProfile } from '../../lib/api.js'
@@ -6,7 +6,6 @@ import { updatePassword, updateProfile } from '../../lib/api.js'
 const sections = [
 	{ id: 'profile', label: 'Profile details', icon: UserRound },
 	{ id: 'password', label: 'Password', icon: KeyRound },
-	{ id: 'notifications', label: 'Notifications', icon: Bell },
 ]
 
 export default function SettingsPage() {
@@ -18,9 +17,6 @@ export default function SettingsPage() {
 	const [profileSaved, setProfileSaved] = useState(false)
 	const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '', confirmation: '' })
 	const [passwordState, setPasswordState] = useState({ loading: false, error: '', success: '' })
-	const [notificationPreference, setNotificationPreference] = useState(user?.notification_preference || 'none')
-	const [email, setEmail] = useState(user?.email || '')
-	const [notificationState, setNotificationState] = useState({ loading: false, error: '', success: '' })
 
 	async function handleProfileSubmit(event) {
 		event.preventDefault()
@@ -59,24 +55,6 @@ export default function SettingsPage() {
 			setPasswordState({ loading: false, error: '', success: 'Password updated successfully.' })
 		} catch (error) {
 			setPasswordState({ loading: false, error: error.message, success: '' })
-		}
-	}
-
-	async function handleNotificationSubmit(event) {
-		event.preventDefault()
-		setNotificationState({ loading: true, error: '', success: '' })
-		try {
-			if (notificationPreference === 'email' && !/^\S+@\S+\.\S+$/.test(email)) {
-				setNotificationState({ loading: false, error: 'Enter a valid email address for email alerts.', success: '' })
-				return
-			}
-			const response = token?.startsWith('mock-token')
-				? await new Promise((resolve) => window.setTimeout(() => resolve({ user: { ...user, notification_preference: notificationPreference, email } }), 450))
-				: await updateProfile({ notification_preference: notificationPreference })
-			setAuth({ token, user: response.user })
-			setNotificationState({ loading: false, error: '', success: 'Notification preference saved.' })
-		} catch (error) {
-			setNotificationState({ loading: false, error: error.message, success: '' })
 		}
 	}
 
@@ -133,20 +111,6 @@ export default function SettingsPage() {
 						</form>
 					</section>
 
-					<section className="settings-panel" id="notifications">
-						<h3>Remittance alerts</h3><p>Choose where default remittance notifications should be sent.</p>
-						<form onSubmit={handleNotificationSubmit}>
-							<div className="settings-preferences">
-								{[['email', 'Email'], ['sms', 'SMS'], ['none', 'None']].map(([value, label]) => (
-									<label key={value}><input type="radio" name="notification-preference" value={value} checked={notificationPreference === value} onChange={(event) => setNotificationPreference(event.target.value)} />{label}</label>
-								))}
-							</div>
-							{notificationPreference === 'email' && <label className="settings-email-field">Alert email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" required /></label>}
-							{notificationState.error && <p className="settings-error" role="alert">{notificationState.error}</p>}
-							{notificationState.success && <p className="settings-success" role="status">{notificationState.success}</p>}
-							<button className="settings-secondary" type="submit" disabled={notificationState.loading}>{notificationState.loading ? 'Saving...' : 'Save notification preference'}</button>
-						</form>
-					</section>
 				</div>
 			</div>
 		</div>
