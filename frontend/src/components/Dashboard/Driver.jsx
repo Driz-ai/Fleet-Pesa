@@ -334,7 +334,7 @@ export default function Driver() {
               <button
                 type="button"
                 onClick={handleNotificationClick}
-                className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#0F2440] shadow-sm transition hover:bg-slate-50"
+                className="driver-notification-trigger relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#0F2440] shadow-sm transition hover:bg-slate-50"
                 aria-label="Open notifications"
                 title="Notifications"
               >

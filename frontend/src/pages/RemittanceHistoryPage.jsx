@@ -16,6 +16,14 @@ export default function RemittanceHistoryPage() {
   const mockVehicle = MOCK_VEHICLES.find((vehicle) => vehicle.id === selectedVehicleId);
   const vehicle = (mockVehicle && { plate_number: mockVehicle.plate_number, vehicle_type: mockVehicle.type }) || history.vehicle;
 
+  const updateFilter = (key, value) => {
+    setFilters((current) => ({ ...current, [key]: value }));
+  };
+
+  const clearDates = () => {
+    setFilters((current) => ({ ...current, from: "", to: "" }));
+  };
+
   useEffect(() => {
     setSelectedVehicleId(vehicleId || "");
   }, [vehicleId]);
@@ -30,9 +38,10 @@ export default function RemittanceHistoryPage() {
       </header>
 
       <section className="history-filter-bar" aria-label="Remittance filters">
-        <label className="history-date-field">From<input className={!filters.from ? "date-input-empty" : ""} type="date" value={filters.from} onChange={(event) => setFilters({ ...filters, from: event.target.value })} aria-label="Start date" />{!filters.from && <span><CalendarDays size={14} /> PICK A START DATE</span>}</label>
-        <label className="history-date-field">To<input className={!filters.to ? "date-input-empty" : ""} type="date" value={filters.to} onChange={(event) => setFilters({ ...filters, to: event.target.value })} aria-label="End date" />{!filters.to && <span><CalendarDays size={14} /> PICK AN END DATE</span>}</label>
-        <label className="text-xs font-bold uppercase tracking-wide text-slate-500">Status<select value={filters.status} onChange={(event) => setFilters({ ...filters, status: event.target.value })} className="mt-1 block rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900"><option value="all">All</option><option value="paid">Paid</option><option value="short">Short</option></select></label>
+        <label className="history-date-field">From<input className={!filters.from ? "date-input-empty" : ""} type="date" value={filters.from} onChange={(event) => updateFilter("from", event.target.value)} aria-label="Start date" />{!filters.from && <span><CalendarDays size={14} /> PICK A START DATE</span>}</label>
+        <label className="history-date-field">To<input className={!filters.to ? "date-input-empty" : ""} type="date" value={filters.to} onChange={(event) => updateFilter("to", event.target.value)} aria-label="End date" />{!filters.to && <span><CalendarDays size={14} /> PICK AN END DATE</span>}</label>
+        <label className="text-xs font-bold uppercase tracking-wide text-slate-500">Status<select value={filters.status} onChange={(event) => updateFilter("status", event.target.value)} className="mt-1 block rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900"><option value="all">All</option><option value="paid">Paid</option><option value="short">Short</option></select></label>
+        {(filters.from || filters.to) && <button type="button" className="history-clear-dates" onClick={clearDates}>Clear dates</button>}
         <label className="history-vehicle-picker">Vehicle<select value={selectedVehicleId} onChange={(event) => { setSelectedVehicleId(event.target.value); navigate(`/vehicles/${event.target.value}/remittances`); }}><option value="">Choose a vehicle</option>{MOCK_VEHICLES.map((item) => <option key={item.id} value={item.id}>{item.plate_number} · {item.driver_name}</option>)}</select></label>
       </section>
 

@@ -256,6 +256,8 @@ a {
 .history-date-field span { position: absolute; right: 12px; bottom: 12px; z-index: 2; display: flex; align-items: center; gap: 5px; color: #8a9caf; background: #f8fafc; font-size: 11px; font-weight: 600; letter-spacing: 0; text-transform: none; pointer-events: none; }
 .history-vehicle-picker { display: grid; gap: 6px; max-width: 320px; color: #61758d; font-family: "DM Sans", sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 .history-vehicle-picker select { min-height: 44px; padding: 0 12px; color: #102844; background: #fff; border: 1px solid #d5e0e9; border-radius: 9px; font-family: "DM Sans", sans-serif; font-size: 14px; }
+.history-clear-dates { min-height: 42px; padding: 0 12px; color: #61758d; background: transparent; border: 1px solid #d5e0e9; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+.history-clear-dates:hover { color: #102844; border-color: #12b75b; }
 .history-table-wrap { overflow-x: auto; background: #fff; border: 1px solid #dfe7ee; border-radius: 14px; box-shadow: 0 8px 20px rgba(16, 40, 68, .05); }
 .history-table { width: 100%; min-width: 680px; border-collapse: collapse; text-align: left; font-size: 13px; }
 .history-table th { padding: 13px 16px; color: #61758d; background: #f7fafc; border-bottom: 1px solid #e5edf3; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
@@ -908,4 +910,39 @@ a {
   color: #edf4fb;
   background: #294361;
   border-color: #38536f;
+}
+
+:root[data-theme="dark"] .history-clear-dates {
+  color: #b6c7d9;
+  border-color: #38536f;
+}
+
+:root[data-theme="dark"] .history-clear-dates:hover {
+  color: #edf4fb;
+  border-color: #12b75b;
+}
+
+:root[data-theme="dark"] .notification-trigger,
+:root[data-theme="dark"] .driver-notification-trigger {
+  color: #edf4fb;
+  background: #294361;
+  border: 1px solid #38536f;
+}
+
+:root[data-theme="dark"] .notification-trigger:hover,
+:root[data-theme="dark"] .driver-notification-trigger:hover {
+  background: #38536f;
+}
+
+:root[data-theme="dark"] .shortfall-alert {
+  background: #4a3416;
+  border-color: #a16207;
+}
+
+:root[data-theme="dark"] .shortfall-alert-label {
+  color: #fcd34d;
+}
+
+:root[data-theme="dark"] .shortfall-alert-title {
+  color: #fff7ed;
 }
