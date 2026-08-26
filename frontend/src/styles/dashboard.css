@@ -98,6 +98,18 @@
     @apply space-y-4 px-5 py-6;
   }
 
+  .driver-start-card {
+    @apply flex flex-col gap-3 rounded-[17px] border border-[#dfe6ed] bg-white px-5 py-4 shadow-[0_1px_2px_rgba(16,40,68,0.12)] sm:flex-row sm:items-center sm:justify-between;
+  }
+
+  .driver-start-copy {
+    @apply m-1 text-sm text-[#8498b3];
+  }
+
+  .driver-start-select {
+    @apply min-h-10 rounded-lg border border-[#d5e0e9] bg-white px-3 text-sm font-semibold text-[#102844] outline-none focus:border-[#12b75b];
+  }
+
   .amount-card,
   .payment-card,
   .success-card {
@@ -331,6 +343,17 @@
     background: #14263a;
     border-color: #2d435b;
     color: #e7eef7;
+  }
+
+  :root[data-theme="dark"] .driver-start-card {
+    background: #14263a;
+    border-color: #2d435b;
+  }
+
+  :root[data-theme="dark"] .driver-start-select {
+    background: #102135;
+    border-color: #2d435b;
+    color: #edf4fb;
   }
 
   :root[data-theme="dark"] .amount-input,

@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Bell,
-  History,
   Moon,
   Phone,
   Sun,
@@ -11,6 +10,7 @@ import {
 
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useTheme } from "../../context/ThemeContext.jsx";
+import { MOCK_VEHICLES } from "../../data/mockVehicles.js";
 
 import StatusBadge from "../shared/StatusBadge.jsx";
 import { StatCard } from "../shared/StatCard";
@@ -48,7 +48,50 @@ export default function Driver() {
   const [notificationCount, setNotificationCount] =
     useState(3);
 
+  const [vehicles] = useState(() => {
+    try {
+      const stored = localStorage.getItem("fleetpesa_mock_vehicles");
+      return stored ? JSON.parse(stored) : MOCK_VEHICLES;
+    } catch {
+      return MOCK_VEHICLES;
+    }
+  });
+  const [startedVehicleId, setStartedVehicleId] = useState(() => {
+    try {
+      const stored = JSON.parse(
+        localStorage.getItem("fleetpesa_driver_day_start") || "null",
+      );
+      return stored?.date === new Date().toISOString().slice(0, 10)
+        ? stored.vehicleId
+        : "";
+    } catch {
+      return "";
+    }
+  });
+
   const quickAmounts = [1500, 3000, 4500];
+
+  const assignedVehicles = useMemo(() => {
+    const driverName = user?.name || "Peter Omondi";
+    return vehicles.filter((vehicle) => vehicle.driver_name === driverName);
+  }, [user?.name, vehicles]);
+
+  const startedVehicle = assignedVehicles.find(
+    (vehicle) => vehicle.id === startedVehicleId,
+  );
+
+  function handleStartDay(event) {
+    const vehicleId = event.target.value;
+    setStartedVehicleId(vehicleId);
+    localStorage.setItem(
+      "fleetpesa_driver_day_start",
+      JSON.stringify({
+        date: new Date().toISOString().slice(0, 10),
+        vehicleId,
+        driverName: user?.name || "Peter Omondi",
+      }),
+    );
+  }
 
   useEffect(() => {
     if (!successMessage) {
@@ -403,6 +446,33 @@ export default function Driver() {
 
         
 
+        <section className="driver-start-card" aria-labelledby="start-day-title">
+          <div>
+            <p className="driver-label" id="start-day-title">
+              Vehicle started today
+            </p>
+            <p className="driver-start-copy">
+              {startedVehicle
+                ? `${startedVehicle.plate_number} · ${startedVehicle.type}`
+                : "Log the vehicle you started the day with."}
+            </p>
+          </div>
+
+          <select
+            className="driver-start-select"
+            value={startedVehicleId}
+            onChange={handleStartDay}
+            aria-label="Vehicle started today"
+          >
+            <option value="">Select vehicle</option>
+            {assignedVehicles.map((vehicle) => (
+              <option key={vehicle.id} value={vehicle.id}>
+                {vehicle.plate_number} · {vehicle.type}
+              </option>
+            ))}
+          </select>
+        </section>
+
         <section className="amount-card">
 
           <label
@@ -586,17 +656,6 @@ export default function Driver() {
                 ).toLocaleString("en-KE")}`
               : "Enter an amount"}
         </button>
-
-
-        
-
-        <Link
-          to="/driver/remittance-history"
-          className="driver-history-link"
-        >
-          <History size={17} />
-          View remittance history
-        </Link>
 
 
         
