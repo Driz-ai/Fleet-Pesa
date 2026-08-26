@@ -84,3 +84,20 @@ class DriverAssignments(Resource):
         driver_assignments_schema.dump(assignments),
         200,
     )
+
+
+
+class DriverAssignmentById(Resource):
+     def get(self, id):
+        assignment = db.session.get(
+            DriverAssignment,
+            id,
+        )
+        if assignment is None:
+            return {
+                "error": "Driver assignment not found."
+            }, 404
+        return (
+            driver_assignment_schema.dump(assignment),
+            200,
+        )
