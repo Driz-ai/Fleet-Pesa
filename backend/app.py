@@ -12,7 +12,7 @@ from models.driver_assignment import DriverAssignment
 from routes.auth_routes import auth_bp
 from routes.remittance_routes import remittance_bp
 from schemas.user_schema import password_change_schema, profile_schema
-from routes.driver_assignment_routes import DriverAssignments,DriverAssignmentById
+from routes.driver_assignment_routes import DriverAssignments,DriverAssignmentById,UnassignDriver
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -20,8 +20,8 @@ def create_app(config_class=Config):
 
     api.add_resource( DriverAssignments,"/driver-assignments")
     api.add_resource(DriverAssignmentById,"/driver-assignments/<int:id>",)
+    api.add_resource(UnassignDriver, "/driver-assignments/<int:id>/unassign",)
 	
-
     CORS(app)
     db.init_app(app)
     bcrypt.init_app(app)
