@@ -35,3 +35,13 @@ class DriverAssignment(db.Model):
         db.DateTime(timezone=True),
         nullable=True,
     )
+
+    driver = db.relationship( "User", back_populates="driver_assignments",)
+
+    vehicle = db.relationship( "Vehicle",back_populates="driver_assignments", )
+
+    def __repr__(self):
+     return(f"<DriverAssignment"
+            f"{self.id}"
+            f"drivers={self.driver_id}"
+            f"vehicle={self.vehicle_id}>")
