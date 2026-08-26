@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
-
+from datetime import timezone,datetime
 from extensions import db
 from models.user import User, UserRole
 from models.vehicle import Vehicle
@@ -85,8 +85,6 @@ class DriverAssignments(Resource):
         200,
     )
 
-
-
 class DriverAssignmentById(Resource):
      def get(self, id):
         assignment = db.session.get(
@@ -97,6 +95,28 @@ class DriverAssignmentById(Resource):
             return {
                 "error": "Driver assignment not found."
             }, 404
+        return (
+            driver_assignment_schema.dump(assignment),
+            200,
+        )
+class UnassignDriver(Resource):
+    def patch(self, id):
+        assignment = db.session.get(
+            DriverAssignment,
+            id,
+        )
+        if assignment is None:
+            return {
+                "error": "Driver assignment not found."
+            }, 404
+        if assignment.unassigned_at is not None:
+            return {
+                "error": "Driver is already unassigned."
+            }, 409
+
+        assignment.unassigned_at = datetime.now(timezone.utc)
+
+        db.session.commit()
         return (
             driver_assignment_schema.dump(assignment),
             200,
