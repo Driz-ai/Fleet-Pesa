@@ -4,24 +4,29 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 from marshmallow import ValidationError
 
 from config import Config
-from extensions import bcrypt, db, jwt, migrate
+from extensions import bcrypt, db, jwt, migrate,api
 from models.fleet_owner import FleetOwner
 from models.user import User
+from models.driver_assignment import DriverAssignment
 
 from routes.auth_routes import auth_bp
 from routes.remittance_routes import remittance_bp
 from schemas.user_schema import password_change_schema, profile_schema
-
+from routes.driver_assignment_routes import DriverAssignments
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+
+    api.add_resource( DriverAssignments,"/driver-assignments"
+)
 
     CORS(app)
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
+    api.init_app(app)
 
     # Register blueprints
     app.register_blueprint(auth_bp)
