@@ -1,3 +1,4 @@
+
 import enum
 import re
 
@@ -16,11 +17,11 @@ class UserRole(enum.Enum):
 class User(db.Model):
     __tablename__ = "users"
 
-    id = db.Column( 
-        db.Integer, 
+    id = db.Column(
+        db.Integer,
         primary_key=True,
         autoincrement=True,
-        )
+    )
 
     fleet_owner_id = db.Column(
         db.Integer,
@@ -52,15 +53,16 @@ class User(db.Model):
     )
 
     role = db.Column(
-    db.Enum(
-        UserRole,
-        name="user_role",
-        values_callable=lambda enum_class: [member.value for member in enum_class],
-    ),
-    nullable=False,
-    default=UserRole.DRIVER,
-)
- 
+        db.Enum(
+            UserRole,
+            name="user_role",
+            values_callable=lambda enum_class: [
+                member.value for member in enum_class
+            ],
+        ),
+        nullable=False,
+        default=UserRole.DRIVER,
+    )
 
     created_at = db.Column(
         db.DateTime(timezone=True),
@@ -69,7 +71,6 @@ class User(db.Model):
         server_default=db.func.now(),
     )
 
-    
     fleet_owner = db.relationship(
         "FleetOwner",
         back_populates="users",
@@ -79,7 +80,9 @@ class User(db.Model):
     back_populates="driver",
 )
 
-    
+    # --------------------------------------------------
+    # Password
+    # --------------------------------------------------
 
     def set_password(self, password):
         """Hash and store a user's password."""
@@ -97,7 +100,7 @@ class User(db.Model):
         ).decode("utf-8")
 
     def check_password(self, password):
-        """Verify a plain-text password against the stored hash."""
+        """Check a plain-text password against the stored hash."""
 
         if not password:
             return False
@@ -107,12 +110,12 @@ class User(db.Model):
             password,
         )
 
-    
+    # --------------------------------------------------
+    # Username
+    # --------------------------------------------------
 
     @validates("username")
     def validate_username(self, key, value):
-        """Validate and normalize username."""
-
         if value is None:
             raise ValueError("Username is required.")
 
@@ -121,17 +124,14 @@ class User(db.Model):
         if not value:
             raise ValueError("Username is required.")
 
-        if len(value) < 3:
-            raise ValueError(
-                "Username must contain at least 3 characters."
-            )
-
         return value
+
+    # --------------------------------------------------
+    # Name
+    # --------------------------------------------------
 
     @validates("name")
     def validate_name(self, key, value):
-        """Validate and normalize user's name."""
-
         if value is None:
             raise ValueError("Name is required.")
 
@@ -139,17 +139,27 @@ class User(db.Model):
 
         if not value:
             raise ValueError("Name is required.")
-
-        if len(value) < 2:
-            raise ValueError(
-                "Name must contain at least 2 characters."
-            )
 
         return value
 
+    # --------------------------------------------------
+    # Phone
+    # --------------------------------------------------
+
     @validates("phone")
     def validate_phone(self, key, value):
-        """Normalize and validate a Kenyan phone number."""
+        """
+        Normalize Kenyan phone numbers to +254XXXXXXXXX.
+
+        Accepted examples:
+            0712345678
+            0112345678
+            254712345678
+            +254712345678
+
+        Stored as:
+            +254712345678
+        """
 
         if value is None:
             raise ValueError("Phone number is required.")
@@ -159,18 +169,20 @@ class User(db.Model):
         if not value:
             raise ValueError("Phone number is required.")
 
-       
+        # Remove common formatting characters.
         value = re.sub(r"[\s\-()]", "", value)
 
-        
+        # Convert 07XXXXXXXX / 01XXXXXXXX
+        # to +2547XXXXXXXX / +2541XXXXXXXX
         if value.startswith(("07", "01")):
             value = "+254" + value[1:]
 
-        
+        # Convert 2547XXXXXXXX / 2541XXXXXXXX
+        # to +2547XXXXXXXX / +2541XXXXXXXX
         elif value.startswith("254"):
             value = "+" + value
 
-        
+        # Validate final canonical format.
         if not re.fullmatch(r"\+254[17]\d{8}", value):
             raise ValueError(
                 "Invalid Kenyan phone number. "
@@ -179,11 +191,11 @@ class User(db.Model):
 
         return value
 
-    
+    # --------------------------------------------------
+    # Serialization
+    # --------------------------------------------------
 
     def to_dict(self):
-        """Return a JSON-serializable representation of the user."""
-
         return {
             "id": self.id,
             "username": self.username,
@@ -198,8 +210,5 @@ class User(db.Model):
             ),
         }
 
-    
-
     def __repr__(self):
         return f"<User {self.id} {self.username}>"
-

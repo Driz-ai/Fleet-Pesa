@@ -1,45 +1,268 @@
-from datetime import datetime, timedelta, timezone
+"""
+FleetPesa seed data.
 
-from app import create_app
+Schema note (2026-08-25): seeded against the updated ERD —
+fleet_owners is the account entity; vehicles link only to
+fleet_owner_id (no owner_id/driver_id); driver_assignments is the
+single source of truth for who's driving which vehicle; remittances
+and fare_payments carry NO direct driver_id — the driver on a
+transaction is derived by joining vehicle_id against
+driver_assignments at the transaction's timestamp.
+
+This script cannot run successfully until FleetOwner, updated
+User/Vehicle, DriverAssignment, and updated Remittance/FarePayment
+models exist in the codebase. Written ahead of that so it's ready
+to run the moment those land.
+"""
+
+from datetime import datetime, timedelta
+
+from app import app
 from extensions import db
-from models.remittance import Remittance
+from models.fleet_owner import FleetOwner
 from models.user import User
 from models.vehicle import Vehicle
+from models.driver_assignment import DriverAssignment
+from models.remittance import Remittance
+from models.fare_payment import FarePayment
 
-app = create_app()
 
-with app.app_context():
-	db.drop_all()
-	db.create_all()
+def seed():
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
 
-	owner = User(username="mwangi_owner", name="Peter Mwangi", phone="+254712000001", role="owner")
-	owner.set_password("password123")
+        # ------------------------------------------------------------------
+        # 1. Fleet owners (accounts) — seeded first, nothing depends on
+        #    anything else
+        # ------------------------------------------------------------------
+        tomashi_circle = FleetOwner(account_name="Tomashi Circle")
+        rainbow_shuttle = FleetOwner(account_name="Rainbow Shuttle Sacco")
+        db.session.add_all([tomashi_circle, rainbow_shuttle])
+        db.session.commit()
 
-	driver_one = User(username="kamau_driver", name="John Kamau", phone="+254712000002", role="driver")
-	driver_one.set_password("password123")
+        # ------------------------------------------------------------------
+        # 2. Users — admins linked to a fleet_owner, drivers left unlinked
+        #    (fleet_owner_id stays null; a driver's fleet connection comes
+        #    through driver_assignments, not this column)
+        # ------------------------------------------------------------------
+        admin_moses = User(
+            fleet_owner_id=tomashi_circle.id,
+            username="owner_moses",
+            name="Moses Kiptoo",
+            phone="+254712345001",
+            password_hash="pbkdf2:sha256:fakehash-moses",
+            role="admin",
+        )
+        admin_grace = User(
+            fleet_owner_id=tomashi_circle.id,
+            username="owner_grace",
+            name="Grace Wanjiru",
+            phone="+254712345002",
+            password_hash="pbkdf2:sha256:fakehash-grace",
+            role="admin",
+        )
+        admin_peter = User(
+            fleet_owner_id=rainbow_shuttle.id,
+            username="owner_peter",
+            name="Peter Mwangi",
+            phone="+254712345006",
+            password_hash="pbkdf2:sha256:fakehash-peter",
+            role="admin",
+        )
+        driver_james = User(
+            username="driver_james",
+            name="James Otieno",
+            phone="+254712345003",
+            password_hash="pbkdf2:sha256:fakehash-james",
+            role="driver",
+        )
+        driver_alex = User(
+            username="driver_alex",
+            name="Alex Kimutai",
+            phone="+254712345004",
+            password_hash="pbkdf2:sha256:fakehash-alex",
+            role="driver",
+        )
+        driver_lucy = User(
+            username="driver_lucy",
+            name="Lucy Nafula",
+            phone="+254712345005",
+            password_hash="pbkdf2:sha256:fakehash-lucy",
+            role="driver",
+        )
+        db.session.add_all(
+            [admin_moses, admin_grace, admin_peter, driver_james, driver_alex, driver_lucy]
+        )
+        db.session.commit()
 
-	driver_two = User(username="atieno_driver", name="Brenda Atieno", phone="+254712000003", role="driver")
-	driver_two.set_password("password123")
+        # ------------------------------------------------------------------
+        # 3. Vehicles — linked only to fleet_owner_id, no driver_id column
+        # ------------------------------------------------------------------
+        vehicle_kaa = Vehicle(
+            plate_number="KAA 123X",
+            vehicle_type="matatu",
+            fleet_owner_id=tomashi_circle.id,
+            daily_expected_amount=3000,
+            is_active=True,
+        )
+        vehicle_kbb = Vehicle(
+            plate_number="KBB 456Y",
+            vehicle_type="matatu",
+            fleet_owner_id=tomashi_circle.id,
+            daily_expected_amount=2500,
+            is_active=True,
+        )
+        vehicle_kcc = Vehicle(
+            plate_number="KCC 789Z",
+            vehicle_type="matatu",
+            fleet_owner_id=rainbow_shuttle.id,
+            daily_expected_amount=3500,
+            is_active=True,
+        )
+        vehicle_kdd_retired = Vehicle(
+            plate_number="KDD 000A",
+            vehicle_type="matatu",
+            fleet_owner_id=tomashi_circle.id,
+            daily_expected_amount=2000,
+            is_active=False,  # soft-deleted — retired vehicle, history preserved
+        )
+        db.session.add_all([vehicle_kaa, vehicle_kbb, vehicle_kcc, vehicle_kdd_retired])
+        db.session.commit()
 
-	db.session.add_all([owner, driver_one, driver_two])
-	db.session.commit()
+        # ------------------------------------------------------------------
+        # 4. Driver assignments — the ONLY place driver-to-vehicle is
+        #    recorded. Includes a CLOSED assignment (proves history is
+        #    preserved on reassignment) and OPEN assignments (current
+        #    driver) for the active vehicles.
+        # ------------------------------------------------------------------
+        now = datetime.utcnow()
 
-	vehicle_one = Vehicle(plate_number="KDA 001A", vehicle_type="matatu", owner_id=owner.id, driver_id=driver_one.id)
-	vehicle_two = Vehicle(plate_number="KDB 002B", vehicle_type="matatu", owner_id=owner.id, driver_id=driver_two.id)
-	vehicle_three = Vehicle(plate_number="KDC 003C", vehicle_type="minibus", owner_id=owner.id)
+        # vehicle_kaa: was driven by Alex, reassigned to James -- history preserved
+        assignment_kaa_closed = DriverAssignment(
+            vehicle_id=vehicle_kaa.id,
+            driver_id=driver_alex.id,
+            assigned_at=now - timedelta(days=30),
+            unassigned_at=now - timedelta(days=10),
+        )
+        assignment_kaa_current = DriverAssignment(
+            vehicle_id=vehicle_kaa.id,
+            driver_id=driver_james.id,
+            assigned_at=now - timedelta(days=10),
+            unassigned_at=None,  # current driver
+        )
 
-	db.session.add_all([vehicle_one, vehicle_two, vehicle_three])
-	db.session.commit()
+        # vehicle_kbb: only ever had one driver, still current
+        assignment_kbb_current = DriverAssignment(
+            vehicle_id=vehicle_kbb.id,
+            driver_id=driver_lucy.id,
+            assigned_at=now - timedelta(days=20),
+            unassigned_at=None,
+        )
 
-	now = datetime.now(timezone.utc)
-	remittances = [
-		Remittance(vehicle_id=vehicle_one.id, driver_id=driver_one.id, expected_amount=3000, actual_amount=3000, status="paid", payment_status="confirmed", submitted_at=now - timedelta(days=1)),
-		Remittance(vehicle_id=vehicle_one.id, driver_id=driver_one.id, expected_amount=3000, actual_amount=2400, status="short", payment_status="confirmed", flagged_for_followup=True, submitted_at=now - timedelta(days=2)),
-		Remittance(vehicle_id=vehicle_two.id, driver_id=driver_two.id, expected_amount=2800, actual_amount=2800, status="paid", payment_status="confirmed", submitted_at=now - timedelta(hours=6)),
-		Remittance(vehicle_id=vehicle_two.id, driver_id=driver_two.id, expected_amount=2800, actual_amount=0, status="short", payment_status="pending", flagged_for_followup=True, submitted_at=now - timedelta(days=3)),
-	]
+        # vehicle_kcc: Rainbow Shuttle's vehicle, driven by James as well
+        # (a driver can be linked to vehicles across different accounts
+        # in this seed only to exercise the query logic -- not necessarily
+        # a real-world scenario)
+        assignment_kcc_current = DriverAssignment(
+            vehicle_id=vehicle_kcc.id,
+            driver_id=driver_james.id,
+            assigned_at=now - timedelta(days=5),
+            unassigned_at=None,
+        )
 
-	db.session.add_all(remittances)
-	db.session.commit()
+        db.session.add_all(
+            [
+                assignment_kaa_closed,
+                assignment_kaa_current,
+                assignment_kbb_current,
+                assignment_kcc_current,
+            ]
+        )
+        db.session.commit()
 
-	print("Seeded", User.query.count(), "users,", Vehicle.query.count(), "vehicles,", Remittance.query.count(), "remittances")
+        # ------------------------------------------------------------------
+        # 5. Remittances — no driver_id column. Driver on record is
+        #    derived via vehicle_id + submitted_at against
+        #    driver_assignments.
+        # ------------------------------------------------------------------
+        remittance_paid = Remittance(
+            vehicle_id=vehicle_kaa.id,
+            expected_amount=3000,
+            actual_amount=3000,
+            status="paid",
+            payment_status="confirmed",
+            mpesa_reference="FP-1001",
+            mpesa_transaction_code="SFC1AAABBB",
+            flagged_for_followup=False,
+            submitted_at=now - timedelta(days=1),
+        )
+        remittance_short = Remittance(
+            vehicle_id=vehicle_kaa.id,
+            expected_amount=3000,
+            actual_amount=2200,
+            status="short",
+            payment_status="confirmed",
+            mpesa_reference="FP-1002",
+            mpesa_transaction_code="SFC1CCCDDD",
+            flagged_for_followup=True,
+            submitted_at=now,
+        )
+        remittance_pending = Remittance(
+            vehicle_id=vehicle_kbb.id,
+            expected_amount=2500,
+            actual_amount=2500,
+            status="paid",
+            payment_status="pending",
+            mpesa_reference="FP-1003",
+            mpesa_transaction_code=None,
+            flagged_for_followup=False,
+            submitted_at=now,
+        )
+        db.session.add_all([remittance_paid, remittance_short, remittance_pending])
+        db.session.commit()
+
+        # ------------------------------------------------------------------
+        # 6. Fare payments — same pattern, no driver_id column.
+        # ------------------------------------------------------------------
+        fare_confirmed = FarePayment(
+            vehicle_id=vehicle_kaa.id,
+            customer_phone="+254798765001",
+            amount=100,
+            mpesa_reference="FARE-2001",
+            mpesa_transaction_code="SFC2EEEFFF",
+            payment_status="confirmed",
+            requested_at=now - timedelta(hours=2),
+        )
+        fare_pending = FarePayment(
+            vehicle_id=vehicle_kbb.id,
+            customer_phone="+254798765002",
+            amount=80,
+            mpesa_reference="FARE-2002",
+            mpesa_transaction_code=None,
+            payment_status="pending",
+            requested_at=now - timedelta(minutes=5),
+        )
+        fare_failed = FarePayment(
+            vehicle_id=vehicle_kcc.id,
+            customer_phone="+254798765003",
+            amount=150,
+            mpesa_reference="FARE-2003",
+            mpesa_transaction_code=None,
+            payment_status="failed",
+            requested_at=now - timedelta(hours=1),
+        )
+        db.session.add_all([fare_confirmed, fare_pending, fare_failed])
+        db.session.commit()
+
+        print("Seed complete:")
+        print(f"  fleet_owners:      {FleetOwner.query.count()}")
+        print(f"  users:             {User.query.count()}")
+        print(f"  vehicles:          {Vehicle.query.count()}")
+        print(f"  driver_assignments:{DriverAssignment.query.count()}")
+        print(f"  remittances:       {Remittance.query.count()}")
+        print(f"  fare_payments:     {FarePayment.query.count()}")
+
+
+if __name__ == "__main__":
+    seed()

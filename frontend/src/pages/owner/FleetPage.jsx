@@ -311,6 +311,18 @@ export default function FleetPage() {
     }
   };
 
+  const toggleVehicleStatus = (vehicle) => {
+    const nextStatus = vehicle.status === "active" ? "parked" : "active";
+    setVehicles((current) =>
+      current.map((item) =>
+        item.id === vehicle.id ? { ...item, status: nextStatus } : item,
+      ),
+    );
+    setSaveMessage(
+      `${vehicle.plate_number} is now ${nextStatus === "active" ? "active" : "parked"}.`,
+    );
+  };
+
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-4 pb-10 sm:p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -587,6 +599,18 @@ export default function FleetPage() {
                 </span>
 
                 <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => toggleVehicleStatus(vehicle)}
+                    className={`rounded-lg px-2.5 py-1.5 text-xs font-bold transition ${
+                      vehicle.status === "active"
+                        ? "border border-slate-200 text-slate-600 hover:border-slate-400"
+                        : "bg-[#12b75b] text-white hover:bg-[#0e9d4e]"
+                    }`}
+                    aria-label={`${vehicle.status === "active" ? "Park" : "Activate"} ${vehicle.plate_number}`}
+                  >
+                    {vehicle.status === "active" ? "Park" : "Activate"}
+                  </button>
                   <button
                     type="button"
                     onClick={() => startEdit(vehicle)}
