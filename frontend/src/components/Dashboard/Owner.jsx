@@ -182,13 +182,13 @@ export function Owner() {
             isResolved
               ? "border-emerald-200 bg-emerald-50"
               : "border-amber-200 bg-amber-50"
-          } mt-6 mb-6 rounded-2xl p-4 shadow-sm`}
+          } shortfall-alert mt-6 mb-6 rounded-2xl p-4 shadow-sm`}
         >
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
             <div>
               <p
-                className={`text-xs font-semibold uppercase tracking-[0.12em] ${
+                className={`shortfall-alert-label text-xs font-semibold uppercase tracking-[0.12em] ${
                   isResolved
                     ? "text-emerald-700"
                     : "text-amber-700"
@@ -199,7 +199,7 @@ export function Owner() {
                   : "Shortfall alert"}
               </p>
 
-              <h3 className="mt-1 text-lg font-bold text-slate-900">
+              <h3 className="shortfall-alert-title mt-1 text-lg font-bold text-slate-900">
                 {isResolved
                   ? "Peter Omondi remittance has been resolved"
                   : "Peter Omondi has a remittance gap"}

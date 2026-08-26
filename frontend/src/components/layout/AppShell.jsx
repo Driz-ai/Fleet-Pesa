@@ -178,7 +178,7 @@ export function AppShell() {
           <Outlet />
         </section>
 
-        <BottomNav />
+        {location.pathname !== "/owner/settings" && <BottomNav />}
       </main>
     </div>
   );

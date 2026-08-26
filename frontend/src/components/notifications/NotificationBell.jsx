@@ -202,7 +202,7 @@ export default function NotificationBell({
       <button
         type="button"
         onClick={handleOpen}
-        className="relative flex size-10 items-center justify-center rounded-full bg-white text-[#0F2440] shadow-sm transition hover:bg-slate-100"
+        className="notification-trigger relative flex size-10 items-center justify-center rounded-full bg-white text-[#0F2440] shadow-sm transition hover:bg-slate-100"
         aria-label="Notifications"
         title="Notifications"
       >
