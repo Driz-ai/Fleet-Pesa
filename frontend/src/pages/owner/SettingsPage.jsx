@@ -6,8 +6,8 @@ import { updatePassword, updateProfile } from '../../lib/api.js'
 const sections = [
 	{ id: 'profile', label: 'Profile details', icon: UserRound },
 	{ id: 'notifications', label: 'Remittance alerts', icon: BellRing },
-	{ id: 'faq', label: 'FAQ', icon: CircleHelp },
 	{ id: 'password', label: 'Password', icon: KeyRound },
+	{ id: 'faq', label: 'FAQ', icon: CircleHelp },
 ]
 
 export default function SettingsPage() {
