@@ -44,7 +44,7 @@ export default function RemittanceHistoryPage() {
         <div className="history-status-field">
           <span>Status</span>
           <div className="history-status-control">
-            <button type="button" className="history-status-select" aria-haspopup="listbox" aria-expanded={statusOpen} onClick={() => setStatusOpen((open) => !open)}>
+            <button type="button" className={`history-status-select${statusOpen || filters.status !== "all" ? " active" : ""}`} aria-haspopup="listbox" aria-expanded={statusOpen} onClick={() => setStatusOpen((open) => !open)}>
               {filters.status === "paid" ? "Paid" : filters.status === "short" ? "Shortfall" : "All statuses"}
             </button>
             {statusOpen && (

@@ -354,6 +354,7 @@ a {
 .history-status-control { position: relative; }
 .history-status-select { display: flex; align-items: center; width: 100%; min-height: 42px; padding: 0 11px; color: #102844; background: #fff; border: 1px solid #d5e0e9; border-radius: 8px; font-family: "DM Sans", sans-serif; font-size: 14px; text-align: left; cursor: pointer; outline: none; }
 .history-status-select:focus { border-color: #12b75b; box-shadow: 0 0 0 3px rgba(18, 183, 91, .12); }
+.history-status-select.active { color: #087443; border-color: #12b75b; background: #eef7f1; box-shadow: 0 0 0 2px rgba(18, 183, 91, .12); }
 .history-status-menu { position: absolute; top: calc(100% + 5px); right: 0; left: 0; z-index: 10; display: grid; gap: 2px; padding: 5px; background: #fff; border: 1px solid #d5e0e9; border-radius: 8px; box-shadow: 0 10px 24px rgba(16, 40, 68, .16); }
 .history-status-option { width: 100%; padding: 9px 10px; color: #102844; background: transparent; border: 0; border-radius: 5px; font-family: "DM Sans", sans-serif; font-size: 13px; text-align: left; cursor: pointer; }
 .history-status-option:hover, .history-status-option[aria-selected="true"] { color: #087443; background: #eef7f1; }
@@ -1049,6 +1050,13 @@ a {
 :root[data-theme="dark"] .history-status-menu {
   background: #142236;
   border-color: #38536f;
+}
+
+:root[data-theme="dark"] .history-status-select.active {
+  color: #86efac;
+  background: #1d3a58;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, .2);
 }
 
 :root[data-theme="dark"] .history-status-option {
