@@ -150,8 +150,8 @@ export default function LandingPage() {
       <section className="bg-[#0F2440] px-5 py-16 text-white sm:px-8 lg:px-10 lg:py-20">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-8 sm:flex-row sm:items-center">
           <div>
-            <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#9FE1BB]">Your next route starts here</p>
-            <h2 className="mt-3 max-w-xl text-3xl font-bold tracking-tight sm:text-4xl">Put every collection where the whole fleet can see it.</h2>
+            <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#9FE1BB]">Track your fleet with confidence</p>
+            <h2 className="mt-3 max-w-xl text-3xl font-bold tracking-tight sm:text-4xl">Keep every vehicle, remittance, and shortfall in view.</h2>
           </div>
           <Link className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-[#16A34A] px-5 py-3.5 text-sm font-bold text-white transition hover:bg-[#128A3E] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white" to="/signup">Create your account <ArrowRight size={17} /></Link>
         </div>
