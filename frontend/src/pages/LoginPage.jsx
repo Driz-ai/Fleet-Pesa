@@ -97,8 +97,8 @@ export default function LoginPage() {
             role="tab"
             aria-selected={role === "owner"}
             onClick={() => setRole("owner")}
-            className={`flex-1 py-2 rounded-md text-sm font-semibold transition-colors ${
-              role === "owner" ? "bg-[#0F2440] text-white shadow-sm dark:bg-[#0F2440] dark:text-white" : "text-[#1E3A5F] dark:text-white"
+              className={`auth-role-tab flex-1 py-2 rounded-md text-sm font-semibold transition-colors ${
+              role === "owner" ? "selected" : ""
             }`}
           >
             Fleet Owner
@@ -108,8 +108,8 @@ export default function LoginPage() {
             role="tab"
             aria-selected={role === "driver"}
             onClick={() => setRole("driver")}
-            className={`flex-1 py-2 rounded-md text-sm font-semibold transition-colors ${
-              role === "driver" ? "bg-[#0F2440] text-white shadow-sm dark:bg-[#0F2440] dark:text-white" : "text-[#1E3A5F] dark:text-white"
+              className={`auth-role-tab flex-1 py-2 rounded-md text-sm font-semibold transition-colors ${
+              role === "driver" ? "selected" : ""
             }`}
           >
             Driver
@@ -181,7 +181,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-6 bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="auth-primary-button w-full mt-6 bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             {loading ? "Signing in..." : "Sign In"}

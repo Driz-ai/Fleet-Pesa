@@ -66,7 +66,7 @@ export default function SignupPage() {
             <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-green-50 text-3xl text-green-600">✓</div>
             <h1 className="text-2xl font-bold text-slate-900 mb-2">Account created successfully</h1>
             <p className="text-slate-500 mb-6">Your FleetPesa account is ready. Sign in to continue.</p>
-            <button type="button" onClick={() => navigate("/login", { state: { success: "Account created. You can now sign in." } })} className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-lg transition-colors">Continue to Sign In</button>
+            <button type="button" onClick={() => navigate("/login", { state: { success: "Account created. You can now sign in." } })} className="auth-primary-button w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-lg transition-colors">Continue to Sign In</button>
           </div>
         ) : (
           <>
@@ -78,8 +78,8 @@ export default function SignupPage() {
             </div>
 
             <div className="flex bg-slate-100 rounded-lg p-1 mb-6" role="tablist">
-              <button type="button" role="tab" aria-selected={role === "owner"} onClick={() => setRole("owner")} className={`flex-1 py-2 rounded-md text-sm font-semibold transition-colors ${role === "owner" ? "bg-[#0F2440] text-white shadow-sm dark:bg-[#0F2440] dark:text-white" : "text-[#1E3A5F] dark:text-white"}`}>Fleet Owner</button>
-              <button type="button" role="tab" aria-selected={role === "driver"} onClick={() => setRole("driver")} className={`flex-1 py-2 rounded-md text-sm font-semibold transition-colors ${role === "driver" ? "bg-[#0F2440] text-white shadow-sm dark:bg-[#0F2440] dark:text-white" : "text-[#1E3A5F] dark:text-white"}`}>Driver</button>
+              <button type="button" role="tab" aria-selected={role === "owner"} onClick={() => setRole("owner")} className={`auth-role-tab flex-1 py-2 rounded-md text-sm font-semibold transition-colors ${role === "owner" ? "selected" : ""}`}>Fleet Owner</button>
+              <button type="button" role="tab" aria-selected={role === "driver"} onClick={() => setRole("driver")} className={`auth-role-tab flex-1 py-2 rounded-md text-sm font-semibold transition-colors ${role === "driver" ? "selected" : ""}`}>Driver</button>
             </div>
 
             <form onSubmit={handleSubmit} noValidate>
@@ -91,7 +91,7 @@ export default function SignupPage() {
               <PasswordField id="confirm-password" label="Confirm Password" value={confirmPassword} onChange={setConfirmPassword} visible={showConfirmPassword} onToggle={() => setShowConfirmPassword((visible) => !visible)} />
 
               {error && <p className="text-sm text-red-600 mt-2" role="alert">{error}</p>}
-              <button type="submit" disabled={loading} className="w-full mt-6 bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">{loading && <Loader2 className="w-4 h-4 animate-spin" />}{loading ? "Creating account..." : "Create Account"}</button>
+              <button type="submit" disabled={loading} className="auth-primary-button w-full mt-6 bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">{loading && <Loader2 className="w-4 h-4 animate-spin" />}{loading ? "Creating account..." : "Create Account"}</button>
               <div
                 className="trust-line mt-4 flex items-center justify-center gap-2 text-center font-medium text-slate-900"
                 style={{ fontFamily: "Inter, sans-serif" }}

@@ -178,6 +178,41 @@ body {
   font-size: 0.9375rem;
 }
 
+.auth-role-tab {
+  color: #1e3a5f !important;
+  background: transparent;
+}
+
+.auth-role-tab.selected {
+  color: #fff !important;
+  background: #0f2440;
+  box-shadow: 0 1px 2px rgba(15, 36, 64, .18);
+}
+
+.auth-primary-button {
+  color: #fff;
+  background: #0f2440;
+}
+
+:root[data-theme="dark"] .auth-role-tab {
+  color: #fff !important;
+}
+
+:root[data-theme="dark"] .auth-role-tab.selected {
+  color: #0f2440 !important;
+  background: #fff;
+}
+
+:root[data-theme="dark"] .auth-primary-button {
+  color: #0f2440;
+  background: #fff;
+}
+
+:root[data-theme="dark"] .auth-primary-button:hover {
+  color: #0f2440;
+  background: #f1f5f9;
+}
+
 .login-card .trust-line {
   font-size: 0.875rem;
   line-height: 1.25rem;
