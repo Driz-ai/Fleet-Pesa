@@ -393,10 +393,6 @@
       @apply flex-wrap justify-end gap-2;
     }
 
-    .driver-signout {
-      @apply hidden;
-    }
-
     .driver-brand-logo {
       @apply size-10;
     }
