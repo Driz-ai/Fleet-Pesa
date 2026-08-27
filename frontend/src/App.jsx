@@ -271,6 +271,15 @@ export default function App() {
                   }
                 />
 
+                <Route
+                  path="/driver/remittance/settings"
+                  element={
+                    <ProtectedRoute>
+                      <DriverSettingsPage />
+                    </ProtectedRoute>
+                  }
+                />
+
                 {/* VEHICLE REMITTANCE HISTORY */}
 
                 <Route
