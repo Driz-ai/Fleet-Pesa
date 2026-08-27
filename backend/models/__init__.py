@@ -1,5 +1,12 @@
+from models.fleet_owner import FleetOwner
 from models.user import User
-from models.vehicle import Vehicle
-from models.remittance import Remittance
+from models.driver_assignment import DriverAssignment
+from models.fare_payment import FarePayment
 
-__all__ = ["User", "Vehicle", "Remittance"]
+__all__ = [
+    "FleetOwner",
+    "User",
+   "DriverAssignment"
+
+]
+

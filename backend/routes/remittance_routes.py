@@ -1,4 +1,4 @@
-from datetime import datetime, time, timezone
+from datetime import datetime, time
 
 from flask import Blueprint, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
@@ -9,6 +9,7 @@ from extensions import db
 from models.remittance import Remittance
 from models.vehicle import Vehicle
 from models.user import User
+from models.driver_assignment import DriverAssignment
 from schemas.remittance_schema import (
     remittance_create_schema,
     remittance_update_schema,
@@ -26,15 +27,19 @@ def _current_user():
 
 
 def _can_access_vehicle(user, vehicle):
-    """Admins may access vehicles under their fleet_owner account.
-    Drivers may access vehicles they are currently assigned to.
-    Adjust this once Vincent/Bright's final User/Vehicle fields are merged."""
+    """NOTE: checks vehicle.owner_id/driver_assignments as they currently
+    exist on dev. Revisit once Bright's Vehicle rewrite (fleet_owner_id)
+    lands — this should then check fleet_owner_id instead of owner_id."""
     if user is None or vehicle is None:
         return False
-    if getattr(user, "role", None) == "admin":
-        return getattr(vehicle, "fleet_owner_id", None) == getattr(user, "fleet_owner_id", None)
-    if getattr(user, "role", None) == "driver":
-        return vehicle.current_driver_id() == user.id
+    role = getattr(user, "role", None)
+    if role in ("admin", "owner"):
+        return vehicle.owner_id == user.id
+    if role == "driver":
+        assignment = DriverAssignment.query.filter_by(
+            vehicle_id=vehicle.id, driver_id=user.id, unassigned_at=None
+        ).first()
+        return assignment is not None
     return False
 
 
@@ -58,10 +63,10 @@ class RemittanceListResource(Resource):
 
         query = Remittance.query.join(Vehicle, Remittance.vehicle_id == Vehicle.id)
 
-        if getattr(user, "role", None) == "admin":
-            query = query.filter(Vehicle.fleet_owner_id == user.fleet_owner_id)
-        elif getattr(user, "role", None) == "driver":
-            from models.driver_assignment import DriverAssignment
+        role = getattr(user, "role", None)
+        if role in ("admin", "owner"):
+            query = query.filter(Vehicle.owner_id == user.id)
+        elif role == "driver":
             assigned_vehicle_ids = [
                 row.vehicle_id
                 for row in DriverAssignment.query.filter_by(driver_id=user.id, unassigned_at=None).all()
@@ -91,9 +96,7 @@ class RemittanceListResource(Resource):
 
     def post(self):
         """POST /api/remittances — create. expected_amount and status are
-        never taken from the client: expected_amount is copied from the
-        vehicle's daily_expected_amount, and status is computed from
-        actual vs expected."""
+        never taken from the client."""
         try:
             data = remittance_create_schema.load(request.get_json(silent=True) or {})
         except ValidationError as error:
@@ -134,7 +137,6 @@ class RemittanceResource(Resource):
     method_decorators = [jwt_required()]
 
     def get(self, remittance_id):
-        """GET /api/remittances/<id> — single remittance."""
         user = _current_user()
         remittance = db.session.get(Remittance, remittance_id)
         if remittance is None:
@@ -147,8 +149,6 @@ class RemittanceResource(Resource):
         return {"remittance": remittance_schema.dump(remittance)}, 200
 
     def patch(self, remittance_id):
-        """PATCH /api/remittances/<id> — partial update. Recomputes status
-        server-side if actual_amount changes."""
         try:
             data = remittance_update_schema.load(request.get_json(silent=True) or {}, partial=True)
         except ValidationError as error:
@@ -176,7 +176,6 @@ class RemittanceResource(Resource):
         return {"remittance": remittance_schema.dump(remittance)}, 200
 
     def put(self, remittance_id):
-        """PUT /api/remittances/<id> — full replace of the mutable fields."""
         try:
             data = remittance_update_schema.load(request.get_json(silent=True) or {})
         except ValidationError as error:
@@ -202,7 +201,6 @@ class RemittanceResource(Resource):
         return {"remittance": remittance_schema.dump(remittance)}, 200
 
     def delete(self, remittance_id):
-        """DELETE /api/remittances/<id>."""
         user = _current_user()
         remittance = db.session.get(Remittance, remittance_id)
         if remittance is None:
@@ -221,8 +219,6 @@ class VehicleRemittanceHistoryResource(Resource):
     method_decorators = [jwt_required()]
 
     def get(self, vehicle_id):
-        """GET /api/vehicles/<id>/remittances — existing endpoint, converted
-        to flask-restful for consistency with the rest of the blueprint."""
         user = _current_user()
         vehicle = db.session.get(Vehicle, vehicle_id)
         if vehicle is None:
@@ -252,6 +248,40 @@ class VehicleRemittanceHistoryResource(Resource):
         }, 200
 
 
+class RemittancePromptResource(Resource):
+    """Ported from dev: POST /api/remittances/<id>/prompt — sends a
+    payment-prompt for the outstanding shortfall on a remittance."""
+    method_decorators = [jwt_required()]
+
+    def post(self, remittance_id):
+        user_id = int(get_jwt_identity())
+
+        remittance = db.session.get(Remittance, remittance_id)
+        if remittance is None:
+            return {"message": "Remittance not found"}, 404
+
+        vehicle = db.session.get(Vehicle, remittance.vehicle_id)
+        if vehicle is None:
+            return {"message": "Vehicle not found"}, 404
+
+        if vehicle.owner_id != user_id:
+            return {"message": "Only the vehicle owner can send a payment prompt"}, 403
+
+        outstanding = remittance.expected_amount - remittance.actual_amount
+        if outstanding <= 0:
+            return {"message": "This remittance has no outstanding amount"}, 400
+
+        remittance.flagged_for_followup = True
+        db.session.commit()
+
+        return {
+            "message": "Payment prompt sent successfully",
+            "remittance": remittance.to_dict(),
+            "outstanding_amount": float(outstanding),
+        }, 200
+
+
 api.add_resource(RemittanceListResource, "/remittances")
 api.add_resource(RemittanceResource, "/remittances/<int:remittance_id>")
 api.add_resource(VehicleRemittanceHistoryResource, "/vehicles/<int:vehicle_id>/remittances")
+api.add_resource(RemittancePromptResource, "/remittances/<int:remittance_id>/prompt")

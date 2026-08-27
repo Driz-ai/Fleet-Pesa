@@ -12,3 +12,4 @@ class Vehicle(db.Model):
 	is_active = db.Column(db.Boolean, nullable=False, default=True)
 
 	remittances = db.relationship("Remittance", back_populates="vehicle", lazy=True)
+	driver_assignments = db.relationship("DriverAssignment",back_populates="vehicle",)

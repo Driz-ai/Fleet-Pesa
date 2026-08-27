@@ -73,7 +73,7 @@ export default function LoginPage() {
 
   return (
     <div className="login-page min-h-screen w-full flex flex-col items-center justify-center px-4 py-12">
-      <div className="mb-8 rounded-[22px] bg-white p-1.5 shadow-[0_6px_16px_rgba(16,40,68,0.08)] ring-1 ring-slate-200/60">
+      <div className={`login-logo-frame mb-8 rounded-[22px] p-1.5 shadow-[0_6px_16px_rgba(16,40,68,0.08)] ring-1 ring-slate-200/60 ${isDark ? "login-logo-frame-dark" : "login-logo-frame-light"}`}>
         <img
           src={isDark ? "/Fleet-pesa%20Logo%20Light.jpg" : "/Fleet-pesa%20Logo%20Dark.jpg"}
           alt="FleetPesa"

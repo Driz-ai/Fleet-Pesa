@@ -22,8 +22,6 @@ class RemittanceUpdateSchema(Schema):
     mpesa_reference = fields.Str(required=False, allow_none=True, validate=validate.Length(max=50))
     mpesa_transaction_code = fields.Str(required=False, allow_none=True, validate=validate.Length(max=20))
     flagged_for_followup = fields.Bool(required=False)
-    # status is not accepted here either — if actual_amount changes, status is recomputed
-    # server-side against the stored expected_amount.
 
 
 remittance_update_schema = RemittanceUpdateSchema()
@@ -43,7 +41,7 @@ remittance_filter_schema = RemittanceFilterSchema()
 class RemittanceSchema(Schema):
     id = fields.Int(dump_only=True)
     vehicle_id = fields.Int()
-    driver_id = fields.Int(dump_only=True)  # derived, read-only
+    driver_id = fields.Int(dump_only=True)
     expected_amount = fields.Decimal(as_string=True)
     actual_amount = fields.Decimal(as_string=True)
     status = fields.Str()
