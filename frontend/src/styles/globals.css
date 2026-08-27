@@ -205,9 +205,9 @@ a {
 }
 
 .settings-page {
-  max-width: 1080px;
+  width: min(100%, 1080px);
   margin: 0 auto;
-  padding: 8px 0 40px;
+  padding: 8px 24px 40px;
 }
 
 .settings-heading h2 { margin: 0; color: var(--navy); font-size: 28px; }
@@ -221,6 +221,9 @@ a {
 .settings-panel { padding: 24px; background: var(--background); border: 1px solid #dfe7ee; border-radius: 12px; }
 .settings-panel h3 { margin: 0; color: var(--navy); font-size: 16px; }
 .settings-panel p { margin: 5px 0 20px; color: #8193aa; font-size: 13px; }
+.settings-alerts { margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5edf3; }
+.settings-alerts h3 { font-size: 15px; }
+.settings-alerts p { margin-bottom: 14px; }
 .settings-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .settings-form-grid label { display: grid; gap: 7px; color: #61758d; font-size: 12px; font-weight: 700; }
 .settings-form-grid input { min-height: 42px; padding: 0 12px; color: var(--foreground); background: transparent; border: 1px solid #d5e0e9; border-radius: 8px; outline: none; }
@@ -265,7 +268,7 @@ a {
 .history-status.paid { color: #087443; background: #e9f9ef; }
 .history-status.short { color: #b42318; background: #fff0ef; }
 .history-payment { color: #52677e; background: #eef3f7; }
-@media (max-width: 720px) { .settings-page { padding: 0 0 28px; } .settings-layout { grid-template-columns: 1fr; gap: 16px; } .settings-tabs { flex-direction: row; overflow-x: auto; } .settings-tab { white-space: nowrap; } .settings-form-grid { grid-template-columns: 1fr; } }
+@media (max-width: 720px) { .settings-page { padding: 0 14px 28px; } .settings-heading h2 { font-size: 24px; } .settings-heading p { max-width: 32ch; font-size: 12px; line-height: 1.45; } .settings-layout { grid-template-columns: 1fr; gap: 12px; margin-top: 20px; } .settings-tabs { flex-direction: row; margin: 0 -14px; padding: 0 14px 2px; overflow-x: auto; } .settings-tab { flex: 0 0 auto; padding: 9px 10px; font-size: 12px; } .settings-panel { padding: 18px 16px; } .settings-form-grid { grid-template-columns: 1fr; gap: 12px; } .settings-form-grid input, .profile-picture-field input { width: 100%; min-width: 0; } .settings-preferences { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; } .settings-preferences label { justify-content: center; padding: 10px 6px; font-size: 12px; text-align: center; } }
 
 :root[data-theme="dark"] .main-content .bg-white,
 :root[data-theme="dark"] .driver-page .bg-white {
