@@ -12,7 +12,8 @@ from sqlalchemy.exc import IntegrityError
 
 from extensions import db
 from models.user import User, UserRole
-from schemas.user_schema import UserSchema
+from schemas.user_schema import UserSchema, user_schema
+from utils.phone import normalize_kenyan_phone
 # from utils.phone import normalize_kenyan_phone
 
 
@@ -93,7 +94,7 @@ def register():
             username=username,
             name=name,
             phone=phone,
-            role=role,
+            role=role.value,
             fleet_owner_id=data.get("fleet_owner_id"),
         )
 
@@ -175,7 +176,7 @@ def login():
     # Create tokens
     
 
-    access_token = create_access_token( identity=str(user.id), additional_claims={ "role": user.role.value,},)
+    access_token = create_access_token( identity=str(user.id), additional_claims={ "role": user.role},)
 
     refresh_token = create_refresh_token(identity=str(user.id),)
 
@@ -233,6 +234,6 @@ def refresh():
     if not user:
         return jsonify({"error": "User account not found."}), 404
 
-    access_token = create_access_token( identity=str(user.id), additional_claims={ "role": user.role.value,},)
+    access_token = create_access_token( identity=str(user.id), additional_claims={ "role": user.role},)
 
     return jsonify({ "access_token": access_token,}), 200
