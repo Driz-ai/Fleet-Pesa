@@ -1,239 +1,305 @@
-from flask import Blueprint, request, jsonify
-
+from flask import request
+from flask_restful import Resource
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
-    jwt_required,
     get_jwt_identity,
+    jwt_required,
 )
 
-from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
+from marshmallow import ValidationError
 
 from extensions import db
-from models.user import User, UserRole
-from schemas.user_schema import UserSchema, user_schema
-from utils.phone import normalize_kenyan_phone
-# from utils.phone import normalize_kenyan_phone
-
-
-auth_bp = Blueprint(
-    "auth",
-    __name__,
-    url_prefix="/api/auth",
+from models.user import (
+    User,
+    UserRole,
+    NotificationPreference,
 )
+from schemas.user_schema import user_schema
 
 
-# ============================================================
-# REGISTER
-# ============================================================
+class Signup(Resource):
+    """
+    POST /auth/signup
 
-@auth_bp.route("/register", methods=["POST"])
-def register():
-    """Register a new user."""
+    Creates a new driver account.
+    Public signup cannot create an owner account.
+    """
 
-    data = request.get_json(silent=True) or {}
+    def post(self):
+        json_data = request.get_json(silent=True)
 
-    
-    # Validate request data with Marshmallow
-    
+        if not json_data:
+            return {
+                "error": "Request body is required."
+            }, 400
 
-    try:
-        data = user_schema.load(data)
+        try:
+            data = user_schema.load(json_data)
 
-    except ValidationError as error:
-        return jsonify({"error": error.messages}), 400
+        except ValidationError as error:
+            return {
+                "errors": error.messages
+            }, 400
 
-    username = data["username"]
-    name = data["name"]
-    password = data["password"]
+        username = data["username"]
+        phone = data["phone"]
 
-    # Normalize phone before checking for duplicates.
-    try:
-        phone = normalize_kenyan_phone(data["phone"])
-
-    except ValueError as error:
-        return jsonify({"error": str(error)}), 400
-
-    
-    # Role
-    
-
-    role_value = data.get("role", "driver")
-
-    try:
-        role = UserRole(role_value)
-
-    except ValueError:
-        return jsonify({"error": "Invalid user role."}), 400
-
-    
-    # Check username
-    
-
-    existing_username = User.query.filter_by(username=username).first()
-
-    if existing_username:
-        return jsonify({"error": "That username already exists."}), 409
-
-    
-    # Check phone
-    
-
-    existing_phone = User.query.filter_by( phone=phone).first()
-
-    if existing_phone:
-        return jsonify({"error": "An account with that phone number already exists."}), 409
-
-   
-    # Create user
-    
-
-    try:
-        new_user = User(
-            username=username,
-            name=name,
-            phone=phone,
-            role=role.value,
-            fleet_owner_id=data.get("fleet_owner_id"),
+        # Check username
+        existing_username = (
+            User.query
+            .filter_by(username=username)
+            .first()
         )
 
-        new_user.set_password(password)
+        if existing_username:
+            return {
+                "error": "Username already exists."
+            }, 409
 
-        db.session.add(new_user)
-        db.session.commit()
+        # Check phone
+        existing_phone = (
+            User.query
+            .filter_by(phone=phone)
+            .first()
+        )
 
-        return jsonify({
-            "message": "Account created successfully.", "user": new_user.to_dict(),}), 201
+        if existing_phone:
+            return {
+                "error": "Phone number already exists."
+            }, 409
 
-    except ValueError as error:
-        db.session.rollback()
+        # Public signup always creates a driver.
+        #
+        # Do NOT allow:
+        #
+        # {
+        #     "role": "owner"
+        # }
+        #
+        # from the public signup endpoint.
+        user = User(
+            username=username,
+            name=data["name"],
+            phone=phone,
+            role=UserRole.DRIVER.value,
+            notification_preference=data.get(
+                "notification_preference",
+                NotificationPreference.NONE.value,
+            ),
+            fleet_owner_id=data.get(
+                "fleet_owner_id"
+            ),
+        )
 
-        return jsonify({"error": str(error)}), 400
+        # Hash password
+        try:
+            user.set_password(
+                data["password"]
+            )
 
-    except IntegrityError as error:
-        db.session.rollback()
+        except ValueError as error:
+            return {
+                "error": str(error)
+            }, 400
 
-        print("DATABASE INTEGRITY ERROR:", error)
+        try:
+            db.session.add(user)
+            db.session.commit()
 
-        return jsonify({"error": "Username or phone number already exists."}), 409
+        except IntegrityError:
+            db.session.rollback()
 
-    except Exception as error:
-        db.session.rollback()
+            return {
+                "error": (
+                    "Username or phone number "
+                    "already exists."
+                )
+            }, 409
 
-        print("REGISTRATION ERROR:", error)
+        except Exception:
+            db.session.rollback()
 
-        return jsonify({"error": "Unable to create account."}), 500
+            return {
+                "error": "Unable to create account."
+            }, 500
 
-
-# ============================================================
-# LOGIN
-# ============================================================
-
-@auth_bp.route("/login", methods=["POST"])
-def login():
-    """Authenticate a user and return JWT tokens."""
-
-    data = request.get_json(silent=True) or {}
-
-    phone = data.get("phone")
-    password = data.get("password")
-
-    # --------------------------------------------------------
-    # Basic request validation
-    # --------------------------------------------------------
-
-    if not isinstance(phone, str) or not phone.strip():
-        return jsonify({"error": "Phone number is required."}), 400
-
-    if not isinstance(password, str) or not password:
-        return jsonify({"error": "Password is required."}), 400
-
-    # --------------------------------------------------------
-    # Normalize phone
-    # --------------------------------------------------------
-
-    try:
-        phone = normalize_kenyan_phone(phone)
-
-    except ValueError:
-        return jsonify({"error": "Invalid phone number or password."}), 401
-
-    # --------------------------------------------------------
-    # Find user
-    # --------------------------------------------------------
-
-    user = User.query.filter_by(phone=phone).first()
-
-    
-    # Verify password
-    
-
-    if not user or not user.check_password(password):
-        return jsonify({ "error": "Invalid phone number or password."}), 401
-
-    
-    # Create tokens
-    
-
-    access_token = create_access_token( identity=str(user.id), additional_claims={ "role": user.role},)
-
-    refresh_token = create_refresh_token(identity=str(user.id),)
-
-    return jsonify({
-        "message": "Login successful.",
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "user": user.to_dict(),
-    }), 200
+        return {
+            "message": "Account created successfully.",
+            "user": user_schema.dump(user),
+        }, 201
 
 
+class Login(Resource):
+    """
+    POST /auth/login
 
-# CURRENT USER
+    Logs a user in and returns:
+        access_token
+        refresh_token
+    """
+
+    def post(self):
+        json_data = request.get_json(silent=True)
+
+        if not json_data:
+            return {
+                "error": "Request body is required."
+            }, 400
+
+        username = json_data.get("username")
+        password = json_data.get("password")
+
+        if username is None:
+            return {
+                "error": "Username is required."
+            }, 400
+
+        if password is None:
+            return {
+                "error": "Password is required."
+            }, 400
+
+        username = str(username).strip().lower()
+
+        if not username:
+            return {
+                "error": "Username is required."
+            }, 400
+
+        user = (
+            User.query
+            .filter_by(username=username)
+            .first()
+        )
+
+        # Do not reveal whether the username exists.
+        if user is None:
+            return {
+                "error": "Invalid username or password."
+            }, 401
+
+        # Prevent deactivated users from logging in.
+        if not user.is_active:
+            return {
+                "error": "Account is inactive."
+            }, 403
+
+        # Check password
+        if not user.check_password(password):
+            return {
+                "error": "Invalid username or password."
+            }, 401
+
+        # Access token
+        access_token = create_access_token(
+            identity=str(user.id),
+            additional_claims={
+                "role": user.role,
+                "fleet_owner_id": user.fleet_owner_id,
+            },
+        )
+
+        # Refresh token
+        refresh_token = create_refresh_token(
+            identity=str(user.id),
+        )
+
+        return {
+            "message": "Login successful.",
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "user": user_schema.dump(user),
+        }, 200
 
 
-@auth_bp.route("/me", methods=["GET"])
-@jwt_required()
-def get_current_user():
-    """Return the currently authenticated user."""
+class Refresh(Resource):
+    """
+    POST /auth/refresh
 
-    user_id = get_jwt_identity()
+    Uses a valid refresh token to generate
+    a new access token.
+    """
 
-    try:
-        user_id = int(user_id)
+    @jwt_required(refresh=True)
+    def post(self):
 
-    except (TypeError, ValueError):
-        return jsonify({"error": "Invalid authentication token."}), 401
+        user_id = get_jwt_identity()
 
-    user = db.session.get(User, user_id)
+        try:
+            user_id = int(user_id)
 
-    if not user:
-        return jsonify({"error": "User account not found."}), 404
+        except (TypeError, ValueError):
+            return {
+                "error": "Invalid user identity."
+            }, 401
 
-    return jsonify({"user": user.to_dict(),}), 200
+        user = db.session.get(
+            User,
+            user_id,
+        )
+
+        if user is None:
+            return {
+                "error": "User not found."
+            }, 404
+
+        # Do not issue new access tokens to
+        # deactivated users.
+        if not user.is_active:
+            return {
+                "error": "Account is inactive."
+            }, 403
+
+        access_token = create_access_token(
+            identity=str(user.id),
+            additional_claims={
+                "role": user.role,
+                "fleet_owner_id": user.fleet_owner_id,
+            },
+        )
+
+        return {
+            "access_token": access_token,
+        }, 200
 
 
-# REFRESH ACCESS TOKEN
+class Me(Resource):
+    """
+    GET /auth/me
 
+    Returns the currently authenticated user.
+    """
 
-@auth_bp.route("/refresh", methods=["POST"])
-@jwt_required(refresh=True)
-def refresh():
-    """Generate a new access token from a refresh token."""
+    @jwt_required()
+    def get(self):
 
-    user_id = get_jwt_identity()
+        user_id = get_jwt_identity()
 
-    try:
-        user_id = int(user_id)
+        try:
+            user_id = int(user_id)
 
-    except (TypeError, ValueError):
-        return jsonify({ "error": "Invalid authentication token."}), 401
+        except (TypeError, ValueError):
+            return {
+                "error": "Invalid user identity."
+            }, 401
 
-    user = db.session.get(User, user_id)
+        user = db.session.get(
+            User,
+            user_id,
+        )
 
-    if not user:
-        return jsonify({"error": "User account not found."}), 404
+        if user is None:
+            return {
+                "error": "User not found."
+            }, 404
 
-    access_token = create_access_token( identity=str(user.id), additional_claims={ "role": user.role},)
+        if not user.is_active:
+            return {
+                "error": "Account is inactive."
+            }, 403
 
-    return jsonify({ "access_token": access_token,}), 200
+        return {
+            "user": user_schema.dump(user)
+        }, 200
