@@ -205,10 +205,13 @@ a {
 }
 
 .settings-page {
-  max-width: 1080px;
+  width: min(100%, 1080px);
   margin: 0 auto;
-  padding: 8px 0 40px;
+  padding: 8px 24px 40px;
 }
+.settings-back { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 22px; padding: 0; color: var(--navy); background: transparent; border: 0; font-size: 13px; font-weight: 700; cursor: pointer; }
+.settings-back:hover { color: var(--primary); }
+:root[data-theme="dark"] .settings-back { color: #fff; }
 
 .settings-heading h2 { margin: 0; color: var(--navy); font-size: 28px; }
 .settings-heading p { margin: 6px 0 0; color: #8193aa; }
@@ -221,6 +224,9 @@ a {
 .settings-panel { padding: 24px; background: var(--background); border: 1px solid #dfe7ee; border-radius: 12px; }
 .settings-panel h3 { margin: 0; color: var(--navy); font-size: 16px; }
 .settings-panel p { margin: 5px 0 20px; color: #8193aa; font-size: 13px; }
+.settings-alerts { margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5edf3; }
+.settings-alerts h3 { font-size: 15px; }
+.settings-alerts p { margin-bottom: 14px; }
 .settings-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .settings-form-grid label { display: grid; gap: 7px; color: #61758d; font-size: 12px; font-weight: 700; }
 .settings-form-grid input { min-height: 42px; padding: 0 12px; color: var(--foreground); background: transparent; border: 1px solid #d5e0e9; border-radius: 8px; outline: none; }
@@ -238,6 +244,39 @@ a {
 .topbar-popover p { margin: 6px 0 0; color: #61758d; font-size: 12px; }
 .faq-popover { right: 98px; }
 .faq-popover button { float: right; border: 0; color: #61758d; background: transparent; cursor: pointer; }
+.faq-popover a { display: inline-block; margin-top: 3px; color: var(--primary); font-size: 12px; font-weight: 700; }
+:root[data-theme="dark"] .faq-popover { color: #edf4fb; border-color: #38536f; box-shadow: 0 12px 28px rgba(0, 0, 0, .35); }
+:root[data-theme="dark"] .faq-popover p, :root[data-theme="dark"] .faq-popover button { color: #b6c7d9; }
+:root[data-theme="dark"] .faq-popover a { color: #4ade80; }
+:root[data-theme="dark"] .settings-tab { color: #081321; background: #dbe5ef; }
+:root[data-theme="dark"] .settings-tab.active { color: #000; background: #fff; }
+:root[data-theme="dark"] .settings-tab:hover { color: #000; background: #eef4f8; }
+:root[data-theme="dark"] .settings-preferences label { color: #fff; border-color: #38536f; }
+.settings-faq-list { display: grid; gap: 10px; }
+.settings-faq-list details { padding: 13px 14px; border: 1px solid #d5e0e9; border-radius: 8px; }
+.settings-faq-list summary { color: var(--navy); font-size: 13px; font-weight: 700; cursor: pointer; }
+.settings-faq-list details p { margin: 9px 0 0; font-size: 13px; line-height: 1.5; }
+:root[data-theme="dark"] .settings-faq-list details { border-color: #38536f; }
+:root[data-theme="dark"] .settings-faq-list summary { color: #edf4fb; }
+.landing-faq-trigger { color: #000 !important; background: transparent; border: 0; font-weight: 700; }
+[data-theme="dark"] .landing-faq-trigger { color: #fff !important; }
+[data-theme="dark"] .landing-page { background: #0d1827 !important; color: #edf4fb !important; }
+[data-theme="dark"] .landing-page header { color: #edf4fb; }
+[data-theme="dark"] .landing-page header span,
+[data-theme="dark"] .landing-page header a:not([class*="bg-"]) { color: #fff !important; }
+[data-theme="dark"] .landing-page section.border-y,
+[data-theme="dark"] .landing-page section.bg-white { background: #142236 !important; border-color: #2d435b !important; }
+[data-theme="dark"] .landing-page h1,
+[data-theme="dark"] .landing-page h2,
+[data-theme="dark"] .landing-page p.text-\[\#475569\],
+[data-theme="dark"] .landing-page li.text-\[\#1E3A5F\] { color: #edf4fb !important; }
+[data-theme="dark"] .landing-page .border-\[\#CBD5E1\] { border-color: #38536f !important; }
+[data-theme="dark"] .landing-page .bg-white { background: #142236 !important; }
+[data-theme="dark"] .landing-page .text-\[\#0F2440\],
+[data-theme="dark"] .landing-page .text-\[\#1E3A5F\] { color: #edf4fb !important; }
+[data-theme="dark"] .landing-page .bg-\[\#E3F5EA\] { background: #1d3a58 !important; }
+[data-theme="dark"] .landing-page .text-\[\#F1F5F9\]\/50 { color: rgba(237, 244, 251, .7) !important; }
+[data-theme="dark"] .landing-page footer { color: rgba(237, 244, 251, .75) !important; border-color: rgba(237, 244, 251, .2) !important; }
 .settings-success-card { display: grid; gap: 3px; margin-top: 18px; padding: 14px 16px; color: #087443; background: #ecfdf3; border: 1px solid #a7e8c1; border-radius: 10px; }
 .settings-success-card span { color: #3d8060; font-size: 13px; }
 .settings-email-field { display: grid; gap: 7px; max-width: 360px; margin-top: 14px; color: #61758d; font-size: 12px; font-weight: 700; }
@@ -265,7 +304,7 @@ a {
 .history-status.paid { color: #087443; background: #e9f9ef; }
 .history-status.short { color: #b42318; background: #fff0ef; }
 .history-payment { color: #52677e; background: #eef3f7; }
-@media (max-width: 720px) { .settings-page { padding: 0 0 28px; } .settings-layout { grid-template-columns: 1fr; gap: 16px; } .settings-tabs { flex-direction: row; overflow-x: auto; } .settings-tab { white-space: nowrap; } .settings-form-grid { grid-template-columns: 1fr; } }
+@media (max-width: 720px) { .settings-page { padding: 0 14px 28px; } .settings-heading h2 { font-size: 24px; } .settings-heading p { max-width: 32ch; font-size: 12px; line-height: 1.45; } .settings-layout { grid-template-columns: 1fr; gap: 12px; margin-top: 20px; } .settings-tabs { flex-direction: row; margin: 0 -14px; padding: 0 14px 2px; overflow-x: auto; } .settings-tab { flex: 0 0 auto; padding: 9px 10px; font-size: 12px; } .settings-panel { padding: 18px 16px; } .settings-form-grid { grid-template-columns: 1fr; gap: 12px; } .settings-form-grid input, .profile-picture-field input { width: 100%; min-width: 0; } .settings-preferences { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; } .settings-preferences label { justify-content: center; padding: 10px 6px; font-size: 12px; text-align: center; } }
 
 :root[data-theme="dark"] .main-content .bg-white,
 :root[data-theme="dark"] .driver-page .bg-white {
@@ -321,7 +360,6 @@ a {
 
 :root[data-theme="dark"] .settings-heading p,
 :root[data-theme="dark"] .settings-panel p,
-:root[data-theme="dark"] .settings-tab,
 :root[data-theme="dark"] .settings-form-grid label,
 :root[data-theme="dark"] .profile-picture-field {
   color: #b6c7d9;
@@ -350,6 +388,7 @@ a {
   display: flex;
   align-items: center;
   gap: 14px;
+  margin-bottom: 10px;
   padding: 0 23px;
   color: #fff;
   font-size: 18px;
@@ -900,6 +939,26 @@ a {
 :root[data-theme="dark"] .remittances-table td,
 :root[data-theme="dark"] .history-table td {
   border-color: #2d435b;
+}
+
+:root[data-theme="dark"] .text-slate-300,
+:root[data-theme="dark"] .text-slate-400,
+:root[data-theme="dark"] .text-slate-500,
+:root[data-theme="dark"] .text-slate-600,
+:root[data-theme="dark"] .sidebar,
+:root[data-theme="dark"] .topbar p,
+:root[data-theme="dark"] .card-heading p,
+:root[data-theme="dark"] .chart-legend,
+:root[data-theme="dark"] .table-heading p,
+:root[data-theme="dark"] .driver-cell small,
+:root[data-theme="dark"] .expected-label,
+:root[data-theme="dark"] .history-date,
+:root[data-theme="dark"] .settings-heading p,
+:root[data-theme="dark"] .settings-panel p,
+:root[data-theme="dark"] .settings-form-grid label,
+:root[data-theme="dark"] .profile-picture-field,
+:root[data-theme="dark"] .settings-email-field {
+  color: #fff !important;
 }
 
 :root[data-theme="dark"] .filter-button,
