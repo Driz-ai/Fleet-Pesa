@@ -113,7 +113,7 @@ export default function LandingPage() {
         <div className="max-w-xl">
           <p className="flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#16A34A]"><NotebookPen size={15} /> The notebook, gone digital</p>
           <h1 className="mt-5 text-[clamp(2.7rem,9vw,5.8rem)] font-bold leading-[0.95] tracking-[-0.06em] text-[#0F2440]">Replace the paper. Catch every shortfall.</h1>
-          <p className="mt-6 max-w-lg text-base leading-7 text-[#475569] sm:text-lg">FleetPesa records daily matatu collections as they happen, so owners see what came in and drivers can remit without the cash hand-off guesswork.</p>
+          <p className="mt-6 max-w-lg text-base leading-7 text-[#475569] sm:text-lg">FleetPesa records daily vehicle remittance collections as they happen, so owners see what came in and drivers can remit without the cash hand-off guesswork.</p>
           <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
             <Link className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#16A34A] px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#16A34A]/20 transition hover:bg-[#128A3E] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0F2440] sm:w-auto" to="/signup">Get started <ArrowRight size={17} /></Link>
             <Link className="text-sm font-bold text-[#1E3A5F] underline decoration-[#16A34A] decoration-2 underline-offset-4 hover:text-[#0F2440] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#16A34A]" to="/login">Already have an account? Sign in</Link>
