@@ -337,7 +337,6 @@ a {
 
 :root[data-theme="dark"] .settings-heading p,
 :root[data-theme="dark"] .settings-panel p,
-:root[data-theme="dark"] .settings-tab,
 :root[data-theme="dark"] .settings-form-grid label,
 :root[data-theme="dark"] .profile-picture-field {
   color: #b6c7d9;
