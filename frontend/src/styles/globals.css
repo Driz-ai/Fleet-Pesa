@@ -1,3 +1,64 @@
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (max-width: 700px) {
+  html { font-size: 15px; }
+
+  .topbar {
+    min-height: 72px;
+    height: auto;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+
+  .topbar h1 { font-size: 17px; }
+  .topbar p { font-size: 12px; }
+  .topbar-actions { gap: 8px; }
+  .dashboard-content { min-width: 0; padding: 16px; }
+  .main-content { min-width: 0; overflow: hidden; }
+  .settings-page { width: 100%; }
+  .history-filter-bar { align-items: stretch; }
+  .history-filter-bar label,
+  .history-date-field,
+  .history-vehicle-picker { min-width: 0; width: 100%; max-width: none; }
+  .history-table-wrap,
+  .remittances-table-wrap { max-width: 100%; overflow-x: auto; }
+}
+
+@media (max-width: 420px) {
+  html { font-size: 14px; }
+
+  .topbar > div:first-child { min-width: 0; }
+  .topbar h1,
+  .topbar p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar-actions { gap: 5px; }
+  .icon-button { width: 32px; height: 32px; }
+  .topbar-avatar { width: 32px; height: 32px; }
+  .dashboard-content { padding: 12px; }
+
+  .trust-line {
+    flex-wrap: wrap;
+    column-gap: 7px;
+    row-gap: 6px;
+    font-size: 0.75rem;
+    line-height: 1.1rem;
+  }
+
+  .trust-line > span:last-child {
+    flex-basis: 100%;
+    justify-content: center;
+  }
+}
 @import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
 

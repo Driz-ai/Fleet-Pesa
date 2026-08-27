@@ -377,6 +377,41 @@
     .quick-button {
       @apply text-xs;
     }
+    .driver-brand-row {
+      @apply gap-2;
+    }
+
+    .driver-actions {
+      @apply flex-wrap justify-end gap-2;
+    }
+
+    .driver-signout {
+      @apply hidden;
+    }
+
+    .driver-brand-logo {
+      @apply size-10;
+    }
+
+    .driver-profile {
+      @apply mt-2;
+    }
+
+    .driver-profile-row {
+      @apply gap-2;
+    }
+
+    .driver-content {
+      @apply max-w-full;
+    }
+
+    .amount-input-row {
+      @apply gap-2;
+    }
+
+    .quick-amounts {
+      @apply flex-wrap;
+    }
   }
 
   :root[data-theme="dark"] .driver-page,
@@ -436,16 +471,62 @@
 }
 .summary-grid{
   display: grid;
-  grid-template-columns: repeat(3,1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
 .summary-card{
+  min-width: 0;
   background-color: white;
   border: 1px solid #e5e7eb;
   border-radius: 16px;
   padding: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  margin: 1rem;
+}
+
+.summary-metric {
+  min-width: 0;
+}
+
+.summary-trend,
+.summary-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.summary-value {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .75rem;
+  }
+
+  .summary-card {
+    padding: .85rem;
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+    gap: .65rem;
+  }
+
+  .summary-card {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .75rem;
+  }
+
+  .summary-value {
+    font-size: 1.25rem;
+    line-height: 1.2;
+  }
 }
 /* .summary-label{
   font-size: 0.09rem;
