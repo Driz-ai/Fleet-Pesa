@@ -91,14 +91,14 @@ export default function LandingPage() {
 
   return (
     <main className="landing-page min-h-screen overflow-hidden bg-[#F1F5F9] text-[#0F2440]">
-      <header className="relative mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-5 sm:px-8 lg:px-10">
-        <Link className="flex items-center gap-3" to="/">
-          <img className="h-10 w-10 rounded-xl border border-white bg-white p-1 object-contain shadow-sm" src="/FleetPesa%20FavIcon.jpg" alt="FleetPesa" />
-          <span className="text-lg font-bold tracking-tight">FleetPesa</span>
+      <header className="relative mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-8 sm:py-5 lg:px-10">
+        <Link className="flex min-w-0 items-center gap-2" to="/">
+          <img className="h-8 w-8 shrink-0 rounded-lg border border-white bg-white p-1 object-contain shadow-sm sm:h-10 sm:w-10 sm:rounded-xl" src="/FleetPesa%20FavIcon.jpg" alt="FleetPesa" />
+          <span className="truncate text-base font-bold tracking-tight sm:text-lg">FleetPesa</span>
         </Link>
-        <nav className="flex items-center gap-3 text-sm font-bold sm:gap-5" aria-label="Account navigation">
+        <nav className="ml-3 flex shrink-0 items-center gap-2 text-xs font-bold sm:gap-5 sm:text-sm" aria-label="Account navigation">
           <button
-            className="grid h-9 w-9 place-items-center rounded-full border border-[#CBD5E1] bg-white text-[#0F2440] transition hover:border-[#16A34A] hover:text-[#16A34A] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#16A34A] dark:border-[#38536F] dark:bg-[#142236] dark:text-white"
+            className="grid h-8 w-8 place-items-center rounded-full border border-[#CBD5E1] bg-white text-[#0F2440] transition hover:border-[#16A34A] hover:text-[#16A34A] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#16A34A] dark:border-[#38536F] dark:bg-[#142236] dark:text-white sm:h-9 sm:w-9"
             type="button"
             onClick={toggleTheme}
             aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
@@ -107,8 +107,8 @@ export default function LandingPage() {
             {isDark ? <Sun size={17} /> : <Moon size={17} />}
           </button>
           <button className="landing-faq-trigger text-xs underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#16A34A] sm:text-sm" type="button" onClick={() => setShowFaq((open) => !open)} aria-expanded={showFaq} aria-controls="landing-faq-popover">FAQ</button>
-          <Link className="text-[#1E3A5F] underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#16A34A]" to="/login">Sign in</Link>
-          <Link className="rounded-lg bg-[#16A34A] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#128A3E] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0F2440]" to="/signup">Sign up</Link>
+          <Link className="text-[#1E3A5F] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#16A34A] dark:text-white" to="/login">Sign in</Link>
+          <Link className="rounded-lg bg-[#16A34A] px-3 py-2 text-white shadow-sm transition hover:bg-[#128A3E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0F2440] sm:px-4 sm:py-2.5" to="/signup">Sign up</Link>
         </nav>
         {showFaq && (
           <div id="landing-faq-popover" className="absolute right-5 top-[4.75rem] z-20 w-[min(18rem,calc(100vw-2.5rem))] rounded-xl border border-[#CBD5E1] bg-white p-4 text-left text-[#0F2440] shadow-xl dark:border-[#38536F] dark:bg-[#142236] dark:text-white sm:right-8 lg:right-10">
@@ -199,9 +199,9 @@ export default function LandingPage() {
           </div>
           <Link className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-[#16A34A] px-5 py-3.5 text-sm font-bold text-white transition hover:bg-[#128A3E] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white" to="/signup">Create your account <ArrowRight size={17} /></Link>
         </div>
-        <footer className="mx-auto mt-16 flex w-full max-w-7xl items-center justify-between border-t border-white/25 pt-5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-white">
+        <footer className="mx-auto mt-16 flex w-full max-w-7xl flex-col items-start gap-3 border-t border-white/25 pt-5 text-left font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-white sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:text-[10px] sm:tracking-[0.14em]">
           <span>&copy; 2026 FleetPesa</span>
-          <span>Kenyan matatu fleet tools <span className="mx-1 text-white">//</span> every fleet accounted for</span>
+          <span className="max-w-full leading-5 sm:text-right">Kenyan matatu fleet tools <span className="mx-1 text-white">//</span> every fleet accounted for</span>
         </footer>
       </section>
     </main>

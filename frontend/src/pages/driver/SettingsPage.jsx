@@ -1,5 +1,6 @@
 import { ArrowLeft, KeyRound, UserRound } from 'lucide-react'
-import { useNavigate, useState } from 'react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { updatePassword, updateProfile } from '../../lib/api.js'
 
