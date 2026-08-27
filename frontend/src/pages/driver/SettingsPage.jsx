@@ -55,15 +55,21 @@ export default function DriverSettingsPage() {
 	}
 
 	return (
-		<div className="settings-page">
-			<button className="settings-back" type="button" onClick={() => navigate('/driver/remittance')}>
-				<ArrowLeft size={16} /> Back to dashboard
-			</button>
-			<div className="settings-heading">
-				<p className="settings-eyebrow">Driver account</p>
-				<h2>Settings</h2>
-				<p>Manage your profile, security, and remittance help.</p>
-			</div>
+		<div className="driver-page">
+			<header className="driver-header driver-settings-header">
+				<div className="driver-header-inner">
+					<button className="settings-back driver-settings-back" type="button" onClick={() => navigate('/driver/remittance')}>
+						<ArrowLeft size={16} /> Back to dashboard
+					</button>
+					<div className="settings-heading driver-settings-heading">
+						<p className="settings-eyebrow">Driver account</p>
+						<h2>Settings</h2>
+						<p>Manage your profile, security, and remittance help.</p>
+					</div>
+				</div>
+			</header>
+
+			<div className="settings-page">
 
 			<div className="settings-layout">
 				<nav className="settings-tabs" aria-label="Driver settings sections">
@@ -117,6 +123,7 @@ export default function DriverSettingsPage() {
 						</div>
 					</section>
 				</div>
+			</div>
 			</div>
 		</div>
 	)
