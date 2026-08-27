@@ -918,6 +918,26 @@ a {
   border-color: #2d435b;
 }
 
+:root[data-theme="dark"] .text-slate-300,
+:root[data-theme="dark"] .text-slate-400,
+:root[data-theme="dark"] .text-slate-500,
+:root[data-theme="dark"] .text-slate-600,
+:root[data-theme="dark"] .sidebar,
+:root[data-theme="dark"] .topbar p,
+:root[data-theme="dark"] .card-heading p,
+:root[data-theme="dark"] .chart-legend,
+:root[data-theme="dark"] .table-heading p,
+:root[data-theme="dark"] .driver-cell small,
+:root[data-theme="dark"] .expected-label,
+:root[data-theme="dark"] .history-date,
+:root[data-theme="dark"] .settings-heading p,
+:root[data-theme="dark"] .settings-panel p,
+:root[data-theme="dark"] .settings-form-grid label,
+:root[data-theme="dark"] .profile-picture-field,
+:root[data-theme="dark"] .settings-email-field {
+  color: #fff !important;
+}
+
 :root[data-theme="dark"] .filter-button,
 :root[data-theme="dark"] .review-button {
   color: #edf4fb;
