@@ -62,62 +62,58 @@ api.interceptors.request.use(
 
 
 // ============================================================
-// LOGIN
+// MOCK AUTH FOR FRONTEND DEMO
 // ============================================================
 
-export async function login({ phone, password }) {
-  try {
-    const response = await api.post("/auth/login", {
-      phone,
-      password,
-    });
+function makeMockAuth({ role = "owner", phone = "", password = "", username = "", name = "" }) {
+  const safePhone = (phone || "0712345678").trim() || "0712345678";
+  const safeRole = role || "owner";
+  const mockToken = `mock-${safeRole}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 
-    const data = response.data;
+  const user = {
+    id: `mock-user-${Date.now()}`,
+    username: (username || safePhone || "demo-user").trim() || "demo-user",
+    name: (name || "Demo User").trim() || "Demo User",
+    phone: safePhone,
+    role: safeRole,
+    password: password || "demo-password",
+  };
 
-    saveTokens(
-      data.access_token,
-      data.refresh_token
-    );
-
-    return data;
-  } catch (error) {
-    const message =
-      error?.response?.data?.error ||
-      error?.response?.data?.message ||
-      "Invalid phone number or password.";
-
-    throw new Error(message);
-  }
+  return {
+    token: mockToken,
+    access_token: mockToken,
+    refresh_token: mockToken,
+    user,
+    message: "Mock authentication successful.",
+  };
 }
 
+export async function login({ phone, password, role }) {
+  const data = makeMockAuth({ phone, password, role });
 
-// ============================================================
-// REGISTER
-// ============================================================
+  saveTokens(data.access_token, data.refresh_token);
+
+  return data;
+}
 
 export async function register({
   username,
   name,
   phone,
   password,
+  role,
 }) {
-  try {
-    const response = await api.post("/auth/register", {
-      username,
-      name,
-      phone,
-      password,
-    });
+  const data = makeMockAuth({
+    username,
+    name,
+    phone,
+    password,
+    role,
+  });
 
-    return response.data;
-  } catch (error) {
-    const message =
-      error?.response?.data?.error ||
-      error?.response?.data?.message ||
-      "Unable to create account.";
+  saveTokens(data.access_token, data.refresh_token);
 
-    throw new Error(message);
-  }
+  return data;
 }
 
 

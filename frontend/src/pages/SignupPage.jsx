@@ -27,22 +27,16 @@ export default function SignupPage() {
   const [created, setCreated] = useState(false);
 
   function validate() {
-    if (username.trim().length < 3) {
-      return "Username must be at least 3 characters";
+    if (!username.trim()) {
+      return "Username is required";
     }
 
     if (!name.trim()) {
       return "Enter your full name";
     }
 
-    const cleanPhone = normalizePhone(phone);
-
-    if (!/^07\d{8}$/.test(cleanPhone)) {
-      return "Enter a valid phone number, e.g. 0712345678";
-    }
-
-    if (password.length < 8) {
-      return "Password must be at least 8 characters";
+    if (!password) {
+      return "Password is required";
     }
 
     if (password !== confirmPassword) {
@@ -94,8 +88,18 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="login-page min-h-screen w-full flex flex-col items-center justify-center px-4 py-12">
-      <div className={`login-logo-frame mb-8 rounded-[22px] p-1.5 shadow-[0_6px_16px_rgba(16,40,68,0.08)] ring-1 ring-slate-200/60 ${isDark ? "login-logo-frame-dark" : "login-logo-frame-light"}`}>
+    <div
+      className={`login-page min-h-screen w-full flex flex-col items-center justify-center px-4 py-12 ${
+        isDark ? "login-page-dark" : "login-page-light"
+      }`}
+    >
+      <div
+        className={`login-logo-frame mb-8 rounded-[22px] p-1.5 shadow-[0_6px_16px_rgba(16,40,68,0.08)] ring-1 ${
+          isDark
+            ? "login-logo-frame-dark ring-slate-700/60"
+            : "login-logo-frame-light ring-slate-200/60"
+        }`}
+      >
         <img
           src={
             isDark
@@ -107,7 +111,11 @@ export default function SignupPage() {
         />
       </div>
 
-      <div className="login-card w-full max-w-md rounded-2xl shadow-sm p-8">
+      <div
+        className={`login-card w-full max-w-md rounded-2xl p-8 ${
+          isDark ? "bg-slate-900 border border-slate-700" : "bg-white"
+        }`}
+      >
         {created ? (
           <div className="text-center py-8" role="status">
             <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-green-50 text-3xl text-green-600">✓</div>
@@ -276,32 +284,88 @@ export default function SignupPage() {
                 </div>
               )}
 
-              {/* SUBMIT */}
+              {/* Submit */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full mt-6 bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="auth-primary-button w-full mt-6 bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
               >
                 {loading && (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" />
                 )}
 
-                {loading
-                  ? "Creating account..."
-                  : "Create Account"}
+                {loading ? "Creating account..." : "Create Account"}
               </button>
 
-              {error && <p className="text-sm text-red-600 mt-2" role="alert">{error}</p>}
-              <button type="submit" disabled={loading} className="auth-primary-button w-full mt-6 bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">{loading && <Loader2 className="w-4 h-4 animate-spin" />}{loading ? "Creating account..." : "Create Account"}</button>
               <div
-                className="trust-line mt-4 flex items-center justify-center gap-2 text-center font-medium text-slate-900"
+                className={`trust-line mt-4 flex items-center justify-center gap-2 text-center text-sm font-medium ${
+                  isDark ? "text-slate-300" : "text-slate-900"
+                }`}
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
-                <span>✓ Secure</span>
-                <span>•</span>
-                <span>✓ Instant M-Pesa</span>
-                <span>•</span>
-                <span>✓ Built for Kenyan Fleets</span>
+                <span className="flex items-center gap-1.5 whitespace-nowrap">
+                  <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#16A34A] text-white">
+                    <svg
+                      viewBox="0 0 20 20"
+                      className="h-2.5 w-2.5"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M5.5 10.5L8.5 13.5L14.5 7.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  Secure
+                </span>
+
+                <span aria-hidden="true">•</span>
+
+                <span className="flex items-center gap-1.5 whitespace-nowrap">
+                  <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#16A34A] text-white">
+                    <svg
+                      viewBox="0 0 20 20"
+                      className="h-2.5 w-2.5"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M5.5 10.5L8.5 13.5L14.5 7.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  Instant M-Pesa
+                </span>
+
+                <span aria-hidden="true">•</span>
+
+                <span className="flex items-center gap-1.5 whitespace-nowrap">
+                  <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#16A34A] text-white">
+                    <svg
+                      viewBox="0 0 20 20"
+                      className="h-2.5 w-2.5"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M5.5 10.5L8.5 13.5L14.5 7.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  Built for Kenyan fleets
+                </span>
               </div>
             </form>
 

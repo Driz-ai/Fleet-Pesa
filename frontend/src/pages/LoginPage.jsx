@@ -51,20 +51,6 @@ export default function LoginPage() {
   }, [location, navigate]);
 
   const validate = () => {
-    const cleanPhone = normalizePhone(phone);
-
-    if (!/^07\d{8}$/.test(cleanPhone)) {
-      return "Enter a valid phone number, e.g. 0712345678";
-    }
-
-    if (!password) {
-      return "Please enter your password";
-    }
-
-    if (password.length < 6) {
-      return "Password must be at least 6 characters";
-    }
-
     return "";
   };
 
