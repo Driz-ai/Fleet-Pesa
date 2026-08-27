@@ -78,6 +78,10 @@ class User(db.Model):
         "FleetOwner",
         back_populates="users",
     )
+    driver_assignments = db.relationship(
+    "DriverAssignment",
+    back_populates="driver",
+)
 
     # --------------------------------------------------
     # Password
