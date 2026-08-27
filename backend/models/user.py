@@ -1,4 +1,3 @@
-
 import enum
 import re
 
@@ -10,7 +9,7 @@ from extensions import db, bcrypt
 
 
 class UserRole(enum.Enum):
-    ADMIN = "admin"
+    OWNER = "owner"
     DRIVER = "driver"
     OWNER = "owner"
 
@@ -42,6 +41,8 @@ class User(db.Model):
         nullable=False,
     )
 
+    # Kenyan phone number stored as:
+    # 0712345678
     phone = db.Column(
         db.String(15),
         unique=True,
@@ -83,9 +84,9 @@ class User(db.Model):
     back_populates="driver",
 )
 
-    # --------------------------------------------------
-    # Password
-    # --------------------------------------------------
+    # ==========================================================
+    # PASSWORD
+    # ==========================================================
 
     def set_password(self, password):
         """Hash and store a user's password."""
@@ -108,95 +109,126 @@ class User(db.Model):
         if not password:
             return False
 
+        if not self.password_hash:
+            return False
+
         return bcrypt.check_password_hash(
             self.password_hash,
             password,
         )
 
-    # --------------------------------------------------
-    # Username
-    # --------------------------------------------------
+    # ==========================================================
+    # USERNAME
+    # ==========================================================
 
     @validates("username")
     def validate_username(self, key, value):
         if value is None:
             raise ValueError("Username is required.")
 
-        value = value.strip()
+        value = str(value).strip()
 
         if not value:
             raise ValueError("Username is required.")
 
+        if len(value) < 3:
+            raise ValueError(
+                "Username must be at least 3 characters long."
+            )
+
+        if len(value) > 100:
+            raise ValueError(
+                "Username must not exceed 100 characters."
+            )
+
         return value
 
-    # --------------------------------------------------
-    # Name
-    # --------------------------------------------------
+    # ==========================================================
+    # NAME
+    # ==========================================================
 
     @validates("name")
     def validate_name(self, key, value):
         if value is None:
             raise ValueError("Name is required.")
 
-        value = value.strip()
+        value = str(value).strip()
 
         if not value:
             raise ValueError("Name is required.")
 
+        if len(value) > 150:
+            raise ValueError(
+                "Name must not exceed 150 characters."
+            )
+
         return value
 
-    # --------------------------------------------------
-    # Phone
-    # --------------------------------------------------
+    # ==========================================================
+    # PHONE
+    # ==========================================================
 
     @validates("phone")
     def validate_phone(self, key, value):
         """
-        Normalize Kenyan phone numbers to +254XXXXXXXXX.
+        Normalize Kenyan mobile numbers to 07XXXXXXXX.
 
- R       Accepted examples:
+        Accepted:
+
             0712345678
-            0112345678
+            +254712345678
             254712345678
-            +254712345678
+            0712 345 678
+            0712-345-678
 
-        Stored as:
-            +254712345678
+        Stored in database as:
+
+            0712345678
         """
 
         if value is None:
             raise ValueError("Phone number is required.")
 
-        value = value.strip()
+        value = str(value).strip()
 
         if not value:
             raise ValueError("Phone number is required.")
 
-        # Remove common formatting characters.
+        # Remove spaces, dashes and brackets.
         value = re.sub(r"[\s\-()]", "", value)
 
-        # Convert 07XXXXXXXX / 01XXXXXXXX
-        # to +2547XXXXXXXX / +2541XXXXXXXX
-        if value.startswith(("07", "01")):
-            value = "+254" + value[1:]
+        # ------------------------------------------------------
+        # +254712345678 -> 0712345678
+        # ------------------------------------------------------
 
-        # Convert 2547XXXXXXXX / 2541XXXXXXXX
-        # to +2547XXXXXXXX / +2541XXXXXXXX
+        if value.startswith("+254"):
+            value = "0" + value[4:]
+
+        # ------------------------------------------------------
+        # 254712345678 -> 0712345678
+        # ------------------------------------------------------
+
         elif value.startswith("254"):
-            value = "+" + value
+            value = "0" + value[3:]
 
-        # Validate final canonical format.
-        if not re.fullmatch(r"\+254[17]\d{8}", value):
+        # ------------------------------------------------------
+        # Validate Kenyan mobile number.
+        #
+        # Currently accepting:
+        # 07XXXXXXXX
+        # ------------------------------------------------------
+
+        if not re.fullmatch(r"07\d{8}", value):
             raise ValueError(
                 "Invalid Kenyan phone number. "
-                "Use a valid number such as +254712345678."
+                "Use a valid number such as 0712345678."
             )
 
         return value
 
-    # --------------------------------------------------
-    # Serialization
-    # --------------------------------------------------
+    # ==========================================================
+    # SERIALIZATION
+    # ==========================================================
 
     def to_dict(self):
         return {
@@ -213,6 +245,10 @@ class User(db.Model):
                 else None
             ),
         }
+
+    # ==========================================================
+    # REPRESENTATION
+    # ==========================================================
 
     def __repr__(self):
         return f"<User {self.id} {self.username}>"
