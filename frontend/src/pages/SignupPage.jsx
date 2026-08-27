@@ -51,8 +51,8 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-slate-100 flex flex-col items-center justify-center px-4 py-12">
-      <div className="mb-8 rounded-[22px] bg-white p-1.5 shadow-[0_6px_16px_rgba(16,40,68,0.08)] ring-1 ring-slate-200/60">
+    <div className="login-page min-h-screen w-full flex flex-col items-center justify-center px-4 py-12">
+      <div className={`login-logo-frame mb-8 rounded-[22px] p-1.5 shadow-[0_6px_16px_rgba(16,40,68,0.08)] ring-1 ring-slate-200/60 ${isDark ? "login-logo-frame-dark" : "login-logo-frame-light"}`}>
         <img
           src={isDark ? "/Fleet-pesa%20Logo%20Light.jpg" : "/Fleet-pesa%20Logo%20Dark.jpg"}
           alt="FleetPesa"
@@ -60,7 +60,7 @@ export default function SignupPage() {
         />
       </div>
 
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm p-8">
+      <div className="login-card w-full max-w-md rounded-2xl shadow-sm p-8">
         {created ? (
           <div className="text-center py-8" role="status">
             <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-green-50 text-3xl text-green-600">✓</div>
