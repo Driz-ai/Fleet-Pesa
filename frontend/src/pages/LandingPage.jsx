@@ -104,6 +104,7 @@ export default function LandingPage() {
           >
             {isDark ? <Sun size={17} /> : <Moon size={17} />}
           </button>
+          <Link className="text-xs text-[#1E3A5F] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#16A34A] sm:text-sm" to="#faq">FAQ</Link>
           <Link className="text-[#1E3A5F] underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#16A34A]" to="/login">Sign in</Link>
           <Link className="rounded-lg bg-[#16A34A] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#128A3E] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0F2440]" to="/signup">Sign up</Link>
         </nav>
@@ -144,6 +145,39 @@ export default function LandingPage() {
           <div className="rounded-xl border border-[#CBD5E1] bg-white p-5"><Clock3 className="text-[#1E3A5F]" size={20} /><p className="mt-8 font-mono text-2xl font-bold text-[#0F2440]">14:00</p><p className="mt-2 text-sm leading-5 text-[#475569]">The daily collection is due, but the notebook is still in the glovebox.</p></div>
           <div className="rounded-xl border border-[#CBD5E1] bg-white p-5"><CircleAlert className="text-[#DC2626]" size={20} /><p className="mt-8 font-mono text-2xl font-bold text-[#DC2626]">-KES 1,200</p><p className="mt-2 text-sm leading-5 text-[#475569]">A shortfall slips through because no one sees the expected amount beside it.</p></div>
           <div className="rounded-xl border border-[#CBD5E1] bg-white p-5"><BellRing className="text-[#16A34A]" size={20} /><p className="mt-8 font-mono text-2xl font-bold text-[#0F2440]">Day 1</p><p className="mt-2 text-sm leading-5 text-[#475569]">FleetPesa flags the difference while it is still one missed remittance, not weeks of loss.</p></div>
+        </div>
+      </section>
+
+      <section id="faq" className="border-y border-[#CBD5E1] bg-white" aria-labelledby="faq-heading">
+        <div className="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 lg:px-10 lg:py-20">
+          <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#16A34A]">FleetPesa FAQ</p>
+          <h2 id="faq-heading" className="mt-3 text-3xl font-bold tracking-tight text-[#0F2440] sm:text-4xl">Answers for the whole fleet.</h2>
+          <div className="mt-10 grid gap-3 lg:grid-cols-2">
+            <details className="rounded-xl border border-[#CBD5E1] p-5" open>
+              <summary className="cursor-pointer text-sm font-bold text-[#0F2440]">How do remittance alerts work?</summary>
+              <p className="mt-3 text-sm leading-6 text-[#475569]">Owners can choose SMS, email, or no alerts in their settings. The preference is saved with the owner profile.</p>
+            </details>
+            <details className="rounded-xl border border-[#CBD5E1] p-5">
+              <summary className="cursor-pointer text-sm font-bold text-[#0F2440]">How do I submit a remittance?</summary>
+              <p className="mt-3 text-sm leading-6 text-[#475569]">Drivers open the remittance screen, enter the amount collected, confirm the phone number, and submit the payment.</p>
+            </details>
+            <details className="rounded-xl border border-[#CBD5E1] p-5">
+              <summary className="cursor-pointer text-sm font-bold text-[#0F2440]">Where can I see remittance history?</summary>
+              <p className="mt-3 text-sm leading-6 text-[#475569]">Owners can review vehicle records and drivers can use Remittance history to review previous submissions.</p>
+            </details>
+            <details className="rounded-xl border border-[#CBD5E1] p-5">
+              <summary className="cursor-pointer text-sm font-bold text-[#0F2440]">How do I update my account details?</summary>
+              <p className="mt-3 text-sm leading-6 text-[#475569]">Open Settings to update your name, phone number, or profile picture.</p>
+            </details>
+            <details className="rounded-xl border border-[#CBD5E1] p-5">
+              <summary className="cursor-pointer text-sm font-bold text-[#0F2440]">How do I change my password?</summary>
+              <p className="mt-3 text-sm leading-6 text-[#475569]">Open Password, enter your current password, then choose and confirm a new password.</p>
+            </details>
+            <details className="rounded-xl border border-[#CBD5E1] p-5">
+              <summary className="cursor-pointer text-sm font-bold text-[#0F2440]">How do I activate my vehicle?</summary>
+              <p className="mt-3 text-sm leading-6 text-[#475569]">Drivers select their assigned vehicle on the dashboard and choose Activate vehicle before starting the route.</p>
+            </details>
+          </div>
         </div>
       </section>
 

@@ -1,4 +1,4 @@
-import { BellRing, CircleHelp, KeyRound, UserRound } from 'lucide-react'
+import { BellRing, KeyRound, UserRound } from 'lucide-react'
 import { useState } from 'react'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { updatePassword, updateProfile } from '../../lib/api.js'
@@ -7,7 +7,6 @@ const sections = [
 	{ id: 'profile', label: 'Profile details', icon: UserRound },
 	{ id: 'notifications', label: 'Remittance alerts', icon: BellRing },
 	{ id: 'password', label: 'Password', icon: KeyRound },
-	{ id: 'faq', label: 'FAQ', icon: CircleHelp },
 ]
 
 export default function SettingsPage() {
@@ -120,25 +119,6 @@ export default function SettingsPage() {
 								<button className="settings-secondary" type="submit" disabled={passwordState.loading}>{passwordState.loading ? 'Updating...' : 'Update password'}</button>
 							</div>
 						</form>
-					</section>
-
-					<section className="settings-panel" id="faq">
-						<h3>Frequently asked questions</h3>
-						<p>Find quick answers about using FleetPesa.</p>
-						<div className="settings-faq-list">
-							<details open>
-								<summary>How do remittance alerts work?</summary>
-								<p>Choose SMS, email, or no alerts in Remittance alerts. Your preference is saved with your profile.</p>
-							</details>
-							<details>
-								<summary>Where can I update my account details?</summary>
-								<p>Use Profile details to update your name, phone number, or profile picture.</p>
-							</details>
-							<details>
-								<summary>How do I change my password?</summary>
-								<p>Open Password, enter your current password, then choose and confirm a new password.</p>
-							</details>
-						</div>
 					</section>
 
 				</div>

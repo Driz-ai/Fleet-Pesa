@@ -1,4 +1,4 @@
-import { ArrowLeft, CircleHelp, KeyRound, UserRound } from 'lucide-react'
+import { ArrowLeft, KeyRound, UserRound } from 'lucide-react'
 import { useNavigate, useState } from 'react'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { updatePassword, updateProfile } from '../../lib/api.js'
@@ -6,7 +6,6 @@ import { updatePassword, updateProfile } from '../../lib/api.js'
 const sections = [
 	{ id: 'profile', label: 'Profile details', icon: UserRound },
 	{ id: 'password', label: 'Password', icon: KeyRound },
-	{ id: 'faq', label: 'FAQ', icon: CircleHelp },
 ]
 
 export default function DriverSettingsPage() {
@@ -113,15 +112,6 @@ export default function DriverSettingsPage() {
 						</form>
 					</section>
 
-					<section className="settings-panel" id="faq">
-						<h3>Frequently asked questions</h3>
-						<p>Find quick answers about your driver workflow.</p>
-						<div className="settings-faq-list">
-							<details open><summary>How do I submit a remittance?</summary><p>Open the remittance screen, enter the amount collected, confirm the phone number, and submit the payment.</p></details>
-							<details><summary>Where can I see my remittance history?</summary><p>Use Remittance history from the driver dashboard to review previous submissions.</p></details>
-							<details><summary>How do I activate my vehicle?</summary><p>Select your assigned vehicle on the dashboard and choose Activate vehicle before starting your route.</p></details>
-						</div>
-					</section>
 				</div>
 			</div>
 			</div>
