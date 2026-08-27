@@ -25,6 +25,7 @@ import RemittanceTransactionsPage from "./pages/owner/RemittanceTransactionsPage
 
 import RemmitancePage from "./pages/driver/RemittancePage.jsx";
 import DriverRemittanceHistoryPage from "./pages/driver/RemittanceHistoryPage.jsx";
+import DriverSettingsPage from "./pages/driver/SettingsPage.jsx";
 
 import RemittanceHistoryPage from "./pages/RemittanceHistoryPage.jsx";
 
@@ -252,6 +253,17 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <DriverNotificationsPage />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* DRIVER SETTINGS */}
+
+                <Route
+                  path="/driver/settings"
+                  element={
+                    <ProtectedRoute>
+                      <DriverSettingsPage />
                     </ProtectedRoute>
                   }
                 />

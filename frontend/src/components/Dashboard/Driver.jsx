@@ -4,6 +4,7 @@ import {
   Bell,
   Moon,
   Phone,
+  Settings,
   Sun,
   X,
 } from "lucide-react";
@@ -338,6 +339,16 @@ export default function Driver() {
                 onClick={handleSignOut}
               >
                 Sign out
+              </button>
+
+              <button
+                className="driver-theme-toggle"
+                type="button"
+                onClick={() => navigate("/driver/settings")}
+                aria-label="Open settings"
+                title="Settings"
+              >
+                <Settings size={16} />
               </button>
 
             </div>
