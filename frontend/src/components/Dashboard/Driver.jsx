@@ -334,14 +334,6 @@ export default function Driver() {
               
 
               <button
-                className="driver-signout"
-                type="button"
-                onClick={handleSignOut}
-              >
-                Sign out
-              </button>
-
-              <button
                 className="driver-theme-toggle"
                 type="button"
                 onClick={() => navigate("/driver/settings")}
