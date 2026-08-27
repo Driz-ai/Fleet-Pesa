@@ -258,6 +258,23 @@ a {
 .settings-faq-list details p { margin: 9px 0 0; font-size: 13px; line-height: 1.5; }
 :root[data-theme="dark"] .settings-faq-list details { border-color: #38536f; }
 :root[data-theme="dark"] .settings-faq-list summary { color: #edf4fb; }
+[data-theme="dark"] .landing-page { background: #0d1827 !important; color: #edf4fb !important; }
+[data-theme="dark"] .landing-page header { color: #edf4fb; }
+[data-theme="dark"] .landing-page header span,
+[data-theme="dark"] .landing-page header a:not([class*="bg-"]) { color: #fff !important; }
+[data-theme="dark"] .landing-page section.border-y,
+[data-theme="dark"] .landing-page section.bg-white { background: #142236 !important; border-color: #2d435b !important; }
+[data-theme="dark"] .landing-page h1,
+[data-theme="dark"] .landing-page h2,
+[data-theme="dark"] .landing-page p.text-\[\#475569\],
+[data-theme="dark"] .landing-page li.text-\[\#1E3A5F\] { color: #edf4fb !important; }
+[data-theme="dark"] .landing-page .border-\[\#CBD5E1\] { border-color: #38536f !important; }
+[data-theme="dark"] .landing-page .bg-white { background: #142236 !important; }
+[data-theme="dark"] .landing-page .text-\[\#0F2440\],
+[data-theme="dark"] .landing-page .text-\[\#1E3A5F\] { color: #edf4fb !important; }
+[data-theme="dark"] .landing-page .bg-\[\#E3F5EA\] { background: #1d3a58 !important; }
+[data-theme="dark"] .landing-page .text-\[\#F1F5F9\]\/50 { color: rgba(237, 244, 251, .7) !important; }
+[data-theme="dark"] .landing-page footer { color: rgba(237, 244, 251, .75) !important; border-color: rgba(237, 244, 251, .2) !important; }
 .settings-success-card { display: grid; gap: 3px; margin-top: 18px; padding: 14px 16px; color: #087443; background: #ecfdf3; border: 1px solid #a7e8c1; border-radius: 10px; }
 .settings-success-card span { color: #3d8060; font-size: 13px; }
 .settings-email-field { display: grid; gap: 7px; max-width: 360px; margin-top: 14px; color: #61758d; font-size: 12px; font-weight: 700; }

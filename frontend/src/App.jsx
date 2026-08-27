@@ -13,6 +13,7 @@ import { NotificationProvider } from "./context/NotificationContext.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
+import LandingPage from "./pages/LandingPage.jsx";
 
 import { AppShell } from "./components/layout/AppShell.jsx";
 
@@ -165,6 +166,8 @@ export default function App() {
           <SettingsProvider>
             <NotificationProvider>
               <Routes>
+
+                <Route path="/" element={<LandingPage />} />
 
                 {/* PUBLIC ROUTES */}
 
