@@ -25,7 +25,7 @@ function RouteField() {
   return (
     <div
       className="relative min-h-[300px] overflow-hidden rounded-[1.75rem] border border-white/10 bg-[#102844] shadow-2xl shadow-[#0F2440]/20 sm:min-h-[360px] lg:min-h-[430px]"
-      aria-label="Animated route activity showing vehicle remittances"
+      aria-label="Live fleet remittance activity"
     >
       <div className="absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_1px_1px,rgba(241,245,249,0.18)_1px,transparent_0)] [background-size:26px_26px]" />
       <div className="absolute -left-16 top-[43%] h-px w-[125%] rotate-[18deg] bg-[#9FE1BB]/50" />
@@ -34,7 +34,7 @@ function RouteField() {
       <div className="absolute left-[68%] top-[-10%] h-[125%] w-px -rotate-[38deg] bg-[#9FE1BB]/25" />
 
       <div className="absolute left-5 top-5 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9FE1BB]">
-        <span className="h-2 w-2 rounded-full bg-[#16A34A] motion-safe:animate-pulse motion-reduce:animate-none" /> Live route activity
+        <span className="h-2 w-2 rounded-full bg-[#16A34A] motion-safe:animate-pulse motion-reduce:animate-none" /> Live fleet remittance
       </div>
 
       {routePings.map((ping, index) => (
@@ -157,7 +157,7 @@ export default function LandingPage() {
         </div>
         <footer className="mx-auto mt-16 flex w-full max-w-7xl items-center justify-between border-t border-white/25 pt-5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-white">
           <span>&copy; 2026 FleetPesa</span>
-          <span>Kenyan matatu fleet tools <span className="mx-1 text-[#9FE1BB]">//</span> every route accounted for</span>
+          <span>Kenyan matatu fleet tools <span className="mx-1 text-white">//</span> every fleet accounted for</span>
         </footer>
       </section>
     </main>
