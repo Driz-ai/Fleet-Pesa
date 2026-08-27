@@ -65,8 +65,30 @@ api.interceptors.request.use(
 // MOCK AUTH FOR FRONTEND DEMO
 // ============================================================
 
+const PHONE_PATTERN = /^07\d{8}$/;
+const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/;
+
+function validateMockPhone(phone) {
+  const cleanPhone = (phone || "").replace(/\s+/g, "");
+
+  if (!PHONE_PATTERN.test(cleanPhone)) {
+    throw new Error("Phone number must be 10 digits in the format 0701234567");
+  }
+
+  return cleanPhone;
+}
+
+function validateMockPassword(password) {
+  if (!PASSWORD_PATTERN.test(String(password || ""))) {
+    throw new Error("Password must be at least 6 characters and include letters, numbers, and special characters.");
+  }
+
+  return String(password);
+}
+
 function makeMockAuth({ role = "owner", phone = "", password = "", username = "", name = "" }) {
-  const safePhone = (phone || "0712345678").trim() || "0712345678";
+  const safePhone = validateMockPhone(phone);
+  const safePassword = validateMockPassword(password);
   const safeRole = role || "owner";
   const mockToken = `mock-${safeRole}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 
@@ -76,7 +98,7 @@ function makeMockAuth({ role = "owner", phone = "", password = "", username = ""
     name: (name || "Demo User").trim() || "Demo User",
     phone: safePhone,
     role: safeRole,
-    password: password || "demo-password",
+    password: safePassword,
   };
 
   return {
@@ -89,7 +111,10 @@ function makeMockAuth({ role = "owner", phone = "", password = "", username = ""
 }
 
 export async function login({ phone, password, role }) {
-  const data = makeMockAuth({ phone, password, role });
+  const cleanPhone = validateMockPhone(phone);
+  validateMockPassword(password);
+
+  const data = makeMockAuth({ phone: cleanPhone, password, role });
 
   saveTokens(data.access_token, data.refresh_token);
 
@@ -103,10 +128,13 @@ export async function register({
   password,
   role,
 }) {
+  const cleanPhone = validateMockPhone(phone);
+  validateMockPassword(password);
+
   const data = makeMockAuth({
     username,
     name,
-    phone,
+    phone: cleanPhone,
     password,
     role,
   });

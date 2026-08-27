@@ -35,8 +35,18 @@ export default function SignupPage() {
       return "Enter your full name";
     }
 
+    const cleanPhone = normalizePhone(phone);
+
+    if (!/^07\d{8}$/.test(cleanPhone)) {
+      return "Phone number must be 10 digits in the format 0701234567";
+    }
+
     if (!password) {
       return "Password is required";
+    }
+
+    if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/.test(password)) {
+      return "Password must be at least 6 characters and include letters, numbers, and special characters.";
     }
 
     if (password !== confirmPassword) {

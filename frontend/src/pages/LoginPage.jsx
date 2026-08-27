@@ -51,6 +51,20 @@ export default function LoginPage() {
   }, [location, navigate]);
 
   const validate = () => {
+    const cleanPhone = normalizePhone(phone);
+
+    if (!/^07\d{8}$/.test(cleanPhone)) {
+      return "Phone number must be 10 digits in the format 0701234567";
+    }
+
+    if (!password) {
+      return "Please enter your password";
+    }
+
+    if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/.test(password)) {
+      return "Password must be at least 6 characters and include letters, numbers, and special characters.";
+    }
+
     return "";
   };
 
