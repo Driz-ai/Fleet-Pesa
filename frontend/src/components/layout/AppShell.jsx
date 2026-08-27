@@ -1,6 +1,6 @@
 import { CircleHelp, Moon, Sun, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 import { Sidebar } from "./Sidebar";
 import { BottomNav } from "./BottomNav";
@@ -163,10 +163,13 @@ export function AppShell() {
               <strong>FleetPesa FAQ</strong>
 
               <p>
-                Need help with remittances or fleet
-                records? Open Settings to update your
-                account details.
+                Find quick answers about remittances, fleet
+                records, and account settings in the FAQ.
               </p>
+
+              <Link to="/owner/settings#faq" onClick={() => setShowFaq(false)}>
+                View FAQ
+              </Link>
             </div>
           )}
         </header>
