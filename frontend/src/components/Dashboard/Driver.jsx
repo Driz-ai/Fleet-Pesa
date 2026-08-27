@@ -276,7 +276,7 @@ export default function Driver() {
 
             <div className="driver-brand">
               <img
-                className="brand-logo"
+                className="brand-logo driver-brand-logo"
                 src="/FleetPesa%20FavIcon.jpg"
                 alt="FleetPesa"
               />
