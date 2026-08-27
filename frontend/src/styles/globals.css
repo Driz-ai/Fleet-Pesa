@@ -209,6 +209,9 @@ a {
   margin: 0 auto;
   padding: 8px 24px 40px;
 }
+.settings-back { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 22px; padding: 0; color: var(--navy); background: transparent; border: 0; font-size: 13px; font-weight: 700; cursor: pointer; }
+.settings-back:hover { color: var(--primary); }
+:root[data-theme="dark"] .settings-back { color: #fff; }
 
 .settings-heading h2 { margin: 0; color: var(--navy); font-size: 28px; }
 .settings-heading p { margin: 6px 0 0; color: #8193aa; }

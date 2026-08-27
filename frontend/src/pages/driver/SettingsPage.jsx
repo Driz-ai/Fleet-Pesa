@@ -1,5 +1,5 @@
-import { CircleHelp, KeyRound, UserRound } from 'lucide-react'
-import { useState } from 'react'
+import { ArrowLeft, CircleHelp, KeyRound, UserRound } from 'lucide-react'
+import { useNavigate, useState } from 'react'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { updatePassword, updateProfile } from '../../lib/api.js'
 
@@ -10,9 +10,11 @@ const sections = [
 ]
 
 export default function DriverSettingsPage() {
+	const navigate = useNavigate()
 	const { user, setAuth, token } = useAuth()
 	const [name, setName] = useState(user?.name || '')
 	const [phone, setPhone] = useState(user?.phone || '')
+	const [profilePicture, setProfilePicture] = useState(user?.profile_picture || '')
 	const [profileState, setProfileState] = useState({ loading: false, error: '', success: '' })
 	const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '', confirmation: '' })
 	const [passwordState, setPasswordState] = useState({ loading: false, error: '', success: '' })
@@ -22,9 +24,9 @@ export default function DriverSettingsPage() {
 		setProfileState({ loading: true, error: '', success: '' })
 		try {
 			const response = token?.startsWith('mock-token')
-				? await new Promise((resolve) => window.setTimeout(() => resolve({ user: { ...user, name: name.trim(), phone: phone.trim() } }), 450))
+				? await new Promise((resolve) => window.setTimeout(() => resolve({ user: { ...user, name: name.trim(), phone: phone.trim(), profile_picture: profilePicture } }), 450))
 				: await updateProfile({ name: name.trim(), phone: phone.trim() })
-			setAuth({ token, user: response.user })
+			setAuth({ token, user: { ...response.user, profile_picture: profilePicture } })
 			setProfileState({ loading: false, error: '', success: 'Profile updated successfully.' })
 		} catch (error) {
 			setProfileState({ loading: false, error: error.message, success: '' })
@@ -54,6 +56,9 @@ export default function DriverSettingsPage() {
 
 	return (
 		<div className="settings-page">
+			<button className="settings-back" type="button" onClick={() => navigate('/driver/remittance')}>
+				<ArrowLeft size={16} /> Back to dashboard
+			</button>
 			<div className="settings-heading">
 				<p className="settings-eyebrow">Driver account</p>
 				<h2>Settings</h2>
@@ -75,6 +80,8 @@ export default function DriverSettingsPage() {
 						<h3>Profile details</h3>
 						<p>Keep the contact details your fleet owner uses up to date.</p>
 						<form onSubmit={handleProfileSubmit}>
+							<label className="profile-picture-field">Profile picture<input type="file" accept="image/*" capture="user" onChange={(event) => { const file = event.target.files?.[0]; if (!file) return; const reader = new FileReader(); reader.onload = () => setProfilePicture(reader.result); reader.readAsDataURL(file) }} /></label>
+							{profilePicture && <img className="profile-picture-preview" src={profilePicture} alt="Profile preview" />}
 							<div className="settings-form-grid">
 								<label>Name<input type="text" value={name} onChange={(event) => setName(event.target.value)} required minLength={2} maxLength={120} /></label>
 								<label>Phone number<input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} required /></label>

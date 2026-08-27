@@ -29,7 +29,7 @@ export default function SettingsPage() {
 			const response = token?.startsWith('mock-token')
 				? await new Promise((resolve) => window.setTimeout(() => resolve({ user: { ...user, name: name.trim(), phone: phone.trim(), profile_picture: profilePicture, notification_preference: notificationPreference } }), 450))
 				: await updateProfile({ name: name.trim(), phone: phone.trim(), notification_preference: notificationPreference })
-			setAuth({ token, user: response.user })
+			setAuth({ token, user: { ...response.user, profile_picture: profilePicture } })
 			setProfileState({ loading: false, error: '', success: '' })
 			setProfileSaved(true)
 		} catch (error) {

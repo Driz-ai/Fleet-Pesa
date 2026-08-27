@@ -436,6 +436,7 @@ export default function Driver() {
 
             <Avatar
               name={user?.name || "Peter Omondi"}
+              image={user?.profile_picture}
             />
 
             <div>
