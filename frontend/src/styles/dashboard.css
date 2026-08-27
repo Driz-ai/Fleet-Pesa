@@ -10,7 +10,7 @@
   }
 
   .driver-brand-row {
-    @apply flex items-center justify-between gap-4;
+    @apply mb-3 flex items-center justify-between gap-4;
   }
 
   .driver-brand {
