@@ -119,7 +119,6 @@ export function AppShell() {
               )}
             </div>
           </div>
-                  <Link to="/#faq" onClick={() => setShowFaq(false)}>View FAQ</Link>
 
           
         </header>

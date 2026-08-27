@@ -1,5 +1,6 @@
-import { ArrowRight, BellRing, BusFront, Check, CircleAlert, Clock3, Moon, NotebookPen, Sun, WalletCards } from "lucide-react";
+import { ArrowRight, BellRing, BusFront, Check, CircleAlert, Clock3, Moon, NotebookPen, Sun, WalletCards, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { useTheme } from "../context/ThemeContext.jsx";
 
 const ownerFeatures = [
@@ -86,10 +87,11 @@ function PathCard({ type, title, description, features, icon: Icon }) {
 
 export default function LandingPage() {
   const { isDark, toggleTheme } = useTheme();
+  const [showFaq, setShowFaq] = useState(false);
 
   return (
     <main className="landing-page min-h-screen overflow-hidden bg-[#F1F5F9] text-[#0F2440]">
-      <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-5 sm:px-8 lg:px-10">
+      <header className="relative mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-5 sm:px-8 lg:px-10">
         <Link className="flex items-center gap-3" to="/">
           <img className="h-10 w-10 rounded-xl border border-white bg-white p-1 object-contain shadow-sm" src="/FleetPesa%20FavIcon.jpg" alt="FleetPesa" />
           <span className="text-lg font-bold tracking-tight">FleetPesa</span>
@@ -104,10 +106,18 @@ export default function LandingPage() {
           >
             {isDark ? <Sun size={17} /> : <Moon size={17} />}
           </button>
-          <Link className="text-xs text-[#1E3A5F] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#16A34A] sm:text-sm" to="#faq">FAQ</Link>
+          <button className="landing-faq-trigger text-xs underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#16A34A] sm:text-sm" type="button" onClick={() => setShowFaq((open) => !open)} aria-expanded={showFaq} aria-controls="landing-faq-popover">FAQ</button>
           <Link className="text-[#1E3A5F] underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#16A34A]" to="/login">Sign in</Link>
           <Link className="rounded-lg bg-[#16A34A] px-4 py-2.5 text-white shadow-sm transition hover:bg-[#128A3E] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0F2440]" to="/signup">Sign up</Link>
         </nav>
+        {showFaq && (
+          <div id="landing-faq-popover" className="absolute right-5 top-[4.75rem] z-20 w-[min(18rem,calc(100vw-2.5rem))] rounded-xl border border-[#CBD5E1] bg-white p-4 text-left text-[#0F2440] shadow-xl dark:border-[#38536F] dark:bg-[#142236] dark:text-white sm:right-8 lg:right-10">
+            <button className="float-right text-[#475569] hover:text-[#0F2440] dark:text-[#B6C7D9] dark:hover:text-white" type="button" onClick={() => setShowFaq(false)} aria-label="Close FAQ"><X size={16} /></button>
+            <strong className="text-sm">FleetPesa FAQ</strong>
+            <p className="mt-2 pr-3 text-xs leading-5 text-[#475569] dark:text-[#B6C7D9]">Find quick answers about remittance alerts, driver payments, vehicle activation, and fleet records.</p>
+            <a className="mt-3 inline-block text-xs font-bold text-[#16A34A] underline-offset-4 hover:underline" href="#faq" onClick={() => setShowFaq(false)}>View full FAQ</a>
+          </div>
+        )}
       </header>
 
       <section className="mx-auto grid w-full max-w-7xl gap-10 px-5 pb-16 pt-8 sm:px-8 sm:pt-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-16 lg:px-10 lg:pb-24 lg:pt-16">

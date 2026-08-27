@@ -258,6 +258,8 @@ a {
 .settings-faq-list details p { margin: 9px 0 0; font-size: 13px; line-height: 1.5; }
 :root[data-theme="dark"] .settings-faq-list details { border-color: #38536f; }
 :root[data-theme="dark"] .settings-faq-list summary { color: #edf4fb; }
+.landing-faq-trigger { color: #000 !important; background: transparent; border: 0; font-weight: 700; }
+[data-theme="dark"] .landing-faq-trigger { color: #fff !important; }
 [data-theme="dark"] .landing-page { background: #0d1827 !important; color: #edf4fb !important; }
 [data-theme="dark"] .landing-page header { color: #edf4fb; }
 [data-theme="dark"] .landing-page header span,
