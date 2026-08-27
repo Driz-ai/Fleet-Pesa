@@ -11,7 +11,7 @@ const sections = [
 
 export default function DriverSettingsPage() {
 	const navigate = useNavigate()
-	const { user, setAuth, token } = useAuth()
+	const { user, setAuth, token, logout } = useAuth()
 	const [name, setName] = useState(user?.name || '')
 	const [phone, setPhone] = useState(user?.phone || '')
 	const [profilePicture, setProfilePicture] = useState(user?.profile_picture || '')
@@ -52,6 +52,14 @@ export default function DriverSettingsPage() {
 		} catch (error) {
 			setPasswordState({ loading: false, error: error.message, success: '' })
 		}
+	}
+
+	function handleSignOut() {
+		logout()
+		navigate('/login', {
+			replace: true,
+			state: { success: 'Successfully signed out.' },
+		})
 	}
 
 	return (
