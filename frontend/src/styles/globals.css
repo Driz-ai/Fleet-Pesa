@@ -241,6 +241,8 @@ a {
 .topbar-popover p { margin: 6px 0 0; color: #61758d; font-size: 12px; }
 .faq-popover { right: 98px; }
 .faq-popover button { float: right; border: 0; color: #61758d; background: transparent; cursor: pointer; }
+:root[data-theme="dark"] .faq-popover { color: #edf4fb; border-color: #38536f; box-shadow: 0 12px 28px rgba(0, 0, 0, .35); }
+:root[data-theme="dark"] .faq-popover p, :root[data-theme="dark"] .faq-popover button { color: #b6c7d9; }
 .settings-success-card { display: grid; gap: 3px; margin-top: 18px; padding: 14px 16px; color: #087443; background: #ecfdf3; border: 1px solid #a7e8c1; border-radius: 10px; }
 .settings-success-card span { color: #3d8060; font-size: 13px; }
 .settings-email-field { display: grid; gap: 7px; max-width: 360px; margin-top: 14px; color: #61758d; font-size: 12px; font-weight: 700; }
