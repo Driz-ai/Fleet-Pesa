@@ -248,6 +248,7 @@ a {
 :root[data-theme="dark"] .settings-tab { color: #081321; background: #dbe5ef; }
 :root[data-theme="dark"] .settings-tab.active { color: #000; background: #fff; }
 :root[data-theme="dark"] .settings-tab:hover { color: #000; background: #eef4f8; }
+:root[data-theme="dark"] .settings-preferences label { color: #fff; border-color: #38536f; }
 .settings-faq-list { display: grid; gap: 10px; }
 .settings-faq-list details { padding: 13px 14px; border: 1px solid #d5e0e9; border-radius: 8px; }
 .settings-faq-list summary { color: var(--navy); font-size: 13px; font-weight: 700; cursor: pointer; }
