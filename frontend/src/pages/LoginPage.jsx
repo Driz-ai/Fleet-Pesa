@@ -98,7 +98,7 @@ export default function LoginPage() {
             aria-selected={role === "owner"}
             onClick={() => setRole("owner")}
             className={`flex-1 py-2 rounded-md text-sm font-semibold transition-colors ${
-              role === "owner" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400"
+              role === "owner" ? "bg-[#0F2440] text-white shadow-sm dark:bg-[#0F2440] dark:text-white" : "text-[#1E3A5F] dark:text-white"
             }`}
           >
             Fleet Owner
@@ -109,7 +109,7 @@ export default function LoginPage() {
             aria-selected={role === "driver"}
             onClick={() => setRole("driver")}
             className={`flex-1 py-2 rounded-md text-sm font-semibold transition-colors ${
-              role === "driver" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400"
+              role === "driver" ? "bg-[#0F2440] text-white shadow-sm dark:bg-[#0F2440] dark:text-white" : "text-[#1E3A5F] dark:text-white"
             }`}
           >
             Driver

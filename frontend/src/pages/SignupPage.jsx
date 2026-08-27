@@ -78,8 +78,8 @@ export default function SignupPage() {
             </div>
 
             <div className="flex bg-slate-100 rounded-lg p-1 mb-6" role="tablist">
-              <button type="button" role="tab" aria-selected={role === "owner"} onClick={() => setRole("owner")} className={`flex-1 py-2 rounded-md text-sm font-semibold transition-colors ${role === "owner" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400"}`}>Fleet Owner</button>
-              <button type="button" role="tab" aria-selected={role === "driver"} onClick={() => setRole("driver")} className={`flex-1 py-2 rounded-md text-sm font-semibold transition-colors ${role === "driver" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400"}`}>Driver</button>
+              <button type="button" role="tab" aria-selected={role === "owner"} onClick={() => setRole("owner")} className={`flex-1 py-2 rounded-md text-sm font-semibold transition-colors ${role === "owner" ? "bg-[#0F2440] text-white shadow-sm dark:bg-[#0F2440] dark:text-white" : "text-[#1E3A5F] dark:text-white"}`}>Fleet Owner</button>
+              <button type="button" role="tab" aria-selected={role === "driver"} onClick={() => setRole("driver")} className={`flex-1 py-2 rounded-md text-sm font-semibold transition-colors ${role === "driver" ? "bg-[#0F2440] text-white shadow-sm dark:bg-[#0F2440] dark:text-white" : "text-[#1E3A5F] dark:text-white"}`}>Driver</button>
             </div>
 
             <form onSubmit={handleSubmit} noValidate>

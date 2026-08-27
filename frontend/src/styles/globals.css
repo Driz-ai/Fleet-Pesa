@@ -188,8 +188,29 @@ body {
   text-decoration: underline;
 }
 
+:root[data-theme="dark"] .forgot-password {
+  color: #fff;
+}
+
+:root[data-theme="dark"] .forgot-password:hover {
+  color: #86efac;
+}
+
 .theme-toggle:hover {
   border-color: var(--primary);
+}
+
+:root[data-theme="dark"] .theme-toggle {
+  color: #fff;
+  background: #1d3a58;
+  border: 1px solid #fff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, .12);
+}
+
+:root[data-theme="dark"] .theme-toggle:hover {
+  color: #fff;
+  background: #294361;
+  border-color: #fff;
 }
 
 :root[data-theme="dark"] .login-card .text-slate-900,
@@ -1079,6 +1100,12 @@ a {
 :root[data-theme="dark"] .notification-trigger:hover,
 :root[data-theme="dark"] .driver-notification-trigger:hover {
   background: #38536f;
+}
+
+:root[data-theme="dark"] .topbar-avatar,
+:root[data-theme="dark"] .driver-avatar {
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, .14);
 }
 
 :root[data-theme="dark"] .shortfall-alert {
