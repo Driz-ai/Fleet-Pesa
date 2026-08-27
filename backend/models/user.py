@@ -11,7 +11,6 @@ from extensions import db, bcrypt
 class UserRole(enum.Enum):
     OWNER = "owner"
     DRIVER = "driver"
-    OWNER = "owner"
 
 
 class User(db.Model):
