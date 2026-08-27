@@ -5,11 +5,6 @@ def normalize_kenyan_phone(value):
     """
     Normalize Kenyan mobile numbers to 07XXXXXXXX.
 
-    Accepted:
-        0712345678
-        0112345678
-        254712345678
-        +254712345678
 
     Stored/returned:
         0712345678
