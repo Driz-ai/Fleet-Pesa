@@ -102,7 +102,7 @@ Base URL: `http://localhost:5000/api`
 | GET | `/fare-payments/<id>` | Get one fare payment — used to poll for confirmation and display the receipt |
 | POST | `/fare-payments/mpesa-callback` | Safaricom Daraja webhook — confirms a customer fare payment |
 
-All protected routes require an `Authorization: Bearer <token>` header. The `mpesa-callback` route is a public webhook validated by Safaricom's own request signature rather than a JWT.
+All protected routes require an `Authorization: Bearer <token>` header. The `mpesa-callback` route is a public webhook protected by the `MPESA_CALLBACK_SECRET` shared secret in the `X-MPESA-CALLBACK-SECRET` header rather than a JWT. Full Safaricom Daraja certificate/signature validation is still pending.
 
 ## Setup Instructions
 
@@ -153,6 +153,7 @@ See `GIT_FLOW.md` for our full branching workflow. Summary: clone from `dev` (de
 - **Maintenance tracking** — descoped from this build. Planned as a future addition: mileage-based service due dates, maintenance alerts, and a "Mark as Serviced" action.
 - **Automated tax remittance** — descoped from this build. Originally planned as a one-click M-Pesa-to-KRA remittance using Safaricom's API; kept as a future roadmap item rather than built now, to keep the current scope manageable.
 - **M-Pesa integration** uses the Safaricom Daraja sandbox, not production — a mocked/simulated callback is an acceptable fallback if sandbox credentials become a blocker, since it keeps the same data model and API shape.
+- **M-Pesa callback signature validation** currently uses an application shared secret as an interim safeguard; full Safaricom Daraja certificate/signature validation remains incomplete.
 - **Customer fare payments** are recorded per-trip but not yet reconciled automatically against a specific remittance — an owner currently views fare payment totals separately from the driver's daily remittance rather than in one combined ledger.
 - Remittance status thresholds (what counts as "short" vs "late") are currently hardcoded and not yet configurable per owner.
 - No real-time updates — the dashboard requires a refresh to reflect a driver's newly submitted remittance or a customer's fare payment.
