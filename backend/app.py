@@ -8,6 +8,11 @@ from config import Config
 from extensions import api, bcrypt, db, jwt, migrate
 from models.user import User
 from routes.auth_routes import Login, Me, Refresh, Signup
+from routes.fare_payment_routes import (
+    FarePaymentCallback,
+    FarePaymentCreate,
+    FarePaymentDetail,
+)
 from routes.driver_assignment_routes import (
     DriverAssignmentById,
     DriverAssignments,
@@ -15,11 +20,14 @@ from routes.driver_assignment_routes import (
     VehicleDriverAssignment,
     VehicleDriverHistory,
 )
+<<<<<<< HEAD
+=======
 from routes.fare_payment_routes import (
     FarePaymentCallback,
     FarePaymentDetail,
     FarePaymentList,
 )
+>>>>>>> 96670e7b8a56aed76fc5ca1becc53292eefc051d
 from routes.remittance_routes import (
     RemittanceDetail,
     RemittanceList,
@@ -120,12 +128,20 @@ def create_app(config_class=Config):
         VehicleRemittanceHistory,
         "/api/vehicles/<int:vehicle_id>/remittances",
     )
+    api.add_resource(RemittanceList, "/api/remittances")
+    api.add_resource(RemittanceDetail, "/api/remittances/<int:remittance_id>")
     api.add_resource(RemittancePrompt, "/api/remittances/<int:remittance_id>/prompt")
+<<<<<<< HEAD
+    api.add_resource(FarePaymentCallback, "/api/fare-payments/mpesa-callback")
+    api.add_resource(FarePaymentCreate, "/api/fare-payments")
+    api.add_resource(FarePaymentDetail, "/api/fare-payments/<int:payment_id>")
+=======
     api.add_resource(RemittanceList, "/api/remittances")
     api.add_resource(RemittanceDetail, "/api/remittances/<int:remittance_id>")
     api.add_resource(FarePaymentList, "/api/fare-payments")
     api.add_resource(FarePaymentDetail, "/api/fare-payments/<int:payment_id>")
     api.add_resource(FarePaymentCallback, "/api/fare-payments/mpesa-callback")
+>>>>>>> 96670e7b8a56aed76fc5ca1becc53292eefc051d
     api.add_resource(Health, "/")
     api.add_resource(UpdateProfile, "/api/users/me")
     api.add_resource(ChangePassword, "/api/users/me/password")
