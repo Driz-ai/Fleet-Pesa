@@ -12,6 +12,8 @@ from routes.driver_assignment_routes import (
     DriverAssignmentById,
     DriverAssignments,
     UnassignDriver,
+    VehicleDriverAssignment,
+    VehicleDriverHistory,
 )
 from routes.remittance_routes import RemittancePrompt, VehicleRemittanceHistory
 from routes.vehicle_routes import VehicleDetail, VehicleList
@@ -94,6 +96,14 @@ def create_app(config_class=Config):
     api.add_resource(DriverAssignments, "/api/driver-assignments")
     api.add_resource(DriverAssignmentById, "/api/driver-assignments/<int:id>")
     api.add_resource(UnassignDriver, "/api/driver-assignments/<int:id>/unassign")
+    api.add_resource(
+        VehicleDriverAssignment,
+        "/api/vehicles/<int:vehicle_id>/assign-driver",
+    )
+    api.add_resource(
+        VehicleDriverHistory,
+        "/api/vehicles/<int:vehicle_id>/driver-history",
+    )
     api.add_resource(VehicleList, "/api/vehicles")
     api.add_resource(VehicleDetail, "/api/vehicles/<int:vehicle_id>")
     api.add_resource(
