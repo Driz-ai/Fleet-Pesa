@@ -119,6 +119,9 @@ export default function DriverSettingsPage() {
 								<button className="settings-secondary" type="submit" disabled={passwordState.loading}>{passwordState.loading ? 'Updating...' : 'Update password'}</button>
 							</div>
 						</form>
+						<div className="settings-signout-wrap">
+							<button className="settings-danger" type="button" onClick={handleSignOut}>Sign out</button>
+						</div>
 					</section>
 
 				</div>
