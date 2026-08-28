@@ -10,7 +10,7 @@ from extensions import db, bcrypt
 
 
 class UserRole(enum.Enum):
-    OWNER = "owner"
+    ADMIN = "admin"
     DRIVER = "driver"
 
 
