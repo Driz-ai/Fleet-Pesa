@@ -16,7 +16,12 @@ from routes.driver_assignment_routes import (
     VehicleDriverAssignment,
     VehicleDriverHistory,
 )
-from routes.remittance_routes import RemittancePrompt, VehicleRemittanceHistory
+from routes.remittance_routes import (
+    RemittanceDetail,
+    RemittanceList,
+    RemittancePrompt,
+    VehicleRemittanceHistory,
+)
 from routes.vehicle_routes import VehicleDetail, VehicleList
 from schemas.user_schema import password_change_schema, profile_schema
 
@@ -111,6 +116,8 @@ def create_app(config_class=Config):
         VehicleRemittanceHistory,
         "/api/vehicles/<int:vehicle_id>/remittances",
     )
+    api.add_resource(RemittanceList, "/api/remittances")
+    api.add_resource(RemittanceDetail, "/api/remittances/<int:remittance_id>")
     api.add_resource(RemittancePrompt, "/api/remittances/<int:remittance_id>/prompt")
     api.add_resource(FarePaymentCallback, "/api/fare-payments/mpesa-callback")
     api.add_resource(Health, "/")
