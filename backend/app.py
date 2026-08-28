@@ -9,6 +9,7 @@ from extensions import api, bcrypt, db, jwt, migrate
 from models.user import User
 from routes.auth_routes import Login, Me, Refresh, Signup
 from routes.fare_payment_routes import FarePaymentCallback
+from routes.fare_payment_crud_routes import FarePaymentCreate, FarePaymentDetail
 from routes.driver_assignment_routes import (
     DriverAssignmentById,
     DriverAssignments,
@@ -120,6 +121,8 @@ def create_app(config_class=Config):
     api.add_resource(RemittanceDetail, "/api/remittances/<int:remittance_id>")
     api.add_resource(RemittancePrompt, "/api/remittances/<int:remittance_id>/prompt")
     api.add_resource(FarePaymentCallback, "/api/fare-payments/mpesa-callback")
+    api.add_resource(FarePaymentCreate, "/api/fare-payments")
+    api.add_resource(FarePaymentDetail, "/api/fare-payments/<int:payment_id>")
     api.add_resource(Health, "/")
     api.add_resource(UpdateProfile, "/api/users/me")
     api.add_resource(ChangePassword, "/api/users/me/password")
