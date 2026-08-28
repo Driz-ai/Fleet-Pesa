@@ -60,19 +60,6 @@ class User(db.Model):
         server_default=UserRole.DRIVER.value,
     )
 
-    notification_preference = db.Column(
-        db.String(5),
-        nullable=False,
-        default="none",
-        server_default="none",
-    )
-
-    is_active = db.Column(
-        db.Boolean,
-        nullable=False,
-        default=True,
-        server_default=db.true(),
-    )
 
     created_at = db.Column(
         db.DateTime(timezone=True),
@@ -81,13 +68,6 @@ class User(db.Model):
         server_default=db.func.now(),
     )
 
-    updated_at = db.Column(
-        db.DateTime(timezone=True),
-        nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
-        server_default=db.func.now(),
-    )
 
     fleet_owner = db.relationship(
         "FleetOwner",
@@ -197,20 +177,12 @@ class User(db.Model):
             "phone": self.phone,
             "role": self.role,
             "fleet_owner_id": self.fleet_owner_id,
-            "notification_preference": (
-                self.notification_preference
-            ),
-            "is_active": self.is_active,
             "created_at": (
                 self.created_at.isoformat()
                 if self.created_at
                 else None
-            ),
-            "updated_at": (
-                self.updated_at.isoformat()
-                if self.updated_at
-                else None
-            ),
+            )
+            
         }
 
     def __repr__(self):
