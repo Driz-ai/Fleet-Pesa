@@ -12,6 +12,7 @@ from models.driver_assignment import DriverAssignment
 from routes.auth_routes import auth_bp
 from routes.remittance_routes import remittance_bp
 from routes.vehicle_routes import vehicle_bp
+from routes.vehicle_routes import VehicleDetail, VehicleList
 from schemas.user_schema import password_change_schema, profile_schema
 from routes.driver_assignment_routes import DriverAssignments,DriverAssignmentById,UnassignDriver
 
@@ -22,6 +23,8 @@ def create_app(config_class=Config):
     api.add_resource( DriverAssignments,"/driver-assignments")
     api.add_resource(DriverAssignmentById,"/driver-assignments/<int:id>",)
     api.add_resource(UnassignDriver, "/driver-assignments/<int:id>/unassign",)
+    api.add_resource(VehicleList, "/api/vehicles")
+    api.add_resource(VehicleDetail, "/api/vehicles/<int:vehicle_id>")
 	
     CORS(app)
     db.init_app(app)
@@ -33,7 +36,6 @@ def create_app(config_class=Config):
     # Register blueprints
     app.register_blueprint(auth_bp)
     app.register_blueprint(remittance_bp)
-    app.register_blueprint(vehicle_bp)
 
     # Home / health check
     @app.route("/")
