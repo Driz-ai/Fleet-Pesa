@@ -4,6 +4,7 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 
 from extensions import db
+from models.driver_assignment import DriverAssignment
 from models.user import User
 from models.vehicle import Vehicle
 from schemas.vehicle_schema import (
@@ -26,12 +27,23 @@ class VehicleList(Resource):
 		user = _current_user()
 		if user is None:
 			return {"message": "User not found"}, 404
-		if user.role != "admin":
-			return {"message": "Only owners can list fleet vehicles"}, 403
-
-		vehicles = Vehicle.query.filter_by(
-			fleet_owner_id=user.fleet_owner_id
-		).order_by(Vehicle.id).all()
+		if user.role == "admin":
+			vehicles = Vehicle.query.filter_by(
+				fleet_owner_id=user.fleet_owner_id,
+				is_active=True,
+			).order_by(Vehicle.id).all()
+		else:
+			vehicles = (
+				Vehicle.query
+				.join(DriverAssignment)
+				.filter(
+					DriverAssignment.driver_id == user.id,
+					DriverAssignment.unassigned_at.is_(None),
+					Vehicle.is_active.is_(True),
+				)
+				.order_by(Vehicle.id)
+				.all()
+			)
 		return {"vehicles": vehicles_schema.dump(vehicles)}, 200
 
 	@jwt_required()
