@@ -24,7 +24,7 @@ class Signup(Resource):
     """
     POST /auth/signup
 
-    Creates a new driver or admin account.
+    Creates a new admin or driver account.
     """
 
     def post(self):
@@ -75,9 +75,7 @@ class Signup(Resource):
         if role == UserRole.ADMIN.value:
             account_name = data.get("account_name")
             if not account_name:
-                return {
-                    "error": "account_name is required for admin signup."
-                }, 400
+                return {"error": "account_name is required for admin signup."}, 400
             fleet_owner = FleetOwner(account_name=account_name)
             db.session.add(fleet_owner)
             db.session.flush()
@@ -91,11 +89,7 @@ class Signup(Resource):
                 "notification_preference",
                 "none",
             ),
-            fleet_owner_id=(
-                fleet_owner.id
-                if fleet_owner is not None
-                else data.get("fleet_owner_id")
-            ),
+            fleet_owner_id=fleet_owner.id if fleet_owner else None,
         )
 
         # Hash password

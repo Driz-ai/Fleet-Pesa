@@ -14,22 +14,11 @@ from schemas.vehicle_schema import (
 	vehicles_schema,
 )
 
+from utils.access_control import _can_access_vehicle
+
 
 def _current_user():
 	return db.session.get(User, int(get_jwt_identity()))
-
-
-def _can_access_vehicle(vehicle, user_id):
-	user = db.session.get(User, user_id)
-	if user is None:
-		return False
-	if vehicle.fleet_owner_id == user.fleet_owner_id and user.role == "admin":
-		return True
-	return DriverAssignment.query.filter_by(
-		vehicle_id=vehicle.id,
-		driver_id=user_id,
-		unassigned_at=None,
-	).first() is not None
 
 
 class VehicleList(Resource):
@@ -38,12 +27,23 @@ class VehicleList(Resource):
 		user = _current_user()
 		if user is None:
 			return {"message": "User not found"}, 404
-		if user.role != "admin":
-			return {"message": "Only owners can list fleet vehicles"}, 403
-
-		vehicles = Vehicle.query.filter_by(
-			fleet_owner_id=user.fleet_owner_id
-		).order_by(Vehicle.id).all()
+		if user.role == "admin":
+			vehicles = Vehicle.query.filter_by(
+				fleet_owner_id=user.fleet_owner_id,
+				is_active=True,
+			).order_by(Vehicle.id).all()
+		else:
+			vehicles = (
+				Vehicle.query
+				.join(DriverAssignment)
+				.filter(
+					DriverAssignment.driver_id == user.id,
+					DriverAssignment.unassigned_at.is_(None),
+					Vehicle.is_active.is_(True),
+				)
+				.order_by(Vehicle.id)
+				.all()
+			)
 		return {"vehicles": vehicles_schema.dump(vehicles)}, 200
 
 	@jwt_required()
@@ -64,6 +64,7 @@ class VehicleList(Resource):
 				"errors": error.messages,
 			}, 400
 
+		data["plate_number"] = data["plate_number"].strip().upper()
 		if Vehicle.query.filter_by(
 			plate_number=data["plate_number"]
 		).first():
@@ -74,7 +75,7 @@ class VehicleList(Resource):
 			vehicle_type=data["vehicle_type"],
 			fleet_owner_id=user.fleet_owner_id,
 			daily_expected_amount=data["daily_expected_amount"],
-			is_active=data.get("is_active", True),
+			is_active=True,
 		)
 		db.session.add(vehicle)
 		db.session.commit()
@@ -87,7 +88,7 @@ class VehicleDetail(Resource):
 		vehicle = db.session.get(Vehicle, vehicle_id)
 		if vehicle is None:
 			return {"message": "Vehicle not found"}, 404
-		if not _can_access_vehicle(vehicle, int(get_jwt_identity())):
+		if not _can_access_vehicle(_current_user(), vehicle):
 			return {"message": "You do not have access to this vehicle"}, 403
 		return {"vehicle": vehicle_schema.dump(vehicle)}, 200
 
@@ -117,6 +118,7 @@ class VehicleDetail(Resource):
 			return {"message": "At least one vehicle field is required"}, 400
 
 		if "plate_number" in data:
+			data["plate_number"] = data["plate_number"].strip().upper()
 			existing = Vehicle.query.filter(
 				Vehicle.plate_number == data["plate_number"],
 				Vehicle.id != vehicle_id,
@@ -142,6 +144,6 @@ class VehicleDetail(Resource):
 				"message": "Only the owning fleet owner can remove this vehicle"
 			}, 403
 
-		db.session.delete(vehicle)
+		vehicle.is_active = False
 		db.session.commit()
-		return "", 204
+		return {"vehicle": vehicle_schema.dump(vehicle)}, 200

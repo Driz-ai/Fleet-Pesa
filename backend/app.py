@@ -16,6 +16,7 @@ from routes.fare_payment_routes import (
     FarePaymentCallback,
     FarePaymentDetail,
     FarePaymentList,
+    FarePaymentCreate
 )
 from routes.remittance_routes import (
     RemittanceDetail,
@@ -57,6 +58,7 @@ def create_app(config_class=Config):
     api.add_resource(FarePaymentList, "/fare-payments")
     api.add_resource(FarePaymentDetail, "/fare-payments/<int:payment_id>")
     api.add_resource(FarePaymentCallback, "/fare-payments/mpesa-callback")
+    api.add_resource(FarePaymentCreate, "/fare-payments")
     api.add_resource(Health, "/")
     api.add_resource(UpdateProfile, "/users/me")
     api.add_resource(ChangePassword, "/users/me/password")
