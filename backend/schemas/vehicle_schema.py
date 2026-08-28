@@ -7,7 +7,6 @@ class VehicleCreateSchema(Schema):
 	plate_number = fields.Str(required=True, validate=validate.Regexp(PLATE_NUMBER_REGEX, error="plate_number must look like KDA 001A"))
 	vehicle_type = fields.Str(required=True, validate=validate.OneOf(("matatu", "minibus", "bus")))
 	daily_expected_amount = fields.Decimal(required=True, places=2, as_string=False, validate=validate.Range(min=0))
-	is_active = fields.Bool(required=False, load_default=True)
 
 
 vehicle_create_schema = VehicleCreateSchema()

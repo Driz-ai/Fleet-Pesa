@@ -52,6 +52,7 @@ class VehicleList(Resource):
 				"errors": error.messages,
 			}, 400
 
+		data["plate_number"] = data["plate_number"].strip().upper()
 		if Vehicle.query.filter_by(
 			plate_number=data["plate_number"]
 		).first():
@@ -105,6 +106,7 @@ class VehicleDetail(Resource):
 			return {"message": "At least one vehicle field is required"}, 400
 
 		if "plate_number" in data:
+			data["plate_number"] = data["plate_number"].strip().upper()
 			existing = Vehicle.query.filter(
 				Vehicle.plate_number == data["plate_number"],
 				Vehicle.id != vehicle_id,
