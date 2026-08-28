@@ -29,31 +29,32 @@ class VehicleRemittanceHistory(Resource):
 
         try:
             if request.args.get("from"):
+                start_date = datetime.strptime(
+                    request.args["from"], "%Y-%m-%d"
+                ).date()
                 query = query.filter(
-                    Remittance.submitted_at >= datetime.fromisoformat(
-                        request.args["from"]
-                    ).replace(tzinfo=None)
+                    Remittance.submitted_at >= datetime.combine(start_date, datetime.min.time())
                 )
             if request.args.get("to"):
-                end_date = datetime.fromisoformat(
-                    request.args["to"]
+                end_date = datetime.strptime(
+                    request.args["to"], "%Y-%m-%d"
                 ).date()
                 query = query.filter(
                     Remittance.submitted_at
                     <= datetime.combine(end_date, time.max)
                 )
         except ValueError:
-            remittances = query.order_by(Remittance.submitted_at.desc()).all()
-            user = db.session.get(User, int(get_jwt_identity()))
-            if user is not None and user.role != "admin":
-                remittances = [
-                    item for item in remittances
-                    if _can_read_transaction(user, vehicle, item.submitted_at)
-                ]
-
             return {
                 "message": "from and to must use YYYY-MM-DD format"
             }, 400
+
+        remittances = query.order_by(Remittance.submitted_at.desc()).all()
+        user = db.session.get(User, int(get_jwt_identity()))
+        if user is not None and user.role != "admin":
+            remittances = [
+                item for item in remittances
+                if _can_read_transaction(user, vehicle, item.submitted_at)
+            ]
 
         return {
             "vehicle": {
@@ -94,7 +95,7 @@ class RemittancePrompt(Resource):
         remittance.flagged_for_followup = True
         db.session.commit()
         return {
-            "message": "Payment prompt sent successfully",
+            "message": "Remittance flagged for follow-up",
             "remittance": remittance.to_dict(),
             "outstanding_amount": float(outstanding),
         }, 200
