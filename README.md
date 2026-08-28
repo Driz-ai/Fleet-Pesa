@@ -86,8 +86,10 @@ Base URL: `http://localhost:5000/api`
 
 | Method | Endpoint | Description |
 |---|---|---|
-| POST | `/auth/register` | Create a new admin or driver account. Admin registration creates a matching `FleetOwner` account. |
+| POST | `/auth/signup` | Create a new admin or driver account. Admin signup creates a matching `FleetOwner` account. |
 | POST | `/auth/login` | Log in, returns JWT |
+| POST | `/auth/refresh` | Refresh an access token |
+| GET | `/auth/me` | Get the authenticated user |
 | GET | `/vehicles` | List all vehicles for the logged-in fleet owner account |
 | POST | `/vehicles` | Add a vehicle |
 | GET | `/vehicles/<id>` | Get one vehicle's details |
@@ -95,6 +97,7 @@ Base URL: `http://localhost:5000/api`
 | DELETE | `/vehicles/<id>` | Remove a vehicle (soft-delete via `is_active`) |
 | POST | `/vehicles/<id>/assign-driver` | Assign or reassign a driver to a vehicle — closes the previous `DriverAssignment` row and opens a new one, atomically |
 | GET | `/vehicles/<id>/driver-history` | List all past and current driver assignments for a vehicle |
+| GET | `/vehicles/<id>/remittances?status=paid&from=YYYY-MM-DD&to=YYYY-MM-DD` | List remittances for a vehicle with optional status and date filters |
 | GET | `/remittances` | List remittances (filterable by vehicle) |
 | POST | `/remittances` | Submit a new remittance |
 | PATCH | `/remittances/<id>` | Update a remittance (e.g. flag for follow-up) |
