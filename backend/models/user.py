@@ -174,7 +174,11 @@ class User(db.Model):
         value = re.sub(r"[\s\-()]", "", value)
 
 
-        if not (
+        if re.fullmatch(r"\+254[17]\d{8}", value):
+            value = "0" + value[4:]
+        elif re.fullmatch(r"254[17]\d{8}", value):
+            value = "0" + value[3:]
+        elif not (
             re.fullmatch(r"07\d{8}", value)
             or re.fullmatch(r"011\d{8}", value)
         ):
