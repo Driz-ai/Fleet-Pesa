@@ -90,6 +90,7 @@ Base URL: `http://localhost:5000/api`
 | POST | `/auth/login` | Log in, returns JWT |
 | POST | `/auth/refresh` | Refresh an access token |
 | GET | `/auth/me` | Get the authenticated user |
+| GET | `/` | API health check |
 | GET | `/vehicles` | List all vehicles for the logged-in fleet owner account |
 | POST | `/vehicles` | Add a vehicle |
 | GET | `/vehicles/<id>` | Get one vehicle's details |
@@ -98,12 +99,19 @@ Base URL: `http://localhost:5000/api`
 | POST | `/vehicles/<id>/assign-driver` | Assign or reassign a driver to a vehicle — closes the previous `DriverAssignment` row and opens a new one, atomically |
 | GET | `/vehicles/<id>/driver-history` | List all past and current driver assignments for a vehicle |
 | GET | `/vehicles/<id>/remittances?status=paid&from=YYYY-MM-DD&to=YYYY-MM-DD` | List remittances for a vehicle with optional status and date filters |
+| GET | `/driver-assignments` | List driver assignments for the authenticated fleet |
+| GET | `/driver-assignments/<id>` | Get one driver assignment |
+| PATCH | `/driver-assignments/<id>/unassign` | Close an active driver assignment |
 | GET | `/remittances` | List remittances (filterable by vehicle) |
 | POST | `/remittances` | Submit a new remittance |
+| GET | `/remittances/<id>` | Get one remittance |
 | PATCH | `/remittances/<id>` | Update a remittance (e.g. flag for follow-up) |
+| POST | `/remittances/<id>/prompt` | Flag an outstanding remittance for follow-up |
 | POST | `/fare-payments` | Driver prompts a customer's phone to pay a fare — initiates an M-Pesa STK push to the passenger |
 | GET | `/fare-payments/<id>` | Get one fare payment — used to poll for confirmation and display the receipt |
 | POST | `/fare-payments/mpesa-callback` | Safaricom Daraja webhook — confirms a customer fare payment |
+| PATCH | `/users/me` | Update the authenticated user's profile |
+| PATCH | `/users/me/password` | Change the authenticated user's password |
 
 All protected routes require an `Authorization: Bearer <token>` header. The `mpesa-callback` route is a public webhook protected by the `MPESA_CALLBACK_SECRET` shared secret in the `X-MPESA-CALLBACK-SECRET` header rather than a JWT. Full Safaricom Daraja certificate/signature validation is still pending.
 
