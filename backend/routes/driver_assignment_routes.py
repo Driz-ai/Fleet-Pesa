@@ -1,6 +1,7 @@
 from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
+from flask_jwt_extended import jwt_required,get_jwt_identity
 from datetime import timezone,datetime
 from extensions import db
 from models.user import User, UserRole
@@ -9,7 +10,7 @@ from models.driver_assignment import DriverAssignment
 from schemas.driver_assignment_schema import driver_assignment_schema,driver_assignments_schema
 
 class DriverAssignments(Resource):
-
+    @jwt_required()
     def post(self):
         try:
             data = driver_assignment_schema.load(
@@ -22,6 +23,13 @@ class DriverAssignments(Resource):
 
         driver_id = data["driver_id"]
         vehicle_id = data["vehicle_id"]
+        current_user_id = int(get_jwt_identity())
+        current_user = db.session.get(User, current_user_id)
+        
+        if current_user is None:
+           return {
+        "error": "Authenticated user not found."
+    }, 401
         driver = db.session.get(User, driver_id)
 
         if driver is None:
@@ -77,6 +85,7 @@ class DriverAssignments(Resource):
             driver_assignment_schema.dump(assignment),
             201,
         )
+    @jwt_required()
     def get(self):
       assignments = DriverAssignment.query.all()
 
@@ -86,6 +95,7 @@ class DriverAssignments(Resource):
     )
 
 class DriverAssignmentById(Resource):
+     @jwt_required()
      def get(self, id):
         assignment = db.session.get(
             DriverAssignment,
@@ -100,6 +110,7 @@ class DriverAssignmentById(Resource):
             200,
         )
 class UnassignDriver(Resource):
+    @jwt_required()
     def patch(self, id):
         assignment = db.session.get(
             DriverAssignment,
