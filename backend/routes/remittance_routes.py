@@ -8,7 +8,7 @@ from extensions import db
 from models.remittance import Remittance
 from models.user import User
 from models.vehicle import Vehicle
-from utils.access_control import _can_access_vehicle
+from utils.access_control import _can_access_vehicle, _can_read_transaction
 
 
 class VehicleRemittanceHistory(Resource):
@@ -43,6 +43,14 @@ class VehicleRemittanceHistory(Resource):
                     <= datetime.combine(end_date, time.max)
                 )
         except ValueError:
+            remittances = query.order_by(Remittance.submitted_at.desc()).all()
+            user = db.session.get(User, int(get_jwt_identity()))
+            if user is not None and user.role != "admin":
+                remittances = [
+                    item for item in remittances
+                    if _can_read_transaction(user, vehicle, item.submitted_at)
+                ]
+
             return {
                 "message": "from and to must use YYYY-MM-DD format"
             }, 400
@@ -53,12 +61,7 @@ class VehicleRemittanceHistory(Resource):
                 "plate_number": vehicle.plate_number,
                 "vehicle_type": vehicle.vehicle_type,
             },
-            "remittances": [
-                item.to_dict()
-                for item in query.order_by(
-                    Remittance.submitted_at.desc()
-                ).all()
-            ],
+            "remittances": [item.to_dict() for item in remittances],
         }, 200
 
 

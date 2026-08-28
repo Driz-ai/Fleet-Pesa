@@ -27,3 +27,7 @@ def _can_access_vehicle(user, vehicle, at_time=None):
 
 def current_utc():
     return datetime.now(timezone.utc)
+
+
+def _can_read_transaction(user, vehicle, transaction_time):
+    return _can_access_vehicle(user, vehicle, at_time=transaction_time)
