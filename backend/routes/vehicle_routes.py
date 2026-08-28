@@ -75,7 +75,7 @@ class VehicleList(Resource):
 			vehicle_type=data["vehicle_type"],
 			fleet_owner_id=user.fleet_owner_id,
 			daily_expected_amount=data["daily_expected_amount"],
-			is_active=data.get("is_active", True),
+			is_active=True,
 		)
 		db.session.add(vehicle)
 		db.session.commit()
