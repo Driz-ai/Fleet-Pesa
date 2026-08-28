@@ -87,9 +87,7 @@ class Signup(Resource):
                 "notification_preference",
                 "none",
             ),
-            fleet_owner_id=data.get(
-                "fleet_owner_id"
-            ),
+            fleet_owner_id=None,
         )
 
         # Hash password
