@@ -14,8 +14,8 @@ from extensions import db
 from models.user import (
     User,
     UserRole,
-    NotificationPreference,
 )
+from models.fleet_owner import FleetOwner
 from schemas.user_schema import user_schema
 
 
@@ -23,8 +23,7 @@ class Signup(Resource):
     """
     POST /auth/signup
 
-    Creates a new driver account.
-    Public signup cannot create an owner account.
+    Creates a new driver or admin account.
     """
 
     def post(self):
@@ -70,26 +69,31 @@ class Signup(Resource):
                 "error": "Phone number already exists."
             }, 409
 
-        # Public signup always creates a driver.
-        #
-        # Do NOT allow:
-        #
-        # {
-        #     "role": "owner"
-        # }
-        #
-        # from the public signup endpoint.
+        role = data.get("role", UserRole.DRIVER.value)
+        fleet_owner = None
+        if role == UserRole.ADMIN.value:
+            account_name = data.get("account_name")
+            if not account_name:
+                return {
+                    "error": "account_name is required for admin signup."
+                }, 400
+            fleet_owner = FleetOwner(account_name=account_name)
+            db.session.add(fleet_owner)
+            db.session.flush()
+
         user = User(
             username=username,
             name=data["name"],
             phone=phone,
-            role=UserRole.DRIVER.value,
+            role=role,
             notification_preference=data.get(
                 "notification_preference",
-                NotificationPreference.NONE.value,
+                "none",
             ),
-            fleet_owner_id=data.get(
-                "fleet_owner_id"
+            fleet_owner_id=(
+                fleet_owner.id
+                if fleet_owner is not None
+                else data.get("fleet_owner_id")
             ),
         )
 
