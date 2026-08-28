@@ -14,7 +14,6 @@ from extensions import db
 from models.user import (
     User,
     UserRole,
-    NotificationPreference,
 )
 from schemas.user_schema import user_schema
 
@@ -86,7 +85,7 @@ class Signup(Resource):
             role=UserRole.DRIVER.value,
             notification_preference=data.get(
                 "notification_preference",
-                NotificationPreference.NONE.value,
+                "none",
             ),
             fleet_owner_id=data.get(
                 "fleet_owner_id"
