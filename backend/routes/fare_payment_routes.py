@@ -6,7 +6,10 @@ from marshmallow import ValidationError
 
 from extensions import db
 from models.fare_payment import FarePayment
+from models.user import User
+from models.vehicle import Vehicle
 from schemas.fare_payment_schema import fare_payment_callback_schema
+from utils.access_control import _can_access_vehicle
 
 
 class FarePaymentCallback(Resource):

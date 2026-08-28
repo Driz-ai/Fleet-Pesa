@@ -5,23 +5,10 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
 
 from extensions import db
-from models.driver_assignment import DriverAssignment
 from models.remittance import Remittance
 from models.user import User
 from models.vehicle import Vehicle
-
-
-def _can_access_vehicle(vehicle, user_id):
-    user = db.session.get(User, user_id)
-    if user is None:
-        return False
-    if user.role == "admin" and user.fleet_owner_id == vehicle.fleet_owner_id:
-        return True
-    return DriverAssignment.query.filter_by(
-        vehicle_id=vehicle.id,
-        driver_id=user_id,
-        unassigned_at=None,
-    ).first() is not None
+from utils.access_control import _can_access_vehicle
 
 
 class VehicleRemittanceHistory(Resource):
@@ -30,7 +17,7 @@ class VehicleRemittanceHistory(Resource):
         vehicle = db.session.get(Vehicle, vehicle_id)
         if vehicle is None:
             return {"message": "Vehicle not found"}, 404
-        if not _can_access_vehicle(vehicle, int(get_jwt_identity())):
+        if not _can_access_vehicle(db.session.get(User, int(get_jwt_identity())), vehicle):
             return {"message": "You do not have access to this vehicle"}, 403
 
         query = Remittance.query.filter_by(vehicle_id=vehicle_id)

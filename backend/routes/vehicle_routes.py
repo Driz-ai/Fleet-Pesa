@@ -4,7 +4,6 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 
 from extensions import db
-from models.driver_assignment import DriverAssignment
 from models.user import User
 from models.vehicle import Vehicle
 from schemas.vehicle_schema import (
@@ -14,22 +13,11 @@ from schemas.vehicle_schema import (
 	vehicles_schema,
 )
 
+from utils.access_control import _can_access_vehicle
+
 
 def _current_user():
 	return db.session.get(User, int(get_jwt_identity()))
-
-
-def _can_access_vehicle(vehicle, user_id):
-	user = db.session.get(User, user_id)
-	if user is None:
-		return False
-	if vehicle.fleet_owner_id == user.fleet_owner_id and user.role == "admin":
-		return True
-	return DriverAssignment.query.filter_by(
-		vehicle_id=vehicle.id,
-		driver_id=user_id,
-		unassigned_at=None,
-	).first() is not None
 
 
 class VehicleList(Resource):
@@ -87,7 +75,7 @@ class VehicleDetail(Resource):
 		vehicle = db.session.get(Vehicle, vehicle_id)
 		if vehicle is None:
 			return {"message": "Vehicle not found"}, 404
-		if not _can_access_vehicle(vehicle, int(get_jwt_identity())):
+		if not _can_access_vehicle(_current_user(), vehicle):
 			return {"message": "You do not have access to this vehicle"}, 403
 		return {"vehicle": vehicle_schema.dump(vehicle)}, 200
 
