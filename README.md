@@ -157,6 +157,7 @@ See `GIT_FLOW.md` for our full branching workflow. Summary: clone from `dev` (de
 - **Automated tax remittance** — descoped from this build. Originally planned as a one-click M-Pesa-to-KRA remittance using Safaricom's API; kept as a future roadmap item rather than built now, to keep the current scope manageable.
 - **M-Pesa integration** uses the Safaricom Daraja sandbox, not production — a mocked/simulated callback is an acceptable fallback if sandbox credentials become a blocker, since it keeps the same data model and API shape.
 - **M-Pesa callback signature validation** currently uses an application shared secret as an interim safeguard; full Safaricom Daraja certificate/signature validation remains incomplete.
+- **Fare-payment creation** currently generates a local `mpesa_reference`; a real Daraja STK push is not yet wired, so production M-Pesa confirmation remains deferred.
 - **Customer fare payments** are recorded per-trip but not yet reconciled automatically against a specific remittance — an owner currently views fare payment totals separately from the driver's daily remittance rather than in one combined ledger.
 - Remittance status thresholds (what counts as "short" vs "late") are currently hardcoded and not yet configurable per owner.
 - No real-time updates — the dashboard requires a refresh to reflect a driver's newly submitted remittance or a customer's fare payment.
