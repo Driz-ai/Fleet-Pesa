@@ -101,7 +101,7 @@ class DriverAssignments(Resource):
 
       if current_user is None:
         return {
-            "error": "Authenticated user not found."
+               "error": "Authenticated user not found."
         }, 401
 
       assignments = (
@@ -121,18 +121,32 @@ class DriverAssignments(Resource):
 class DriverAssignmentById(Resource):
      @jwt_required()
      def get(self, id):
-        assignment = db.session.get(
-            DriverAssignment,
-            id,
-        )
-        if assignment is None:
-            return {
-                "error": "Driver assignment not found."
-            }, 404
-        return (
-            driver_assignment_schema.dump(assignment),
-            200,
-        )
+      assignment = db.session.get(
+        DriverAssignment,
+        id,
+    )
+      if assignment is None:
+        return {
+              "error": "Driver assignment not found."
+        }, 404
+
+      current_user_id = int(get_jwt_identity())
+      current_user = db.session.get(User, current_user_id)
+
+      if current_user is None:
+        return {
+               "error": "Authenticated user not found."
+        }, 401
+
+      if assignment.vehicle.fleet_owner_id != current_user.fleet_owner_id:
+        return {
+              "error": "You are not allowed to access this assignment."
+        }, 403
+
+      return (
+          driver_assignment_schema.dump(assignment),
+        200,
+    )
 class UnassignDriver(Resource):
     @jwt_required()
     def patch(self, id):
@@ -144,6 +158,18 @@ class UnassignDriver(Resource):
             return {
                 "error": "Driver assignment not found."
             }, 404
+        current_user_id = int(get_jwt_identity())
+        current_user = db.session.get(User, current_user_id)
+
+        if current_user is None:
+           return {
+              "error": "Authenticated user not found."
+    }, 401
+
+        if assignment.vehicle.fleet_owner_id != current_user.fleet_owner_id:
+           return {
+                "error": "You are not allowed to modify this assignment."
+    }, 403
         if assignment.unassigned_at is not None:
             return {
                 "error": "Driver is already unassigned."
