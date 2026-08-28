@@ -1,13 +1,10 @@
-from flask import Flask, request
+from flask import Flask
 from flask_cors import CORS
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from flask_restful import Resource
-from marshmallow import ValidationError
-
 from config import Config
 from extensions import api, bcrypt, db, jwt, migrate
 from models.user import User
-from routes.auth_routes import Login, Me, Refresh, Signup
+
+from routes.auth_routes import Login, Me, Refresh, Signup,UpdateProfile,ChangePassword
 from routes.driver_assignment_routes import (
     DriverAssignmentById,
     DriverAssignments,
@@ -27,73 +24,7 @@ from routes.remittance_routes import (
     VehicleRemittanceHistory,
 )
 from routes.vehicle_routes import VehicleDetail, VehicleList
-from schemas.user_schema import password_change_schema, profile_schema
-
-
-class Health(Resource):
-    def get(self):
-        return {"message": "Fleet-Pesa API is running"}, 200
-
-
-class UpdateProfile(Resource):
-    @jwt_required()
-    def patch(self):
-        try:
-            data = profile_schema.load(request.get_json(silent=True) or {})
-        except ValidationError as error:
-            return {
-                "message": "Invalid profile data",
-                "errors": error.messages,
-            }, 400
-
-        if not data:
-            return {"message": "At least one profile field is required"}, 400
-
-        user = db.session.get(User, int(get_jwt_identity()))
-        if user is None:
-            return {"message": "User not found"}, 404
-        if "notification_preference" in data and user.role != "admin":
-            return {
-                "message": "Only owners can update notification preferences"
-            }, 403
-        if "phone" in data and User.query.filter(
-            User.phone == data["phone"], User.id != user.id
-        ).first():
-            return {"message": "phone is already registered"}, 409
-
-        for field, value in data.items():
-            setattr(user, field, value)
-        db.session.commit()
-        return {"user": user.to_dict()}, 200
-
-
-class ChangePassword(Resource):
-    @jwt_required()
-    def patch(self):
-        try:
-            data = password_change_schema.load(
-                request.get_json(silent=True) or {}
-            )
-        except ValidationError as error:
-            return {
-                "message": "Invalid password data",
-                "errors": error.messages,
-            }, 400
-
-        user = db.session.get(User, int(get_jwt_identity()))
-        if user is None:
-            return {"message": "User not found"}, 404
-        if not user.check_password(data["current_password"]):
-            return {"message": "Current password is incorrect"}, 401
-        if data["current_password"] == data["new_password"]:
-            return {
-                "message": "New password must be different from current password"
-            }, 400
-
-        user.set_password(data["new_password"])
-        db.session.commit()
-        return {"message": "Password updated successfully"}, 200
-
+from routes.system_routes import Health
 
 def create_app(config_class=Config):
     app = Flask(__name__)
