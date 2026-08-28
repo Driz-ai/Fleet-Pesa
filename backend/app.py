@@ -99,36 +99,36 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    api.add_resource(Signup, "/api/auth/signup")
-    api.add_resource(Login, "/api/auth/login")
-    api.add_resource(Refresh, "/api/auth/refresh")
-    api.add_resource(Me, "/api/auth/me")
-    api.add_resource(DriverAssignments, "/api/driver-assignments")
-    api.add_resource(DriverAssignmentById, "/api/driver-assignments/<int:id>")
-    api.add_resource(UnassignDriver, "/api/driver-assignments/<int:id>/unassign")
+    api.add_resource(Signup, "/auth/signup")
+    api.add_resource(Login, "/auth/login")
+    api.add_resource(Refresh, "/auth/refresh")
+    api.add_resource(Me, "/auth/me")
+    api.add_resource(DriverAssignments, "/driver-assignments")
+    api.add_resource(DriverAssignmentById, "/driver-assignments/<int:id>")
+    api.add_resource(UnassignDriver, "/driver-assignments/<int:id>/unassign")
     api.add_resource(
         VehicleDriverAssignment,
-        "/api/vehicles/<int:vehicle_id>/assign-driver",
+        "/vehicles/<int:vehicle_id>/assign-driver",
     )
     api.add_resource(
         VehicleDriverHistory,
-        "/api/vehicles/<int:vehicle_id>/driver-history",
+        "/vehicles/<int:vehicle_id>/driver-history",
     )
-    api.add_resource(VehicleList, "/api/vehicles")
-    api.add_resource(VehicleDetail, "/api/vehicles/<int:vehicle_id>")
+    api.add_resource(VehicleList, "/vehicles")
+    api.add_resource(VehicleDetail, "/vehicles/<int:vehicle_id>")
     api.add_resource(
         VehicleRemittanceHistory,
-        "/api/vehicles/<int:vehicle_id>/remittances",
+        "/vehicles/<int:vehicle_id>/remittances",
     )
-    api.add_resource(RemittancePrompt, "/api/remittances/<int:remittance_id>/prompt")
-    api.add_resource(RemittanceList, "/api/remittances")
-    api.add_resource(RemittanceDetail, "/api/remittances/<int:remittance_id>")
-    api.add_resource(FarePaymentList, "/api/fare-payments")
-    api.add_resource(FarePaymentDetail, "/api/fare-payments/<int:payment_id>")
-    api.add_resource(FarePaymentCallback, "/api/fare-payments/mpesa-callback")
+    api.add_resource(RemittancePrompt, "/remittances/<int:remittance_id>/prompt")
+    api.add_resource(RemittanceList, "/remittances")
+    api.add_resource(RemittanceDetail, "/remittances/<int:remittance_id>")
+    api.add_resource(FarePaymentList, "/fare-payments")
+    api.add_resource(FarePaymentDetail, "/fare-payments/<int:payment_id>")
+    api.add_resource(FarePaymentCallback, "/fare-payments/mpesa-callback")
     api.add_resource(Health, "/")
-    api.add_resource(UpdateProfile, "/api/users/me")
-    api.add_resource(ChangePassword, "/api/users/me/password")
+    api.add_resource(UpdateProfile, "/users/me")
+    api.add_resource(ChangePassword, "/users/me/password")
 
     CORS(app)
     db.init_app(app)
