@@ -1,4 +1,3 @@
-
 import enum
 import re
 
@@ -60,6 +59,19 @@ class User(db.Model):
         server_default=UserRole.DRIVER.value,
     )
 
+    is_active = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=True,
+        server_default="1",
+    )
+
+    notification_preference = db.Column(
+        db.String(10),
+        nullable=False,
+        default="none",
+        server_default="none",
+    )
 
     created_at = db.Column(
         db.DateTime(timezone=True),
@@ -177,6 +189,8 @@ class User(db.Model):
             "phone": self.phone,
             "role": self.role,
             "fleet_owner_id": self.fleet_owner_id,
+            "is_active": self.is_active,
+            "notification_preference": self.notification_preference,
             "created_at": (
                 self.created_at.isoformat()
                 if self.created_at
