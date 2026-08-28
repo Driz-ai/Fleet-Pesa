@@ -8,8 +8,11 @@ from config import Config
 from extensions import api, bcrypt, db, jwt, migrate
 from models.user import User
 from routes.auth_routes import Login, Me, Refresh, Signup
-from routes.fare_payment_routes import FarePaymentCallback
-from routes.fare_payment_crud_routes import FarePaymentCreate, FarePaymentDetail
+from routes.fare_payment_routes import (
+    FarePaymentCallback,
+    FarePaymentCreate,
+    FarePaymentDetail,
+)
 from routes.driver_assignment_routes import (
     DriverAssignmentById,
     DriverAssignments,
