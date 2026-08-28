@@ -11,7 +11,6 @@ from models.driver_assignment import DriverAssignment
 
 from routes.auth_routes import auth_bp
 from routes.remittance_routes import remittance_bp
-from routes.vehicle_routes import vehicle_bp
 from routes.vehicle_routes import VehicleDetail, VehicleList
 from schemas.user_schema import password_change_schema, profile_schema
 from routes.driver_assignment_routes import DriverAssignments,DriverAssignmentById,UnassignDriver
