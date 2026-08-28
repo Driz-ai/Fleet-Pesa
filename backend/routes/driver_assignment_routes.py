@@ -25,11 +25,12 @@ class DriverAssignments(Resource):
         vehicle_id = data["vehicle_id"]
         current_user_id = int(get_jwt_identity())
         current_user = db.session.get(User, current_user_id)
-        
+
         if current_user is None:
            return {
-        "error": "Authenticated user not found."
+               "error": "Authenticated user not found."
     }, 401
+        
         driver = db.session.get(User, driver_id)
 
         if driver is None:
@@ -40,6 +41,10 @@ class DriverAssignments(Resource):
             return {
                 "error": "Selected user is not a driver."
             }, 400
+        if driver.fleet_owner_id != current_user.fleet_owner_id:
+            return {
+                "error": "Driver does not belong to your fleet."
+    }, 403
 
         vehicle = db.session.get(Vehicle, vehicle_id)
 
@@ -48,6 +53,10 @@ class DriverAssignments(Resource):
                 "error": "Vehicle not found."
             }, 404
 
+        if vehicle.fleet_owner_id != current_user.fleet_owner_id:
+          return { 
+                "error": "Vehicle does not belong to your fleet."
+    }, 403
         existing_vehicle_assignment = (
             DriverAssignment.query
             .filter_by(
@@ -87,7 +96,22 @@ class DriverAssignments(Resource):
         )
     @jwt_required()
     def get(self):
-      assignments = DriverAssignment.query.all()
+      current_user_id = int(get_jwt_identity())
+      current_user = db.session.get(User, current_user_id)
+
+      if current_user is None:
+        return {
+            "error": "Authenticated user not found."
+        }, 401
+
+      assignments = (
+        DriverAssignment.query
+        .join(Vehicle)
+        .filter(
+            Vehicle.fleet_owner_id == current_user.fleet_owner_id
+        )
+        .all()
+    )
 
       return (
         driver_assignments_schema.dump(assignments),
