@@ -23,3 +23,10 @@ def app(monkeypatch):
         yield test_app
         db.session.remove()
         db.drop_all()
+
+
+@pytest.fixture
+def seeded_app(app):
+    with app.app_context():
+        seed_module.seed()
+        yield app
