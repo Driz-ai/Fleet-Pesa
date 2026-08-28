@@ -142,6 +142,6 @@ class VehicleDetail(Resource):
 				"message": "Only the owning fleet owner can remove this vehicle"
 			}, 403
 
-		db.session.delete(vehicle)
+		vehicle.is_active = False
 		db.session.commit()
-		return "", 204
+		return {"vehicle": vehicle_schema.dump(vehicle)}, 200
