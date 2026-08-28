@@ -39,7 +39,7 @@ class UserSchema(Schema):
 
     role = fields.String(
         load_default="driver",
-        validate=validate.OneOf(["owner", "driver"]),
+        validate=validate.OneOf(["admin", "driver"]),
     )
 
     created_at = fields.DateTime(dump_only=True)
