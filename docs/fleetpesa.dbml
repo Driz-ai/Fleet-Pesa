@@ -16,7 +16,7 @@ Table users {
   name varchar(120) [not null]
   phone varchar(15) [not null, unique]
   password_hash varchar(255) [not null]
-  role varchar(10) [not null, note: 'owner or driver']
+  role varchar(10) [not null, note: 'admin or driver']
   created_at timestamp [not null]
   notification_preference varchar(5) [not null, default: 'none']
   is_active boolean [not null, default: true]
