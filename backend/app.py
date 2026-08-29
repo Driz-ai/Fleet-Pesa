@@ -9,7 +9,6 @@ from routes.driver_assignment_routes import (
     DriverAssignmentById,
     DriverAssignments,
     UnassignDriver,
-    VehicleDriverAssignment,
     VehicleDriverHistory,
 )
 from routes.fare_payment_routes import (
@@ -38,10 +37,6 @@ def create_app(config_class=Config):
     api.add_resource(DriverAssignments, "/driver-assignments")
     api.add_resource(DriverAssignmentById, "/driver-assignments/<int:id>")
     api.add_resource(UnassignDriver, "/driver-assignments/<int:id>/unassign")
-    api.add_resource(
-        VehicleDriverAssignment,
-        "/vehicles/<int:vehicle_id>/assign-driver",
-    )
     api.add_resource(
         VehicleDriverHistory,
         "/vehicles/<int:vehicle_id>/driver-history",
