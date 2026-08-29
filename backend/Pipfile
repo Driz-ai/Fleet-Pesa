@@ -12,6 +12,8 @@ flask-jwt-extended = "*"
 flask-restful = "*"
 marshmallow = "*"
 marshmallow-sqlalchemy = "*"
+flask-marshmallow = "*"
+flask-cors = "*"
 python-dotenv = "*"
 
 [dev-packages]
