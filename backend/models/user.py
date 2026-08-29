@@ -1,3 +1,4 @@
+
 import enum
 import re
 
@@ -9,130 +10,58 @@ from extensions import db, bcrypt
 
 
 class UserRole(enum.Enum):
-    ADMIN = "admin"
+    OWNER = "owner"
     DRIVER = "driver"
 
 
 class User(db.Model):
     __tablename__ = "users"
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        autoincrement=True,
-    )
-
-    fleet_owner_id = db.Column(
-        db.Integer,
-        db.ForeignKey("fleet_owners.id"),
-        nullable=True,
-        index=True,
-    )
-
-    username = db.Column(
-        db.String(80),
-        unique=True,
-        nullable=False,
-        index=True,
-    )
-
-    name = db.Column(
-        db.String(120),
-        nullable=False,
-    )
-
-    phone = db.Column(
-        db.String(15),
-        unique=True,
-        nullable=False,
-    )
-
-    password_hash = db.Column(
-        db.String(255),
-        nullable=False,
-    )
-
-    role = db.Column(
-        db.String(10),
-        nullable=False,
-        default=UserRole.DRIVER.value,
-        server_default=UserRole.DRIVER.value,
-    )
-
-    is_active = db.Column(
-        db.Boolean,
-        nullable=False,
-        default=True,
-        server_default="1",
-    )
-
-    notification_preference = db.Column(
-        db.String(10),
-        nullable=False,
-        default="none",
-        server_default="none",
-    )
-
-    created_at = db.Column(
-        db.DateTime(timezone=True),
-        nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-        server_default=db.func.now(),
-    )
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True,)
 
 
-    fleet_owner = db.relationship(
-        "FleetOwner",
-        back_populates="users",
-    )
+    username = db.Column(db.String(80),unique=True,nullable=False,index=True,)
 
-    driver_assignments = db.relationship(
-        "DriverAssignment",
-        back_populates="driver",
-    )
+    name = db.Column(db.String(120),nullable=False,)
 
+    phone = db.Column(db.String(15), unique=True, nullable=False,)
+
+    password_hash = db.Column(db.String(255),nullable=False,)
+
+    role = db.Column( db.String(10),nullable=False,default=UserRole.DRIVER.value,server_default=UserRole.DRIVER.value,)
+    fleet_owner_id = db.Column( db.Integer, db.ForeignKey("fleet_owners.id"), nullable=True, index=True,)
+
+    fleet_owner = db.relationship("FleetOwner",back_populates="users",)
+    driver_assignments = db.relationship("DriverAssignment",back_populates="driver",)
+
+    
+
+    created_at = db.Column(db.DateTime(timezone=True),nullable=False,default=lambda: datetime.now(timezone.utc),server_default=db.func.now(),)
+    
     def set_password(self, password):
         if not password:
             raise ValueError("Password is required.")
-
         if len(password) < 8:
-            raise ValueError(
-                "Password must be at least 8 characters long."
-            )
-
-        self.password_hash = bcrypt.generate_password_hash(
-            password
-        ).decode("utf-8")
+            raise ValueError("Password must be at least 8 characters long.")
+        self.password_hash = bcrypt.generate_password_hash(password).decode("utf-8")
 
     def check_password(self, password):
         if not password or not self.password_hash:
             return False
-
-        return bcrypt.check_password_hash(
-            self.password_hash,
-            password,
-        )
+        return bcrypt.check_password_hash(self.password_hash,password,)
 
     @validates("username")
     def validate_username(self, key, value):
         if value is None:
             raise ValueError("Username is required.")
-
         value = str(value).strip().lower()
-
         if not value:
             raise ValueError("Username is required.")
-
         if len(value) < 3:
             raise ValueError(
-                "Username must be at least 3 characters long."
-            )
-
+                "Username must be at least 3 characters long.")
         if len(value) > 80:
-            raise ValueError(
-                "Username must not exceed 80 characters."
-            )
-
+            raise ValueError("Username must not exceed 80 characters.")
         return value
 
     @validates("name")
@@ -166,13 +95,9 @@ class User(db.Model):
         value = re.sub(r"[\s\-()]", "", value)
 
 
-        if re.fullmatch(r"\+254[17]\d{8}", value):
-            value = "0" + value[4:]
-        elif re.fullmatch(r"254[17]\d{8}", value):
-            value = "0" + value[3:]
-        elif not (
+        if not (
             re.fullmatch(r"07\d{8}", value)
-            or re.fullmatch(r"011\d{8}", value)
+            or re.fullmatch(r"01\d{8}", value)
         ):
             raise ValueError(
                 "Phone number must start with 07 or 011."
@@ -189,15 +114,17 @@ class User(db.Model):
             "phone": self.phone,
             "role": self.role,
             "fleet_owner_id": self.fleet_owner_id,
-            "is_active": self.is_active,
-            "notification_preference": self.notification_preference,
             "created_at": (
                 self.created_at.isoformat()
                 if self.created_at
                 else None
-            )
-            
-        }
+            ),
+    }
+
 
     def __repr__(self):
         return f"<User {self.id} {self.username}>"
+
+
+
+
