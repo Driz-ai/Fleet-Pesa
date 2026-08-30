@@ -46,12 +46,12 @@ def create_app(config_class=Config):
         VehicleRemittanceHistory,
         "/vehicles/<int:vehicle_id>/remittances",
     )
-    api.add_resource(RemittanceList, "/api/remittances")
-    api.add_resource(RemittanceDetail, "/api/remittances/<int:remittance_id>")
-    api.add_resource(RemittancePrompt, "/api/remittances/<int:remittance_id>/prompt")
-    api.add_resource(FarePaymentCreate, "/api/fare-payments")
-    api.add_resource(FarePaymentDetail, "/api/fare-payments/<int:payment_id>")
-    api.add_resource(FarePaymentCallback, "/api/fare-payments/mpesa-callback")
+    api.add_resource(RemittanceList, "/remittances")
+    api.add_resource(RemittanceDetail, "/remittances/<int:remittance_id>")
+    api.add_resource(RemittancePrompt, "/remittances/<int:remittance_id>/prompt")
+    api.add_resource(FarePaymentCreate, "/fare-payments")
+    api.add_resource(FarePaymentDetail, "/fare-payments/<int:payment_id>")
+    api.add_resource(FarePaymentCallback, "/fare-payments/mpesa-callback")
 
     api.add_resource(Health, "/")
     

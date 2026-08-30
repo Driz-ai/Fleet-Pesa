@@ -48,10 +48,6 @@ class DriverAssignments(Resource):
             return {
                 "error": "Selected user is not a driver."
             }, 400
-        if driver.fleet_owner_id != current_user.fleet_owner_id:
-            return {
-                "error": "Driver does not belong to your fleet."
-    }, 403
 
         vehicle = db.session.get(Vehicle, vehicle_id)
 
