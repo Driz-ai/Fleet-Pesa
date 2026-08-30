@@ -44,7 +44,7 @@ class DriverAssignments(Resource):
             return {
                 "error": "Driver not found."
             }, 404
-        if driver.role != UserRole.DRIVER:
+        if driver.role != UserRole.DRIVER.value:
             return {
                 "error": "Selected user is not a driver."
             }, 400
@@ -132,7 +132,7 @@ class DriverAssignments(Resource):
 def _owns_vehicle(user, vehicle):
     return (
         user is not None
-        and user.role == UserRole.ADMIN
+        and user.role == UserRole.OWNER.value
         and user.fleet_owner_id == vehicle.fleet_owner_id
     )
 

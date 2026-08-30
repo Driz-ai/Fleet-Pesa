@@ -1,362 +1,146 @@
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import (
-    create_access_token,
-    create_refresh_token,
-    get_jwt_identity,
-    jwt_required,
-)
-
+from flask_jwt_extended import create_access_token
 from sqlalchemy.exc import IntegrityError
-from marshmallow import ValidationError
 
 from extensions import db
-from models.user import (
-    User,
-    UserRole,
-)
-from models.fleet_owner import FleetOwner
-from schemas.user_schema import user_schema,password_change_schema, profile_schema
+from models.user import User
+from schemas.user_schema import user_schema
 
 
-
-class Signup(Resource):
+class SignupResource(Resource):
     """
-    POST /auth/signup
+    POST /api/auth/signup
 
-    Creates a new admin or driver account.
+    Creates a new FleetPesa user using username, phone number,
+    name, password, and role.
     """
-
     def post(self):
-        json_data = request.get_json(silent=True)
+        data = request.get_json(silent=True)
 
-        if not json_data:
-            return {
-                "error": "Request body is required."
-            }, 400
+        if not data:
+            return {"error": "Request body must contain JSON data."}, 400
 
         try:
-            data = user_schema.load(json_data)
+            # ---------------------------------------------------------
+            # Validate and deserialize request data
+            # ---------------------------------------------------------
+            validated_data = user_schema.load(data)
 
-        except ValidationError as error:
-            return {
-                "errors": error.messages
-            }, 400
+            username = validated_data["username"]
+            name = validated_data["name"]
+            phone = validated_data["phone"]
+            password = validated_data["password"]
+            role = validated_data.get("role", "driver")
 
-        username = data["username"]
-        phone = data["phone"]
+            # ---------------------------------------------------------
+            # Check for existing username
+            # ---------------------------------------------------------
+            existing_username = User.query.filter_by(username=username).first()
 
-        # Check username
-        existing_username = (
-            User.query
-            .filter_by(username=username)
-            .first()
-        )
+            if existing_username:
+                return {"error": "Username already exists."}, 409
 
-        if existing_username:
-            return {
-                "error": "Username already exists."
-            }, 409
+            # ---------------------------------------------------------
+            # Check for existing phone number
+            # ---------------------------------------------------------
+            existing_phone = User.query.filter_by(phone=phone).first()
 
-        # Check phone
-        existing_phone = (
-            User.query
-            .filter_by(phone=phone)
-            .first()
-        )
+            if existing_phone:
+                return {"error": "Phone number already exists."}, 409
 
-        if existing_phone:
-            return {
-                "error": "Phone number already exists."
-            }, 409
-
-        role = data.get("role", UserRole.DRIVER.value)
-        fleet_owner = None
-        if role == UserRole.ADMIN.value:
-            account_name = data.get("account_name")
-            if not account_name:
-                return {"error": "account_name is required for admin signup."}, 400
-            fleet_owner = FleetOwner(account_name=account_name)
-            db.session.add(fleet_owner)
-            db.session.flush()
-
-        user = User(
-            username=username,
-            name=data["name"],
-            phone=phone,
-            role=role,
-            notification_preference=data.get(
-                "notification_preference",
-                "none",
-            ),
-            fleet_owner_id=fleet_owner.id if fleet_owner else None,
-        )
-
-        # Hash password
-        try:
-            user.set_password(
-                data["password"]
+            
+            # Create user
+            
+            user = User(
+                username=username,
+                name=name,
+                phone=phone,
+                role=role
             )
 
-        except ValueError as error:
-            return {
-                "error": str(error)
-            }, 400
+            # Never store plain-text passwords
+            user.set_password(password)
 
-        try:
             db.session.add(user)
             db.session.commit()
+
+            return {"message": "Account created successfully.","user": user.to_dict(),}, 201
+
+        except ValueError as exc:
+            db.session.rollback()
+
+            return {"error": str(exc)}, 400
 
         except IntegrityError:
             db.session.rollback()
 
-            return {
-                "error": (
-                    "Username or phone number "
-                    "already exists."
-                )
-            }, 409
+            return {"error": "Username or phone number already exists."}, 409
 
-        except Exception:
+        except Exception as exc:
             db.session.rollback()
 
-            return {
-                "error": "Unable to create account."
-            }, 500
+            print("Signup error:", exc)
 
-        return {
-            "message": "Account created successfully.",
-            "user": user_schema.dump(user),
-        }, 201
+            return {"error": "Unable to create account. Please try again."}, 500
 
 
-class Login(Resource):
+class LoginResource(Resource):
     """
-    POST /auth/login
+    POST /api/auth/login
 
-    Logs a user in and returns:
-        access_token
-        refresh_token
+    Authenticates an owner or driver using phone number and password.
     """
 
     def post(self):
-        json_data = request.get_json(silent=True)
+        data = request.get_json(silent=True)
 
-        if not json_data:
-            return {
-                "error": "Request body is required."
-            }, 400
+        if not data:
+            return {"error": "Request body must contain JSON data."}, 400
 
-        username = json_data.get("username")
-        password = json_data.get("password")
+        phone = str(data.get("phone", "")).strip()
+        password = data.get("password")
+        role = str(data.get("role", "")).strip().lower()
 
-        if username is None:
-            return {
-                "error": "Username is required."
-            }, 400
+        # -------------------------------------------------------------
+        # Validate required fields
+        # -------------------------------------------------------------
+        if not phone:
+            return {"error": "Phone number is required."}, 400
 
-        if password is None:
-            return {
-                "error": "Password is required."
-            }, 400
+        if not password:
+            return {"error": "Password is required."}, 400
 
-        username = str(username).strip().lower()
+        if role not in ("owner", "driver"):
+            return {"error": "Role must be either owner or driver."}, 400
 
-        if not username:
-            return {
-                "error": "Username is required."
-            }, 400
+        # -------------------------------------------------------------
+        # Find user
+        # -------------------------------------------------------------
+        user = User.query.filter_by(phone=phone,role=role).first()
 
-        user = (
-            User.query
-            .filter_by(username=username)
-            .first()
-        )
+        # Do not reveal whether phone or password was incorrect
+        if not user or not user.check_password(password):
+            return {"error": "Invalid phone number, password, or account type."}, 401
 
-        # Do not reveal whether the username exists.
-        if user is None:
-            return {
-                "error": "Invalid username or password."
-            }, 401
-
-        # Prevent deactivated users from logging in.
-        if not user.is_active:
-            return {
-                "error": "Account is inactive."
-            }, 403
-
-        # Check password
-        if not user.check_password(password):
-            return {
-                "error": "Invalid username or password."
-            }, 401
-
-        # Access token
+        # -------------------------------------------------------------
+        # Create JWT
+        # -------------------------------------------------------------
         access_token = create_access_token(
             identity=str(user.id),
-            additional_claims={
-                "role": user.role,
-                "fleet_owner_id": user.fleet_owner_id,
-            },
-        )
+            additional_claims={"role": user.role,"phone": user.phone,},)
 
-        # Refresh token
-        refresh_token = create_refresh_token(
-            identity=str(user.id),
-        )
-
+        # -------------------------------------------------------------
+        # Response
+        # -------------------------------------------------------------
         return {
             "message": "Login successful.",
             "access_token": access_token,
-            "refresh_token": refresh_token,
-            "user": user_schema.dump(user),
+            "token": access_token,
+            "user": user.to_dict(),
         }, 200
 
 
-class Refresh(Resource):
-    """
-    POST /auth/refresh
-
-    Uses a valid refresh token to generate
-    a new access token.
-    """
-
-    @jwt_required(refresh=True)
-    def post(self):
-
-        user_id = get_jwt_identity()
-
-        try:
-            user_id = int(user_id)
-
-        except (TypeError, ValueError):
-            return {
-                "error": "Invalid user identity."
-            }, 401
-
-        user = db.session.get(
-            User,
-            user_id,
-        )
-
-        if user is None:
-            return {
-                "error": "User not found."
-            }, 404
-
-        # Do not issue new access tokens to
-        # deactivated users.
-        if not user.is_active:
-            return {
-                "error": "Account is inactive."
-            }, 403
-
-        access_token = create_access_token(
-            identity=str(user.id),
-            additional_claims={
-                "role": user.role,
-                "fleet_owner_id": user.fleet_owner_id,
-            },
-        )
-
-        return {
-            "access_token": access_token,
-        }, 200
 
 
-class Me(Resource):
-    """
-    GET /auth/me
-
-    Returns the currently authenticated user.
-    """
-
-    @jwt_required()
-    def get(self):
-
-        user_id = get_jwt_identity()
-
-        try:
-            user_id = int(user_id)
-
-        except (TypeError, ValueError):
-            return {
-                "error": "Invalid user identity."
-            }, 401
-
-        user = db.session.get(
-            User,
-            user_id,
-        )
-
-        if user is None:
-            return {
-                "error": "User not found."
-            }, 404
-
-        if not user.is_active:
-            return {
-                "error": "Account is inactive."
-            }, 403
-
-        return {
-            "user": user_schema.dump(user)
-        }, 200
-class UpdateProfile(Resource):
-    @jwt_required()
-    def patch(self):
-        try:
-            data = profile_schema.load(request.get_json(silent=True) or {})
-        except ValidationError as error:
-            return {
-                "message": "Invalid profile data",
-                "errors": error.messages,
-            }, 400
-
-        if not data:
-            return {"message": "At least one profile field is required"}, 400
-
-        user = db.session.get(User, int(get_jwt_identity()))
-        if user is None:
-            return {"message": "User not found"}, 404
-        if "notification_preference" in data and user.role != "admin":
-            return {
-                "message": "Only owners can update notification preferences"
-            }, 403
-        if "phone" in data and User.query.filter(
-            User.phone == data["phone"], User.id != user.id
-        ).first():
-            return {"message": "phone is already registered"}, 409
-
-        for field, value in data.items():
-            setattr(user, field, value)
-        db.session.commit()
-        return {"user": user.to_dict()}, 200
-
-class ChangePassword(Resource):
-    @jwt_required()
-    def patch(self):
-        try:
-            data = password_change_schema.load(
-                request.get_json(silent=True) or {}
-            )
-        except ValidationError as error:
-            return {
-                "message": "Invalid password data",
-                "errors": error.messages,
-            }, 400
-
-        user = db.session.get(User, int(get_jwt_identity()))
-        if user is None:
-            return {"message": "User not found"}, 404
-        if not user.check_password(data["current_password"]):
-            return {"message": "Current password is incorrect"}, 401
-        if data["current_password"] == data["new_password"]:
-            return {
-                "message": "New password must be different from current password"
-            }, 400
-
-        user.set_password(data["new_password"])
-        db.session.commit()
-        return {"message": "Password updated successfully"}, 200
 

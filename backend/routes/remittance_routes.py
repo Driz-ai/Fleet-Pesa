@@ -9,7 +9,6 @@ from extensions import db
 from models.remittance import Remittance
 from models.user import User
 from models.vehicle import Vehicle
-from models.driver_assignment import DriverAssignment
 from utils.access_control import _can_access_vehicle, _can_read_transaction
 from schemas.remittance_schema import (
     remittance_create_schema,
@@ -115,16 +114,6 @@ class RemittanceDetail(Resource):
             setattr(remittance, field, value)
         db.session.commit()
         return {"remittance": remittance_schema.dump(remittance)}, 200
-def _can_access_vehicle(user, vehicle):
-    if user is None or vehicle is None:
-        return False
-    if user.role == "admin" and user.fleet_owner_id == vehicle.fleet_owner_id:
-        return True
-    return DriverAssignment.query.filter_by(
-        vehicle_id=vehicle.id,
-        driver_id=user.id,
-        unassigned_at=None,
-    ).first() is not None
 
 
 class VehicleRemittanceHistory(Resource):
@@ -139,8 +128,8 @@ class VehicleRemittanceHistory(Resource):
         query = Remittance.query.filter_by(vehicle_id=vehicle_id)
         status = request.args.get("status")
         if status and status != "all":
-            if status not in ("paid", "short", "late"):
-                return {"message": "status must be paid, short, late or all"}, 400
+            if status not in ("paid", "short"):
+                return {"message": "status must be paid, short or all"}, 400
             query = query.filter_by(status=status)
         try:
             if request.args.get("from"):
@@ -176,17 +165,15 @@ class RemittancePrompt(Resource):
             return {"message": "User not found"}, 404
         if remittance is None:
             return {"message": "Remittance not found"}, 404
-        vehicle = db.session.get(Vehicle, remittance.vehicle_id)
-        if user.role != "admin" or not _can_access_vehicle(user, vehicle):
-            return {"message": "Only the vehicle owner can send a payment prompt"}, 403
-
+        if user.role != "admin" or not _can_access_vehicle(user, remittance.vehicle):
+            return {"message": "Only the vehicle owner can flag a remittance"}, 403
         outstanding = remittance.expected_amount - remittance.actual_amount
         if outstanding <= 0:
             return {"message": "This remittance has no outstanding amount"}, 400
         remittance.flagged_for_followup = True
         db.session.commit()
         return {
-            "message": "Payment prompt sent successfully",
+            "message": "Remittance flagged for follow-up",
             "remittance": remittance_schema.dump(remittance),
             "outstanding_amount": float(outstanding),
         }, 200
