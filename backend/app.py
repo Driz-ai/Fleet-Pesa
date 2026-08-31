@@ -32,7 +32,7 @@ def create_app(config_class=Config):
 
     api.add_resource(SignupResource, "/auth/signup")
     api.add_resource(LoginResource, "/auth/login")
-    api.add_resource(DriverAssignments, "/driver-assignments")#/drivers/vehicles
+    api.add_resource(DriverAssignments, "/drivers/vehicles")#/drivers/vehicles
     api.add_resource(DriverAssignmentById, "/drivers/<int:id>/vehicles")#/drivers/<int:id>/vehicles
     api.add_resource(UnassignDriver, "/drivers/<int:id>/vehicles/<int:vehicle_id>/unassign")#/drivers/<int:id>/vehicles/<int:id>/uanssign
     
