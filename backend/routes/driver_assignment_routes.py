@@ -200,9 +200,10 @@ class UnassignDriver(Resource):
                 "error": "You are not allowed to modify this assignment."
     }, 403
        
-        if assignment.unassigned_at is not None:
+        if not assignment.is_assigned:
             return {"error": "Driver is already unassigned."}, 409
         try:
+            assignment.is_assigned = False
             assignment.unassigned_at = datetime.now(timezone.utc)
             db.session.commit()
         except Exception:
