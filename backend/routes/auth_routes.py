@@ -85,6 +85,8 @@ class SignupResource(Resource):
             return {"error": "Unable to create account. Please try again."}, 500
 
 
+
+
 class LoginResource(Resource):
     """
     POST /api/auth/login
@@ -117,30 +119,35 @@ class LoginResource(Resource):
         # -------------------------------------------------------------
         # Find user
         # -------------------------------------------------------------
-        user = User.query.filter_by(phone=phone,role=role).first()
+        user = User.query.filter_by(
+            phone=phone,
+            role=role
+        ).first()
 
         # Do not reveal whether phone or password was incorrect
         if not user or not user.check_password(password):
-            return {"error": "Invalid phone number, password, or account type."}, 401
+            return {
+                "error": "Invalid phone number, password, or account type."
+            }, 401
 
         # -------------------------------------------------------------
         # Create JWT
         # -------------------------------------------------------------
         access_token = create_access_token(
             identity=str(user.id),
-            additional_claims={"role": user.role,"phone": user.phone,},)
+            additional_claims={
+                "role": user.role,
+                "phone": user.phone,
+            },
+        )
 
         # -------------------------------------------------------------
         # Response
         # -------------------------------------------------------------
         return {
             "message": "Login successful.",
-            "access_token": access_token,
-            "token": access_token,
             "user": user.to_dict(),
         }, 200
-
-
 
 
 

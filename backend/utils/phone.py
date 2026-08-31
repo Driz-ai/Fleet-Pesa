@@ -3,11 +3,15 @@ import re
 
 def normalize_kenyan_phone(value):
     """
-    Normalize Kenyan mobile numbers to 07XXXXXXXX.
+    Validate and normalize Kenyan mobile numbers.
 
-
-    Stored/returned:
+    Accepted formats:
         0712345678
+        0112345678
+
+    Stored/returned exactly as:
+        0712345678
+        0112345678
     """
 
     if value is None:
@@ -18,19 +22,9 @@ def normalize_kenyan_phone(value):
     # Remove spaces, dashes and brackets
     phone = re.sub(r"[\s\-()]", "", phone)
 
-    # Convert +254712345678 -> 0712345678
-    if phone.startswith("+254"):
-        phone = "0" + phone[4:]
-
-    # Convert 254712345678 -> 0712345678
-    elif phone.startswith("254"):
-        phone = "0" + phone[3:]
-
-    # Validate Kenyan mobile number
-    if not re.fullmatch(r"07\d{8}", phone):
-        raise ValueError(
-            "Enter a valid Kenyan phone number, e.g. 0712345678"
-        )
+    # Validate Kenyan mobile number.
+    # Must start with 01 or 07 and contain exactly 10 digits.
+    if not re.fullmatch(r"0[17]\d{8}", phone):
+        raise ValueError("Enter a valid Kenyan phone number, e.g. 0712345678 or 0112345678")
 
     return phone
- 
