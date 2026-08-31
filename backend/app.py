@@ -1,11 +1,7 @@
-from flask import Flask, request
+from flask import Flask
 from flask_cors import CORS
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from flask_restful import Resource
-from marshmallow import ValidationError
-
 from config import Config
-from extensions import api, bcrypt, db, jwt, migrate
+from extensions import api, bcrypt, db, jwt, migrate,ma
 from models.user import User
 from routes.auth_routes import LoginResource, SignupResource
 
@@ -18,9 +14,9 @@ from routes.driver_assignment_routes import (
     DriverAssignmentById,
     DriverAssignments,
     UnassignDriver,
-    VehicleDriverAssignment,
     VehicleDriverHistory,
 )
+
 from routes.remittance_routes import (
     RemittanceDetail,
     RemittanceList,
@@ -28,45 +24,34 @@ from routes.remittance_routes import (
     VehicleRemittanceHistory,
 )
 from routes.vehicle_routes import VehicleDetail, VehicleList
-
-
-
-class Health(Resource):
-    def get(self):
-        return {"message": "Fleet-Pesa API is running"}, 200
-
-
-
+from routes.system_routes import Health
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    api.add_resource(SignupResource, "/api/auth/signup")
-    api.add_resource(LoginResource, "/api/auth/login")
-    api.add_resource(DriverAssignments, "/api/driver-assignments")
-    api.add_resource(DriverAssignmentById, "/api/driver-assignments/<int:id>")
-    api.add_resource(UnassignDriver, "/api/driver-assignments/<int:id>/unassign")
-    api.add_resource(
-        VehicleDriverAssignment,
-        "/api/vehicles/<int:vehicle_id>/assign-driver",
-    )
+    api.add_resource(SignupResource, "/auth/signup")
+    api.add_resource(LoginResource, "/auth/login")
+    api.add_resource(DriverAssignments, "/driver-assignments")
+    api.add_resource(DriverAssignmentById, "/driver-assignments/<int:id>")
+    api.add_resource(UnassignDriver, "/driver-assignments/<int:id>/unassign")
+    
     api.add_resource(
         VehicleDriverHistory,
-        "/api/vehicles/<int:vehicle_id>/driver-history",
+        "/vehicles/<int:vehicle_id>/driver-history",
     )
-    api.add_resource(VehicleList, "/api/vehicles")
-    api.add_resource(VehicleDetail, "/api/vehicles/<int:vehicle_id>")
+    api.add_resource(VehicleList, "/vehicles")
+    api.add_resource(VehicleDetail, "/vehicles/<int:vehicle_id>")
     api.add_resource(
         VehicleRemittanceHistory,
-        "/api/vehicles/<int:vehicle_id>/remittances",
+        "/vehicles/<int:vehicle_id>/remittances",
     )
-    api.add_resource(RemittanceList, "/api/remittances")
-    api.add_resource(RemittanceDetail, "/api/remittances/<int:remittance_id>")
-    api.add_resource(RemittancePrompt, "/api/remittances/<int:remittance_id>/prompt")
-    api.add_resource(FarePaymentCreate, "/api/fare-payments")
-    api.add_resource(FarePaymentDetail, "/api/fare-payments/<int:payment_id>")
-    api.add_resource(FarePaymentCallback, "/api/fare-payments/mpesa-callback")
+    api.add_resource(RemittanceList, "/remittances")
+    api.add_resource(RemittanceDetail, "/remittances/<int:remittance_id>")
+    api.add_resource(RemittancePrompt, "/remittances/<int:remittance_id>/prompt")
+    api.add_resource(FarePaymentCreate, "/fare-payments")
+    api.add_resource(FarePaymentDetail, "/fare-payments/<int:payment_id>")
+    api.add_resource(FarePaymentCallback, "/fare-payments/mpesa-callback")
 
     api.add_resource(Health, "/")
     
@@ -86,5 +71,4 @@ app = create_app()
 #     app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
-
+    app.run(port=5555,debug=True)

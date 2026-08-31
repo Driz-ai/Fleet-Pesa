@@ -1,6 +1,5 @@
 from marshmallow import Schema, fields, validate
 
-
 class FarePaymentCreateSchema(Schema):
     vehicle_id = fields.Int(required=True, validate=validate.Range(min=1))
     customer_phone = fields.Str(required=True, validate=validate.Length(max=15))

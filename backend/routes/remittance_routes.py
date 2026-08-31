@@ -24,7 +24,7 @@ def _current_user():
 
 def _visible_remittances(user, query):
     records = query.order_by(Remittance.submitted_at.desc()).all()
-    if user.role == "admin":
+    if user.role == "owner":
         return [
             item for item in records
             if item.vehicle.fleet_owner_id == user.fleet_owner_id
@@ -141,7 +141,7 @@ class VehicleRemittanceHistory(Resource):
         except ValueError:
             return {"message": "from and to must use YYYY-MM-DD format"}, 400
         records = query.order_by(Remittance.submitted_at.desc()).all()
-        if user.role != "admin":
+        if user.role != "owner":
             records = [
                 item for item in records
                 if _can_read_transaction(user, vehicle, item.submitted_at)
@@ -165,7 +165,7 @@ class RemittancePrompt(Resource):
             return {"message": "User not found"}, 404
         if remittance is None:
             return {"message": "Remittance not found"}, 404
-        if user.role != "admin" or not _can_access_vehicle(user, remittance.vehicle):
+        if user.role != "owner" or not _can_access_vehicle(user, remittance.vehicle):
             return {"message": "Only the vehicle owner can flag a remittance"}, 403
         outstanding = remittance.expected_amount - remittance.actual_amount
         if outstanding <= 0:
