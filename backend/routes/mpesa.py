@@ -1,7 +1,5 @@
 from flask import request, jsonify
-from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
-from marshmallow import ValidationError
 from services.mpesa import MpesaService
 
 
@@ -25,5 +23,11 @@ class Mpesa(Resource):
             account_reference=account_reference
         )
 
-        return jsonify(result), 200
+        return result, 200
+
+    def get(self):
+        data = request.get_json()
+
+        return "Mpesa callback received"
+
 
