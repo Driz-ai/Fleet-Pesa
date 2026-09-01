@@ -15,6 +15,7 @@ marshmallow-sqlalchemy = "*"
 flask-marshmallow = "*"
 flask-cors = "*"
 python-dotenv = "*"
+requests = "*"
 
 [dev-packages]
 pytest = "*"
