@@ -2,7 +2,7 @@ import os
 import base64
 from dotenv import load_dotenv
 from datetime import datetime
-from flask import requests
+import requests
 
 load_dotenv()
 
@@ -28,7 +28,7 @@ class MpesaService:
 
         return response.json() ['access_token']
 
-    def stk_push(self, phone_number, amount, account_reference):
+    def stk_push(self, sender_phone_number, receiver_phone_number, amount, account_reference):
         access_token = self.get_access_token()
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         password_string = (
@@ -46,9 +46,9 @@ class MpesaService:
             "Timestamp": timestamp,
             "TransactionType": "CustomerPayBillOnline",
             "Amount": amount,
-            "PartyA": phone_number,
+            "PartyA": sender_phone_number,
             "PartyB": self.shortcode,
-            "PhoneNumber": phone_number,
+            "PhoneNumber": receiver_phone_number,
             "CallBackURL": self.callback_url,
             "AccountReference": account_reference,
             "TransactionDesc": "Payment"
