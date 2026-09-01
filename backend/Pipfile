@@ -21,6 +21,7 @@ pytest = "*"
 pytest-cov = "*"
 pytest-env = "*"
 faker = "*"
+python-dotenv="*"
 
 [scripts]
 start = "flask run"
