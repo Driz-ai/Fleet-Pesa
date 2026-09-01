@@ -34,7 +34,7 @@ class MpesaService:
         password_string = (
             f"{self.shortcode}"
             f"{self.passkey}"
-            f"timestamp"
+            f"{timestamp}"
         )
         password = base64.b64encode(password_string.encode()).decode()
 
@@ -65,7 +65,5 @@ class MpesaService:
             headers=headers,
             timeout=30
         )
-
-        response.raise_for_status()
 
         return response.json()
