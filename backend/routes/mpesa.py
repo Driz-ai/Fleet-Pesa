@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, make_response
 from flask_restful import Resource
 from services.mpesa import MpesaService
 
@@ -25,9 +25,10 @@ class Mpesa(Resource):
 
         return result, 200
 
-    def get(self):
-        data = request.get_json()
+    # The idea below is to process requests sent to our callback URL sent from the Safaricom Mpesa API
+    # def get(self):
+    #     data = request.get_json()
 
-        return "Mpesa callback received"
+    #     return make_response(data)
 
 
