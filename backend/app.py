@@ -20,6 +20,7 @@ from routes.vehicle_routes import (VehicleDetail, VehicleList)
 
 from routes.system_routes import Health
 
+from routes.mpesa import Mpesa
 
 def create_app(config_class=Config):
 
@@ -60,6 +61,17 @@ def create_app(config_class=Config):
     api.add_resource(FarePaymentCallback, "/fare-payments/mpesa-callback")
     api.add_resource(Health, "/",)
 
+    api.add_resource(Health, "/")
+
+    api.add_resource(Mpesa, "/mpesa-stk-push")
+
+    
+    CORS(app)
+    db.init_app(app)
+    bcrypt.init_app(app)
+    jwt.init_app(app)
+    migrate.init_app(app, db)
+    api.init_app(app)
     return app
 
 
