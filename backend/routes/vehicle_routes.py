@@ -27,7 +27,7 @@ class VehicleList(Resource):
 		user = _current_user()
 		if user is None:
 			return {"message": "User not found"}, 404
-		if user.role == "admin":
+		if user.role == "owner":
 			vehicles = Vehicle.query.filter_by(
 				fleet_owner_id=user.fleet_owner_id,
 				is_active=True,
@@ -51,7 +51,7 @@ class VehicleList(Resource):
 		user = _current_user()
 		if user is None:
 			return {"message": "User not found"}, 404
-		if user.role != "admin":
+		if user.role != "owner":
 			return {"message": "Only owners can add vehicles"}, 403
 
 		try:
@@ -139,7 +139,7 @@ class VehicleDetail(Resource):
 		vehicle = db.session.get(Vehicle, vehicle_id)
 		if vehicle is None:
 			return {"message": "Vehicle not found"}, 404
-		if vehicle.fleet_owner_id != user.fleet_owner_id or user.role != "admin":
+		if vehicle.fleet_owner_id != user.fleet_owner_id or user.role != "owner":
 			return {
 				"message": "Only the owning fleet owner can remove this vehicle"
 			}, 403

@@ -7,7 +7,7 @@ def _can_access_vehicle(user, vehicle, at_time=None):
     """Check fleet-owner access or driver assignment at a specific time."""
     if user is None or vehicle is None:
         return False
-    if user.role == "admin" and user.fleet_owner_id == vehicle.fleet_owner_id:
+    if user.role == "owner" and user.fleet_owner_id == vehicle.fleet_owner_id:
         return True
 
     assignment_query = DriverAssignment.query.filter_by(

@@ -1,12 +1,13 @@
+from flask import request
+from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_restful import Resource
+from marshmallow import ValidationError
 import hmac
 from uuid import uuid4
 
 from flask import current_app, request
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from flask_restful import Resource
-from marshmallow import ValidationError
-
 from extensions import db
+from models.driver_assignment import DriverAssignment
 from models.fare_payment import FarePayment
 from models.user import User
 from models.vehicle import Vehicle
