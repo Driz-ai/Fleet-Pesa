@@ -27,6 +27,8 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    
+
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
@@ -61,17 +63,10 @@ def create_app(config_class=Config):
     api.add_resource(FarePaymentCallback, "/fare-payments/mpesa-callback")
     api.add_resource(Health, "/",)
 
-    api.add_resource(Health, "/")
 
     api.add_resource(Mpesa, "/mpesa-stk-push")
 
     
-    CORS(app)
-    db.init_app(app)
-    bcrypt.init_app(app)
-    jwt.init_app(app)
-    migrate.init_app(app, db)
-    api.init_app(app)
     return app
 
 
