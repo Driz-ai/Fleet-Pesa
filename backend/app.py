@@ -2,6 +2,7 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
+import os
 
 from config import Config
 from extensions import (  bcrypt, db, jwt, migrate, ma)
@@ -37,7 +38,12 @@ def create_app(config_class=Config):
         app,
         resources={
             r"/api/*": {
-                "origins": ["http://localhost:5173","http://localhost:5174", ]}
+                "origins": [
+                    "http://localhost:5173",
+                    "http://localhost:5174",
+                    os.getenv("FRONTEND_URL", ""),
+                ]
+            }
         },
     )
 
