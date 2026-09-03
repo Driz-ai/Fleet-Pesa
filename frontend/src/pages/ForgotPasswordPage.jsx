@@ -1,12 +1,17 @@
 import { useState } from "react";
+import { forgotPassword, resetPassword } from  "../lib/api";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { normalizePhone } from "./LoginPage.jsx";
 
 export default function ForgotPasswordPage() {
   const navigate = useNavigate();
+
+
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
+  const [resetToken, setResetToken] = useState("");
+
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [step, setStep] = useState("phone");
@@ -16,21 +21,185 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [demoOtp, setDemoOtp] = useState("");
 
-  function handlePhoneSubmit(event) {
-    event.preventDefault();
-    const cleanPhone = normalizePhone(phone);
-    if (!/^07\d{8}$/.test(cleanPhone)) {
-      setError("Enter a valid phone number, e.g. 0712345678");
+async function handlePasswordSubmit(event) {
+  event.preventDefault();
+
+  if (newPassword.length < 8) {
+    setError("Password must be at least 8 characters");
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    setError("Passwords do not match");
+    return;
+  }
+
+  if (!resetToken) {
+    setError(
+      "Password reset session has expired. Please start again."
+    );
+    return;
+  }
+
+  try {
+    setLoading(true);
+    setError("");
+
+    console.log(
+      "[RESET PASSWORD] Token present:",
+      resetToken.length
+    );
+
+    await resetPassword(
+      resetToken,
+      newPassword
+    );
+
+    sessionStorage.removeItem(
+      `fleetpesa_otp_${phone}`
+    );
+
+    navigate("/login", {
+      replace: true,
+      state: {
+        success:
+          "Password updated. You can now sign in.",
+      },
+    });
+
+  } catch (error) {
+    console.error(
+      "[RESET PASSWORD ERROR]",
+      error
+    );
+
+    setError(
+      error.message ||
+      "Unable to reset password."
+    );
+  } finally {
+    setLoading(false);
+  }
+}
+
+
+async function handlePhoneSubmit(event) {
+  event.preventDefault();
+
+  const cleanPhone = normalizePhone(phone);
+
+  // Accept Kenyan numbers starting with 07 or 01
+  if (!/^(07|01)\d{8}$/.test(cleanPhone)) {
+    setError("Enter a valid phone number, e.g. 0712345678 or 0112345678");
+    return;
+  }
+
+  try {
+    setLoading(true);
+    setError("");
+
+    // Ask the Flask backend for a password reset token
+    const response = await forgotPassword(cleanPhone);
+
+    console.log("[FORGOT PASSWORD RESPONSE]", response);
+
+    if (!response?.reset_token) {
+      setError(
+        response?.message ||
+        "Unable to create password reset session."
+      );
       return;
     }
 
-    const generatedOtp = String(Math.floor(100000 + Math.random() * 900000));
-    sessionStorage.setItem(`fleetpesa_otp_${cleanPhone}`, generatedOtp);
+    // IMPORTANT: save the backend reset token
+    setResetToken(response.reset_token);
+
+    // Keep your demo OTP for testing
+    const generatedOtp = String(
+      Math.floor(100000 + Math.random() * 900000)
+    );
+
+    sessionStorage.setItem(
+      `fleetpesa_otp_${cleanPhone}`,
+      generatedOtp
+    );
+
     setPhone(cleanPhone);
     setDemoOtp(generatedOtp);
-    setError("");
     setStep("otp");
+
+  } catch (error) {
+    console.error(
+      "[FORGOT PASSWORD ERROR]",
+      error
+    );
+
+    setError(
+      error.message ||
+      "Unable to process password reset request."
+    );
+  } finally {
+    setLoading(false);
   }
+}
+
+
+
+function handleOtpSubmit(event) {
+  event.preventDefault();
+
+  const expectedOtp = sessionStorage.getItem(
+    `fleetpesa_otp_${phone}`
+  );
+
+  if (!/^\d{6}$/.test(otp) || otp !== expectedOtp) {
+    setError("Enter the six-digit code sent to your phone");
+    return;
+  }
+
+  setError("");
+  setStep("password");
+}
+
+async function handlePasswordSubmit(event) {
+  event.preventDefault();
+
+  if (newPassword.length < 8) {
+    setError("Password must be at least 8 characters");
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    setError("Passwords do not match");
+    return;
+  }
+
+  if (!resetToken) {
+    setError("Password reset token is missing. Please start again.");
+    return;
+  }
+
+  try {
+    setError("");
+    setLoading(true);
+
+    await resetPassword(resetToken, newPassword);
+
+    sessionStorage.removeItem(`fleetpesa_otp_${phone}`);
+
+    navigate("/login", {
+      replace: true,
+      state: {
+        success: "Password updated. You can now sign in.",
+      },
+    });
+  } catch (error) {
+    setError(error.message || "Unable to reset password.");
+  } finally {
+    setLoading(false);
+  }
+}
+
 
   function handleOtpSubmit(event) {
     event.preventDefault();
@@ -44,28 +213,61 @@ export default function ForgotPasswordPage() {
     setStep("password");
   }
 
-  function handlePasswordSubmit(event) {
-    event.preventDefault();
-    if (newPassword.length < 6) {
-      setError("Password must be at least 6 characters");
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+async function handlePasswordSubmit(event) {
+  event.preventDefault();
 
-    setError("");
-    setLoading(true);
-    setTimeout(() => {
-      sessionStorage.setItem(`fleetpesa_password_reset_${phone}`, newPassword);
-      sessionStorage.removeItem(`fleetpesa_otp_${phone}`);
-      navigate("/login", {
-        replace: true,
-        state: { success: "Password updated. You can now sign in." },
-      });
-    }, 400);
+  if (newPassword.length < 8) {
+    setError("Password must be at least 8 characters");
+    return;
   }
+
+  if (newPassword !== confirmPassword) {
+    setError("Passwords do not match");
+    return;
+  }
+
+  if (!resetToken) {
+    setError("Password reset session has expired. Please start again.");
+    return;
+  }
+
+  setError("");
+  setLoading(true);
+
+  try {
+    const data = await resetPassword(
+      resetToken,
+      newPassword
+    );
+
+    console.log(
+      "[RESET PASSWORD] Backend response:",
+      data
+    );
+
+    navigate("/login", {
+      replace: true,
+      state: {
+        success: "Password updated. You can now sign in.",
+      },
+    });
+
+  } catch (error) {
+    console.error(
+      "[RESET PASSWORD ERROR]",
+      error
+    );
+
+    setError(
+      error.message ||
+      "Unable to reset password. Please try again."
+    );
+
+  } finally {
+    setLoading(false);
+  }
+}
+
 
   return (
     <div className="login-page min-h-screen w-full flex flex-col items-center justify-center px-4 py-12">
@@ -84,7 +286,7 @@ export default function ForgotPasswordPage() {
             <label htmlFor="recovery-phone" className="block text-xs font-semibold text-slate-500 tracking-wide uppercase mb-1.5">Phone Number</label>
             <input id="recovery-phone" type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="0712345678" className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-900" />
             {error && <p className="text-sm text-red-600 mt-2" role="alert">{error}</p>}
-            <button type="submit" className="w-full mt-6 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-lg transition-colors">Send one-time password</button>
+            <button type="submit" className="w-full mt-6 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-lg transition-colors">Continue</button>
           </form>
         )}
 

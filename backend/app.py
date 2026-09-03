@@ -28,6 +28,8 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    
+
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
@@ -50,11 +52,17 @@ def create_app(config_class=Config):
 
     api.add_resource(SignupResource, "/auth/signup")
     api.add_resource(LoginResource, "/auth/login")
+    api.add_resource(DriverAssignments, "/drivers/vehicles")#/drivers/vehicles
+    api.add_resource(DriverAssignmentById, "/drivers/<int:id>/vehicles")#/drivers/<int:id>/vehicles
+    api.add_resource(UnassignDriver, "/drivers/<int:id>/vehicles/<int:vehicle_id>/unassign")#/drivers/<int:id>/vehicles/<int:id>/uanssign
+    
+    api.add_resource(
+        VehicleDriverHistory,
+        "/vehicles/<int:vehicle_id>/driver-history",
+    )
     api.add_resource(ForgotPasswordResource, "/auth/forgot-password")
     api.add_resource( ResetPasswordResource, "/auth/reset-password")
-    api.add_resource(DriverAssignments, "/driver-assignments")
-    api.add_resource(DriverAssignmentById, "/driver-assignments/<int:id>")
-    api.add_resource(UnassignDriver, "/driver-assignments/<int:id>/unassign")
+  
     api.add_resource(VehicleDriverHistory, "/vehicles/<int:vehicle_id>/driver-history")
     api.add_resource(VehicleList, "/vehicles")
     api.add_resource( VehicleDetail, "/vehicles/<int:vehicle_id>")
