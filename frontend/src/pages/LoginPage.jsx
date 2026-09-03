@@ -67,7 +67,7 @@ export default function LoginPage() {
     }
 
     if (
-      !/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/.test(password)
+      !/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(password)
     ) {
       return "Password must be at least 8 characters and include letters, numbers, and special characters.";
     }
@@ -82,80 +82,90 @@ export default function LoginPage() {
     setError("");
   };
 
-  // LOGIN
+
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (loading) return;
+  if (loading) return;
 
-    const validationError = validate();
+  const validationError = validate();
 
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
+  if (validationError) {
+    setError(validationError);
+    return;
+  }
 
-    setError("");
-    setLoading(true);
+  setError("");
+  setLoading(true);
 
-    const cleanPhone = normalizePhone(phone);
+  const cleanPhone = normalizePhone(phone);
 
-    try {
-      
-      const response = await login({
-        phone: cleanPhone,
-        password,
-        role,
-      });
-
-      console.log("Login response:", response);
-
-      
-
-      const token = response?.access_token || response?.token ||
-        response?.data?.access_token || response?.data?.token;
-
-      const user = response?.user || response?.data?.user ||
-        null;
-
-      if (!token) {
-        throw new Error("Login succeeded but the backend did not return an authentication token.");
-      }
-
-      
-      setAuth({token,
-        user:
-          user || {
-            phone: cleanPhone,
-            role,
-          },
-      });
-
-      // REDIRECT
-
-      if (role === "driver") {
-        navigate("/driver/remittance", {
-          replace: true,
-        });
-      } else {
-        navigate("/owner/dashboard", {
-          replace: true,
-        });
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-
-      
-      const message = err?.response?.data?.message || err?.response?.data?.error || err?.message ||
-        "Sign in failed. Check your details and try again.";
-
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
+  const credentials = {
+    phone: cleanPhone,
+    password,
+    role: role.toLowerCase(),
   };
 
+  console.log("[LOGIN CREDENTIALS]", {
+    phone: credentials.phone,
+    role: credentials.role,
+    passwordLength: credentials.password.length,
+  });
+
+  try {
+    const response = await login(credentials);
+
+    console.log("[LOGIN RESPONSE]", response);
+
+    const token =
+      response?.access_token ||
+      response?.token ||
+      response?.data?.access_token ||
+      response?.data?.token;
+
+    const user =
+      response?.user ||
+      response?.data?.user ||
+      null;
+
+    if (!token) {
+      throw new Error(
+        "Login succeeded but the backend did not return an authentication token."
+      );
+    }
+
+    setAuth({
+      token,
+      user: user || {
+        phone: cleanPhone,
+        role: credentials.role,
+      },
+    });
+
+    if (credentials.role === "driver") {
+      navigate("/driver/remittance", {
+        replace: true,
+      });
+    } else {
+      navigate("/owner/dashboard", {
+        replace: true,
+      });
+    }
+  } catch (err) {
+    console.error("[LOGIN ERROR]", err);
+
+    const message =
+      err?.response?.data?.message ||
+      err?.response?.data?.error ||
+      err?.message ||
+      "Sign in failed. Check your details and try again.";
+
+    setError(message);
+  } finally {
+    setLoading(false);
+  }
+};
   // UI
 
   return (
