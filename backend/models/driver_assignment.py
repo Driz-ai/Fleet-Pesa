@@ -23,6 +23,10 @@ class DriverAssignment(db.Model):
         nullable=False,
         index=True,
     )
+    # add assigned column of boolean type
+    is_assigned = db.Column(db.Boolean,
+                            nullable=False,default=True,
+                            server_default=db.true())
 
     assigned_at = db.Column(
         db.DateTime(timezone=True),
@@ -32,7 +36,7 @@ class DriverAssignment(db.Model):
     )
 
     unassigned_at = db.Column(
-        db.DateTime(timezone=True),
+        db.DateTime(timezone=True), 
         nullable=True,
     )
 
