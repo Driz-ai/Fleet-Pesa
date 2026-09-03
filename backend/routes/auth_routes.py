@@ -1,7 +1,7 @@
 from datetime import timedelta
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import create_access_token   , decode_token
+from flask_jwt_extended import ( create_access_token, create_refresh_token, get_jwt_identity, jwt_required, decode_token)
 from sqlalchemy.exc import IntegrityError
 
 from extensions import db
@@ -85,12 +85,15 @@ class SignupResource(Resource):
 
 
 
-
 class LoginResource(Resource):
     """
     POST /api/auth/login
 
-    Authenticates an owner or driver using phone number and password.
+    Authenticates an owner or driver.
+
+    Returns:
+        access_token  -> valid for 10 hours
+        refresh_token -> valid for 30 days
     """
 
     def post(self):
@@ -99,13 +102,14 @@ class LoginResource(Resource):
         if not data:
             return {"error": "Request body must contain JSON data."}, 400
 
-        phone = str(data.get("phone", "")).strip()
-        password = data.get("password")
-        role = str(data.get("role", "")).strip().lower()
+        phone = str( data.get("phone", "")).strip()
 
-        
-        # Validate required fields
-        
+        password = data.get("password")
+
+        role = str( data.get("role", "") ).strip().lower()
+
+       
+
         if not phone:
             return {"error": "Phone number is required."}, 400
 
@@ -115,27 +119,44 @@ class LoginResource(Resource):
         if role not in ("owner", "driver"):
             return {"error": "Role must be either owner or driver."}, 400
 
-        
-        # Find user
-        user = User.query.filter_by(phone=phone,role=role).first()
+      
 
-        # Do not reveal whether phone or password was incorrect
+        user = User.query.filter_by(
+            phone=phone,
+            role=role
+        ).first()
+
+        # Do not reveal which field was incorrect.
         if not user or not user.check_password(password):
-            return {"error": "Invalid phone number, password, or account type."}, 401
+            return {
+                "error": (
+                    "Invalid phone number, password, "
+                    "or account type."
+                )
+            }, 401
 
-        
-        # Create JWT
-        
-        access_token = create_access_token(identity=str(user.id),additional_claims={"role": user.role,"phone": user.phone,},)
 
-        # 
-        # Response
+        access_token = create_access_token(
+            identity=str(user.id),
+            additional_claims={
+                "role": user.role,
+                "phone": user.phone,
+            }
+        )
+
+        refresh_token = create_refresh_token(identity=str(user.id))
+
         return {
-           "message": "Login successful.",
-           "access_token": access_token,
-           "user": user.to_dict(),
-        }, 200
+            "message": "Login successful.",
 
+            # Valid for 10 hours
+            "access_token": access_token,
+
+            # Valid for 30 days
+            "refresh_token": refresh_token,
+
+            "user": user.to_dict(),
+        }, 200
 
 # FORGOT PASSWORD
 
@@ -173,7 +194,7 @@ class ForgotPasswordResource(Resource):
         reset_token = create_access_token(
             identity=str(user.id),
             additional_claims={"token_type": "password_reset"},
-            expires_delta=timedelta(minutes=2)
+            expires_delta=timedelta(minutes=10)
         )
 
         # For development only.
@@ -183,20 +204,7 @@ class ForgotPasswordResource(Resource):
             "reset_token": reset_token
         }, 200
 
-
-
-
-
-
-
-
-
-       
-
-
 # RESET PASSWORD
-
-
 class ResetPasswordResource(Resource):
     """
     POST /api/auth/reset-password
@@ -266,6 +274,49 @@ class ResetPasswordResource(Resource):
                 )
             }, 500
 
+
+class RefreshTokenResource(Resource):
+    """
+    POST /api/auth/refresh
+
+    Requires a valid refresh token.
+
+    Returns a new access token valid for 10 hours.
+    """
+
+    @jwt_required(refresh=True)
+    def post(self):
+
+
+        user_id = get_jwt_identity()
+
+        if not user_id:
+            return {"error": "Invalid refresh token."}, 401
+
+
+        try:
+            user = db.session.get(
+                User,
+                int(user_id)
+            )
+
+        except (ValueError, TypeError):
+            return {"error": "Invalid refresh token."}, 401
+
+        if not user:
+            return {"error": "User account no longer exists."}, 401
+
+        access_token = create_access_token(
+            identity=str(user.id),
+            additional_claims={
+                "role": user.role,
+                "phone": user.phone,
+            }
+        )
+        return {
+            "message": "Access token refreshed successfully.",
+            "access_token": access_token,
+        }, 200
 
 
 
