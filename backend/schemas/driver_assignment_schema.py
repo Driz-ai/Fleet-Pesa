@@ -11,7 +11,9 @@ class DriverAssignmentSchema(Schema):
     driver_id = fields.Integer(
         required=True,
     )
-
+    is_assigned = fields.Boolean(
+        dump_only=True
+    )
     assigned_at = fields.DateTime(
         dump_only=True,
     )
