@@ -6,11 +6,11 @@ from flask_restful import Api
 from flask_marshmallow import Marshmallow
 
 
-
-
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 jwt = JWTManager()
 migrate = Migrate()
+
 api = Api()
+
 ma = Marshmallow()
