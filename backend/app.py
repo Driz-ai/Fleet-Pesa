@@ -8,7 +8,7 @@ from extensions import (  bcrypt, db, jwt, migrate, ma)
 
 from models.user import User
 
-from routes.auth_routes import ( LoginResource, SignupResource, ForgotPasswordResource, ResetPasswordResource)
+from routes.auth_routes import ( LoginResource, SignupResource, ForgotPasswordResource, ResetPasswordResource , LogoutResource , MeResource ,  RefreshTokenResource)
 
 from routes.fare_payment_routes import ( FarePaymentCallback, FarePaymentCreate,FarePaymentDetail)
 
@@ -35,18 +35,27 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     ma.init_app(app)
     api = Api(app, prefix="/api")
+    
+
     CORS(
-        app,
-        resources={
-            r"/api/*": {
-                "origins": ["http://localhost:5173","http://localhost:5174", ]}
-        },
+    app,
+    resources={
+        r"/api/*": {
+            "origins": [
+                "http://localhost:5173", "http://localhost:5174",],}
+    },
+    supports_credentials=True,
     )
+
 
 
     api.add_resource(SignupResource, "/auth/signup")
     api.add_resource(LoginResource, "/auth/login")
+    api.add_resource(MeResource,"/auth/me")
+    api.add_resource(RefreshTokenResource,"/auth/refresh")
+
     api.add_resource(ForgotPasswordResource, "/auth/forgot-password")
+    api.add_resource(LogoutResource, "/auth/logout")
     api.add_resource( ResetPasswordResource, "/auth/reset-password")
     api.add_resource(DriverAssignments, "/driver-assignments")
     api.add_resource(DriverAssignmentById, "/driver-assignments/<int:id>")
