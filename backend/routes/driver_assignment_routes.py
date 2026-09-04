@@ -155,10 +155,8 @@ class VehicleDriverHistory(Resource):
 class DriverAssignmentById(Resource):
      @jwt_required()
      def get(self, id):
-      assignment = db.session.get(
-        DriverAssignment,
-        id,
-    )
+      assignment = DriverAssignment.query.filter_by(
+         driver_id=id,is_assigned=True).first()
       if assignment is None:
         return {
               "error": "Driver assignment not found."
@@ -182,11 +180,15 @@ class DriverAssignmentById(Resource):
     )
 class UnassignDriver(Resource):
     @jwt_required()
-    def patch(self, id):
-        assignment = db.session.get(DriverAssignment, id)
+    def patch(self, id,vehicle_id):
+        assignment = DriverAssignment.query.filter_by(
+           driver_id=id ,
+           vehicle_id=vehicle_id ,
+           is_assigned=True
+        ).first()
         if assignment is None:
             return {
-                "error": "Driver assignment not found."
+                "error": "Active driver assignment not found."
             }, 404
         current_user = _current_user()
 
@@ -200,9 +202,10 @@ class UnassignDriver(Resource):
                 "error": "You are not allowed to modify this assignment."
     }, 403
        
-        if assignment.unassigned_at is not None:
+        if not assignment.is_assigned:
             return {"error": "Driver is already unassigned."}, 409
         try:
+            assignment.is_assigned = False
             assignment.unassigned_at = datetime.now(timezone.utc)
             db.session.commit()
         except Exception:
